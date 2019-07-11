@@ -1,5 +1,5 @@
-/* Rhizo-connector: A connector to different HF modems
- * Copyright (C) 2018 Rhizomatica
+/* Rhizo-uuardop: Tools to integrate Ardop to UUCP
+ * Copyright (C) 2019 Rhizomatica
  * Author: Rafael Diniz <rafael@riseup.net>
  *
  * This is free software; you can redistribute it and/or modify
@@ -20,12 +20,12 @@
  */
 
 /**
- * @file connector.c
+ * @file uuardopd.c
  * @author Rafael Diniz
- * @date 12 Apr 2018
- * @brief Rhizo HF Connector main file
+ * @date 10 Jul 2019
+ * @brief UUCP ARDOP daemon
  *
- * Rhizo HF Connector main C file.
+ * UUARDOPD main C file.
  *
  */
 
@@ -65,6 +65,8 @@ void finish(int s){
         }
     }
 
+    // TODO: close the pipes here
+
     exit(EXIT_SUCCESS);
 }
 
@@ -87,12 +89,10 @@ bool initialize_connector(rhizo_conn *connector){
 
     initialize_buffer(&connector->in_buffer, 26); // 64MB
     initialize_buffer(&connector->out_buffer, 26); // 64MB
-    pthread_mutex_init(&connector->msg_path_queue_mutex, NULL);
 
     connector->connected = false;
     connector->waiting_for_connection = false;
     connector->tcp_ret_ok = true;
-    connector->msg_path_queue_size = 0;
     connector->safe_state = 0;
 
     connector->timeout = TIMEOUT_DEFAULT;
@@ -109,20 +109,24 @@ int main (int argc, char *argv[])
     initialize_connector(&connector);
 
     // Catch Ctrl+C
-    signal (SIGINT,finish);
+    signal (SIGINT, finish);
 
-    fprintf(stderr, "Rhizomatica's HF Connector version 0.2 by Rafael Diniz -  rafael (AT) rhizomatica (DOT) org\n");
+    // Catch SIGPIPE
+    signal (SIGPIPE, pipe_fucked);
+    // signal(SIGPIPE, SIG_IGN); // ignores SIGPIPE...
+
+    fprintf(stderr, "Rhizomatica's uuardopd version 0.1 by Rafael Diniz -  rafael (AT) rhizomatica (DOT) org\n");
     fprintf(stderr, "License: GPLv3+\n\n");
 
     if (argc < 7)
     {
     manual:
-        fprintf(stderr, "Usage modes: \n%s -r radio_modem_type -i input_spool_directory -o output_spool_directory -c callsign -d remote_callsign -s RX -a tnc_ip_address -p tcp_base_port\n", argv[0]);
+        fprintf(stderr, "Usage modes: \n%s -r radio_modem_type -i input_pipe.uucp -o output_pipe.uucp -d remote_callsign -a tnc_ip_address -p tcp_base_port\n", argv[0]);
         fprintf(stderr, "%s -h\n", argv[0]);
         fprintf(stderr, "\nOptions:\n");
         fprintf(stderr, " -r [ardop,dstar,vara]           Choose modem/radio type.\n");
-        fprintf(stderr, " -i input_spool_directory    Input spool directory (Messages to send).\n");
-        fprintf(stderr, " -o output_spool_directory    Output spool directory (Received messages).\n");
+        fprintf(stderr, " -i input_pipe.uucp          Pipe to be read from uucico.\n");
+        fprintf(stderr, " -o output_pipe.uucp         Pipe to be written to uucico.\n");
         fprintf(stderr, " -c callsign                        Station Callsign (Eg: PU2HFF).\n");
         fprintf(stderr, " -d remote_callsign           Remote Station Callsign.\n");
         fprintf(stderr, " -a tnc_ip_address            IP address of the TNC,\n");
@@ -161,20 +165,10 @@ int main (int argc, char *argv[])
             strcpy(connector.modem_type, optarg);
             break;
         case 'i':
-            strcpy(connector.input_directory, optarg);
-            last = &connector.input_directory[strlen(connector.input_directory)-1];
-            if (last[0] != '/'){
-                last[1] = '/';
-                last[2] = 0;
-            }
+            strcpy(connector.input_pipe, optarg);
             break;
         case 'o':
-            strcpy(connector.output_directory, optarg);
-            last = &connector.output_directory[strlen(connector.output_directory)-1];
-            if (last[0] != '/'){
-                last[1] = '/';
-                last[2] = 0;
-            }
+            strcpy(connector.output_pipe, optarg);
             break;
         case 'f':
             if(strstr(optarg, "noofdm"))
@@ -189,8 +183,8 @@ int main (int argc, char *argv[])
 
     pthread_t tid[3];
 
-    pthread_create(&tid[0], NULL, spool_input_directory_thread, (void *) &connector);
-    pthread_create(&tid[1], NULL, spool_output_directory_thread, (void *) &connector);
+    pthread_create(&tid[0], NULL, pipe_read_thread, (void *) &connector);
+    pthread_create(&tid[1], NULL, pipe_write_thread, (void *) &connector);
 
     // pthread_create(&tid[2], NULL, modem_thread, (void *) &connector);
     modem_thread((void *) &connector);

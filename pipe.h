@@ -1,5 +1,5 @@
-/* Rhizo-connector: A connector to different HF modems
- * Copyright (C) 2018 Rhizomatica
+/* Rhizo-uuardop: Tools to integrate Ardop to UUCP
+ * Copyright (C) 2019 Rhizomatica
  * Author: Rafael Diniz <rafael@riseup.net>
  *
  * This is free software; you can redistribute it and/or modify
@@ -20,12 +20,12 @@
  */
 
 /**
- * @file spool.h
+ * @file pipe.h
  * @author Rafael Diniz
- * @date 12 Apr 2018
- * @brief Spool directory routines
+ * @date 10 Jul 2019
+ * @brief Pipe/fifo routines
  *
- * Spool directory routines
+ * Pipe/fifo routines
  *
  */
 
@@ -41,9 +41,8 @@ extern "C" {
 
 #define BUFFER_SIZE 8192
 
-void *spool_output_directory_thread(void *conn);
-void *spool_input_directory_thread(void *conn);
-bool queue_msg_path(char *msg_path, rhizo_conn *connector);
-bool remove_all_msg_path_queue(rhizo_conn *connector);
+void *pipe_read_thread(void *conn);
+void *pipe_write_thread(void *conn);
+void pipe_fucked(int s);
 
 #endif /* HAVE_PIPE__ */

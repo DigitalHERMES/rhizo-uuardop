@@ -1,5 +1,5 @@
-/* Rhizo-connector: A connector to different HF modems
- * Copyright (C) 2018 Rhizomatica
+/* Rhizo-uuardop: Tools to integrate Ardop to UUCP
+ * Copyright (C) 2019 Rhizomatica
  * Author: Rafael Diniz <rafael@riseup.net>
  *
  * This is free software; you can redistribute it and/or modify
@@ -20,7 +20,7 @@
  */
 
 /**
- * @file connector.h
+ * @file uuardopd.c
  * @author Rafael Diniz
  * @date 12 Apr 2018
  * @brief Rhizo HF Connector main header file
@@ -41,7 +41,7 @@
 extern "C" {
 #endif
 
-// 60s
+// 30s
 #define TIMEOUT_DEFAULT 30
 
 typedef struct{
@@ -51,8 +51,8 @@ typedef struct{
     int tcp_base_port;
     char ip_address[32];
     char modem_type[32];
-    char input_directory[1024];
-    char output_directory[1024];
+    char input_pipe[1024];
+    char output_pipe[1024];
     bool ofdm_mode;
     int timeout;
     uint32_t buffer_size;
@@ -70,9 +70,6 @@ typedef struct{
     buffer out_buffer;
     int data_socket;
     int control_socket;
-    pthread_mutex_t msg_path_queue_mutex;
-    char *msg_path_queue[4096];
-    size_t msg_path_queue_size;
 } rhizo_conn;
 
 #ifdef __cplusplus

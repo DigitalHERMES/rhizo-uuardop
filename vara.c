@@ -166,15 +166,6 @@ void *vara_control_worker_thread_rx(void *conn)
                 if (buf_size != 0)
                     connector->timeout_counter = 0;
 
-                // our delete messages mechanism
-                if (buf_size == 0 &&
-                    ring_buffer_count_bytes(&connector->in_buffer.buf) == 0 &&
-                    connector->connected == true){
-
-                    fprintf(stderr, "Messages successfully sent. Erasing messages...\n");
-                    remove_all_msg_path_queue(connector);
-
-                }
             } else
             if (!memcmp(buffer, "PTT", strlen("PTT"))){
                 // supressed output

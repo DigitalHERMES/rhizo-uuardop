@@ -245,15 +245,6 @@ void *ardop_control_worker_thread_rx(void *conn)
                 sscanf( (char *) buffer, "BUFFER %u", & connector->buffer_size);
                 fprintf(stderr, "BUFFER: %u\n", connector->buffer_size);
 
-                // our delete messages mechanism
-                if (connector->buffer_size == 0 &&
-                    ring_buffer_count_bytes(&connector->in_buffer.buf) == 0 &&
-                    connector->connected == true){
-
-                    fprintf(stderr, "Messages successfully sent. Erasing messages...\n");
-                    remove_all_msg_path_queue(connector);
-
-                }
 
             } else
                 if (!memcmp(buffer, "INPUTPEAKS", strlen("INPUTPEAKS"))){
