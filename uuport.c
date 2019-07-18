@@ -45,6 +45,8 @@
 
 #include "uuport.h"
 
+FILE *log_fd;
+
 void *read_thread(void *file_name_v)
 {
     char *file_name = file_name_v;
@@ -58,7 +60,7 @@ void *read_thread(void *file_name_v)
 
     if (input_fd == -1)
     {
-        fprintf(stderr, "read_thread: Error opening: %s\n", file_name);
+        fprintf(log_fd, "read_thread: Error opening: %s\n", file_name);
         return NULL;
     }
 
@@ -74,13 +76,13 @@ void *read_thread(void *file_name_v)
 
         if (bytes_read == -1)
         {
-            fprintf(stderr, "read_thread: read() error! error no: %d\n",errno);
+            fprintf(log_fd, "read_thread: read() error! error no: %d\n",errno);
             running = false;
             continue;
         }
         if (bytes_read == 0)
         {
-            fprintf(stderr, "read_thread: read == 0\n");
+            fprintf(log_fd, "read_thread: read == 0\n");
             continue;
         }
 
@@ -88,13 +90,13 @@ void *read_thread(void *file_name_v)
 
         if (bytes_written != bytes_read)
         {
-            fprintf(stderr, "read_thread: bytes_written: %d != bytes_read: %d.\n", bytes_written, bytes_read);
+            fprintf(log_fd, "read_thread: bytes_written: %d != bytes_read: %d.\n", bytes_written, bytes_read);
             running = false;
             continue;
         }
         if (bytes_written == -1)
         {
-            fprintf(stderr, "read_thread: write() error no: %d\n", errno);
+            fprintf(log_fd, "read_thread: write() error no: %d\n", errno);
             running = false;
             continue;
         }
@@ -118,7 +120,7 @@ void *write_thread(void *file_name_v)
 
     if (output_fd == -1)
     {
-        fprintf(stderr, "write_thread: Error opening: %s\n", file_name);
+        fprintf(log_fd, "write_thread: Error opening: %s\n", file_name);
         return NULL;
     }
 
@@ -128,13 +130,13 @@ void *write_thread(void *file_name_v)
 
         if (bytes_read == -1)
         {
-            fprintf(stderr, "write_thread: Error in write(), errno: %d\n", errno);
+            fprintf(log_fd, "write_thread: Error in write(), errno: %d\n", errno);
             running = false;
             continue;
         }
         if (bytes_read == 0)
         {
-            fprintf(stderr, "write_thread: read() returned 0\n");
+            fprintf(log_fd, "write_thread: read() returned 0\n");
             continue;
         }
 
@@ -144,11 +146,11 @@ void *write_thread(void *file_name_v)
         {
             if (errno == EPIPE)
             {
-                fprintf(stderr, "write_thread: write() EPIPE!\n");
+                fprintf(log_fd, "write_thread: write() EPIPE!\n");
             }
             else
             {
-                fprintf(stderr, "write_thread: write() error no: %d\n", errno);
+                fprintf(log_fd, "write_thread: write() error no: %d\n", errno);
 
             }
             running = false;
@@ -156,7 +158,7 @@ void *write_thread(void *file_name_v)
         }
         if (bytes_written != bytes_read)
         {
-            fprintf(stderr, "write_thread: bytes_written: %d !=  bytes_read: %d\n", bytes_written, bytes_read);
+            fprintf(log_fd, "write_thread: bytes_written: %d !=  bytes_read: %d\n", bytes_written, bytes_read);
         }
     }
 
@@ -164,11 +166,25 @@ void *write_thread(void *file_name_v)
     return NULL;
 }
 
+void finish(int s){
+    fprintf(log_fd, "\nExiting...\n");
+
+    // some house keeping here?
+
+    exit(EXIT_SUCCESS);
+}
+
 
 int main (int argc, char *argv[])
 {
     char input_pipe[BUFFER_SIZE];
     char output_pipe[BUFFER_SIZE];
+    char log_file[BUFFER_SIZE];
+    log_file[0] = 0;
+
+    signal (SIGINT, finish);
+
+    signal(SIGPIPE, SIG_IGN); // ignores SIGPIPE...
 
     fprintf(stderr, "Rhizomatica's uuport version 0.1 by Rafael Diniz -  rafael (AT) rhizomatica (DOT) org\n");
     fprintf(stderr, "License: GPLv3+\n\n");
@@ -176,17 +192,18 @@ int main (int argc, char *argv[])
     if (argc < 4)
     {
     manual:
-        fprintf(stderr, "Usage modes: \n%s -i input_pipe -o output_pipe\n", argv[0]);
+        fprintf(stderr, "Usage modes: \n%s -i input_pipe -o output_pipe -l logfile\n", argv[0]);
         fprintf(stderr, "%s -h\n", argv[0]);
         fprintf(stderr, "\nOptions:\n");
         fprintf(stderr, " -i input_pipe.uucp           Data to be written to uucico.\n");
         fprintf(stderr, " -o output_pipe.uucp          Data read from uucico.\n");
-        fprintf(stderr, " -h                          Prints this help.\n");
+        fprintf(stderr, " -l logfile.txt               Log file (default is stderr).\n");
+        fprintf(stderr, " -h                           Prints this help.\n");
         exit(EXIT_FAILURE);
     }
 
     int opt;
-    while ((opt = getopt(argc, argv, "i:o:h")) != -1)
+    while ((opt = getopt(argc, argv, "i:o:hl:")) != -1)
     {
         switch (opt)
         {
@@ -199,10 +216,29 @@ int main (int argc, char *argv[])
         case 'o':
             strcpy(output_pipe, optarg);
             break;
+        case 'l':
+            strcpy(log_file, optarg);
+            break;
         default:
             goto manual;
         }
     }
+
+    if (log_file[0])
+    {
+        log_fd = fopen(log_file, "a");
+        if (log_fd == NULL)
+        {
+            fprintf(stderr, "Log file could not be opened: %s\n", log_file);
+            fprintf(stderr, "Reverting to stderr log.\n");
+            log_fd = stderr;
+        }
+    }
+    else
+    {
+        log_fd = stderr;
+    }
+
     pthread_t tid;
 
     pthread_create(&tid, NULL, read_thread, (void *) input_pipe);

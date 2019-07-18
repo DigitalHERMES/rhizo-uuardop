@@ -108,12 +108,11 @@ int main (int argc, char *argv[])
 
     initialize_connector(&connector);
 
-    // Catch Ctrl+C
     signal (SIGINT, finish);
 
     // Catch SIGPIPE
-    signal (SIGPIPE, pipe_fucked);
-    // signal(SIGPIPE, SIG_IGN); // ignores SIGPIPE...
+    // signal (SIGPIPE, pipe_fucked);
+    signal(SIGPIPE, SIG_IGN); // ignores SIGPIPE...
 
     fprintf(stderr, "Rhizomatica's uuardopd version 0.1 by Rafael Diniz -  rafael (AT) rhizomatica (DOT) org\n");
     fprintf(stderr, "License: GPLv3+\n\n");
