@@ -20,20 +20,21 @@
  */
 
 /**
- * @file pipe.h
+ * @file uuport.h
  * @author Rafael Diniz
- * @date 10 Jul 2019
- * @brief Pipe/fifo routines
+ * @date 17 Jul 2019
+ * @brief Rhizo-uuardop uucp pipe port command
  *
- * Pipe/fifo routines
+ * UUCP pipe port command
  *
  */
 
-#ifndef HAVE_PIPE_H__
-#define HAVE_PIPE_H__
+#ifndef HAVE_UUPORT_H__
+#define HAVE_UUPORT_H__
 
 #include <stdint.h>
-#include "uuardopd.h"
+#include <stdatomic.h>
+#include <pthread.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,8 +42,8 @@ extern "C" {
 
 #define BUFFER_SIZE 4096
 
-void *pipe_read_thread(void *conn);
-void *pipe_write_thread(void *conn);
-void pipe_fucked(int s);
+#ifdef __cplusplus
+};
+#endif
 
-#endif /* HAVE_PIPE__ */
+#endif /* HAVE_UUPORT_H__ */

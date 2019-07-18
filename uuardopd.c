@@ -137,7 +137,6 @@ int main (int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    char *last;
     int opt;
     while ((opt = getopt(argc, argv, "hr:i:o:c:d:p:a:t:f:")) != -1)
     {
