@@ -120,10 +120,10 @@ int main (int argc, char *argv[])
     if (argc < 7)
     {
     manual:
-        fprintf(stderr, "Usage modes: \n%s -r radio_modem_type -i input_pipe.uucp -o output_pipe.uucp -d remote_callsign -a tnc_ip_address -p tcp_base_port\n", argv[0]);
+        fprintf(stderr, "Usage modes: \n%s -r radio_modem_type -i input_pipe.uucp -o output_pipe.uucp -c callsign -d remote_callsign -a tnc_ip_address -p tcp_base_port\n", argv[0]);
         fprintf(stderr, "%s -h\n", argv[0]);
         fprintf(stderr, "\nOptions:\n");
-        fprintf(stderr, " -r [ardop,dstar,vara]           Choose modem/radio type.\n");
+        fprintf(stderr, " -r [ardop,vara]           Choose modem/radio type.\n");
         fprintf(stderr, " -i input_pipe.uucp          Pipe to be read from uucico.\n");
         fprintf(stderr, " -o output_pipe.uucp         Pipe to be written to uucico.\n");
         fprintf(stderr, " -c callsign                        Station Callsign (Eg: PU2HFF).\n");
