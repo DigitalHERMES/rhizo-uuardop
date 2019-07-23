@@ -62,8 +62,9 @@ typedef struct{
     atomic_bool tcp_ret_ok;
     atomic_bool connected;
     atomic_bool waiting_for_connection;
-    atomic_int timeout_counter;
-    atomic_int safe_state; // this means green light for changing state
+    atomic_bool clean_buffers;
+    atomic_int timeout_counter; // only for VARA
+    atomic_int safe_state; // this means green light for changing state, only for VARA
 
 // private
     buffer in_buffer;

@@ -49,20 +49,28 @@
 
 #include "pipe.h"
 
+uint64_t session_counter_read = 0;
+uint64_t session_counter_write = 0;
+
 void *pipe_read_thread(void *conn)
 {
-    bool running = true;
+    bool running;
     int num_read = 0;
     int bytes_pipe = 0;
     uint8_t buffer[BUFFER_SIZE];
     rhizo_conn *connector = (rhizo_conn *) conn;
-    int input_fd = open(connector->input_pipe, O_RDONLY);
+    int input_fd;
+
+try_again:
+    running = true;
+    fprintf(stderr, "pipe_read_thread_open()\n");
+    input_fd = open(connector->input_pipe, O_RDONLY);
+    fprintf(stderr, "pipe_read_thread_after_open()\n");
 
     if (input_fd == -1)
     {
         fprintf(stderr, "pipe_read_thread: Error opening: %s\n", connector->input_pipe);
-        // should we go-to to before open() call?
-        return NULL;
+        goto try_again;
     }
 
     while (running)
@@ -70,8 +78,8 @@ void *pipe_read_thread(void *conn)
         ioctl(input_fd, FIONREAD, &bytes_pipe);
         if (bytes_pipe > BUFFER_SIZE)
             bytes_pipe = BUFFER_SIZE;
-        if (bytes_pipe == 0)
-            bytes_pipe = 1;
+        if (bytes_pipe <= 0)
+            bytes_pipe = 1; // so we block in read() in case of no data to read
 
         num_read = read(input_fd, buffer, bytes_pipe);
 
@@ -82,6 +90,7 @@ void *pipe_read_thread(void *conn)
         if (num_read == 0)
         {
             fprintf(stderr, "pipe_read_thread: read == 0\n");
+            running = false;
         }
         if (num_read == -1)
         {
@@ -91,31 +100,46 @@ void *pipe_read_thread(void *conn)
     }
 
     close(input_fd);
+    session_counter_read++;
+    connector->clean_buffers = true;
+    goto try_again;
+
     return NULL;
 }
 
 void *pipe_write_thread(void *conn)
 {
-    bool running = true;
+    bool running;
     rhizo_conn *connector = (rhizo_conn *) conn;
     int bytes_to_read = 0;
     int num_written = 0;
     uint8_t buffer[BUFFER_SIZE];
+    int output_fd;
 
-    int output_fd = open(connector->output_pipe, O_WRONLY);
+try_again:
+    running = true;
+    fprintf(stderr, "pipe_write_thread_open()\n");
+    output_fd = open(connector->output_pipe, O_WRONLY);
+    fprintf(stderr, "pipe_write_thread_after_open()\n");
 
     if (output_fd == -1)
     {
         fprintf(stderr, "pipe_write_thread: Error opening: %s\n", connector->input_pipe);
-        // should we go-to to before open() call?
-        return NULL;
+        goto try_again;
+        // return NULL;
     }
 
     while (running)
     {
         bytes_to_read = ring_buffer_count_bytes(&connector->out_buffer.buf);
         if (bytes_to_read == 0)
-            bytes_to_read = 1; // we lock when there is no data...
+        { // we spinlock here
+            usleep(100000); // 0.1s
+            if (session_counter_read > session_counter_write)
+                running = false;
+            continue;
+        }
+
         if (bytes_to_read > BUFFER_SIZE)
             bytes_to_read = BUFFER_SIZE;
 
@@ -142,6 +166,8 @@ void *pipe_write_thread(void *conn)
     }
 
     close(output_fd);
+    session_counter_write++;
+    goto try_again;
 
     return NULL;
 }

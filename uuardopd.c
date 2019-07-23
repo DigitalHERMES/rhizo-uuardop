@@ -117,6 +117,9 @@ int main (int argc, char *argv[])
     fprintf(stderr, "Rhizomatica's uuardopd version 0.1 by Rafael Diniz -  rafael (AT) rhizomatica (DOT) org\n");
     fprintf(stderr, "License: GPLv3+\n\n");
 
+    connector.ofdm_mode = true;
+    connector.clean_buffers = false;
+
     if (argc < 7)
     {
     manual:

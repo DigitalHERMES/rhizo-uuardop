@@ -56,18 +56,15 @@ void *ardop_data_worker_thread_tx(void *conn)
 
     while(running){
 
-        connector->safe_state++;
         // check if we are connected, otherwise, wait
         while (connector->connected == false || ring_buffer_count_bytes(&connector->in_buffer.buf) == 0){
             if (running == false){
-                connector->safe_state--;
                 goto exit_local;
             }
             sleep(1);
         }
-        connector->safe_state--;
 
-        // read header
+        // read header - can be blocking... TODO: 
         read_buffer(&connector->in_buffer, (uint8_t *) &buf_size, sizeof(buf_size)); // TODO: if the two parties in a connection have different endianess, we are in trouble
 
         // fprintf(stderr, "ardop_data_worker_thread_tx: Tx msg size: %u\n", buf_size);
@@ -151,10 +148,8 @@ void *ardop_data_worker_thread_rx(void *conn)
 
     while(connector->tcp_ret_ok){
 
-        connector->safe_state++;
         while (connector->connected == false){
             if (connector->tcp_ret_ok == false){
-                connector->safe_state--;
                 goto exit_local;
             }
             sleep(1);
@@ -163,7 +158,6 @@ void *ardop_data_worker_thread_rx(void *conn)
         // fprintf(stderr,"Before tcp_read.\n");
         ardop_size[0] = 0; ardop_size[1] = 0;
         tcp_read(connector->data_socket, ardop_size, 2);
-        connector->safe_state--;
 
 //        connector->timeout_counter = 0;
 
@@ -235,6 +229,10 @@ void *ardop_control_worker_thread_rx(void *conn)
             if (!memcmp(buffer, "CONNECTED", strlen("CONNECTED"))){
                 fprintf(stderr, "TNC: %s\n", buffer);
                 connector->connected = true;
+                if (connector->waiting_for_connection == true)
+                { // if we are receiving a connection... call uucico?
+                    // TODO
+                }
                 connector->waiting_for_connection = false;
             } else
             if (!memcmp(buffer, "PTT", strlen("PTT"))){
@@ -309,32 +307,18 @@ void *ardop_control_worker_thread_tx(void *conn)
             sprintf(buffer,"ARQCALL %s 5\r", connector->remote_call_sign);
             tcp_write(connector->control_socket, (uint8_t *)buffer, strlen(buffer));
 
-            fprintf(stderr, "CONNECTING... %s\n", buffer);
-
+//            fprintf(stderr, "CONNECTING... %s\n", buffer);
             connector->waiting_for_connection = true;
         }
 
-#if 0 // disabled for good
-        // Logic to disconnect on timeout
-        if (connector->timeout_counter >= connector->timeout &&
-            connector->connected == true){
-
-            // SET listen to FALSE here...
-
-            connector->connected = false;
-
-            while (connector->safe_state != 2){ // this means we have both data threads in the safe zone
-                // spin wait
-                sched_yield();
-            }
-            fprintf(stderr, "DISCONNECTING BY TIMEOUT...\n");
-
-            memset(buffer,0,sizeof(buffer));
-            sprintf(buffer,"DISCONNECT\r");
-            tcp_write(connector->control_socket, (uint8_t *)buffer, strlen(buffer));
-
+        if (connector->clean_buffers == true)
+        {
+            fprintf(stderr, "Connection closed - Cleaning internal buffers.\n");
+            connector->clean_buffers = false;
+            ring_buffer_clear (&connector->in_buffer.buf);
+            ring_buffer_clear (&connector->out_buffer.buf);
+            // clean up the buffers so we prevent data in the buffer which keeps trying to connect... and send DISCONNECT
         }
-#endif
 
 #if 0 // for debugging purposes
         // just calling buffer to help us...
