@@ -31,7 +31,7 @@ OBJS=$(SRCS:.c=.o)
 %.o : %.c %.h
 	gcc -c $(CFLAGS) $< -o $@
 
-uuardopd: ardop.o buffer.o common.o net.o pipe.o ring_buffer.o uuardopd.o vara.o
+uuardopd: ardop.o buffer.o common.o net.o pipe.o ring_buffer.o uuardopd.o vara.o call_uucico.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 install: uuardopd uuport

@@ -1,5 +1,5 @@
-/* Rhizo-connector: A connector to different HF modems
- * Copyright (C) 2018 Rhizomatica
+/* Rhizo-uuardop: Tools to integrate Ardop to UUCP
+ * Copyright (C) 2019 Rhizomatica
  * Author: Rafael Diniz <rafael@riseup.net>
  *
  * This is free software; you can redistribute it and/or modify
@@ -44,6 +44,7 @@
 #include "ardop.h"
 #include "pipe.h"
 #include "net.h"
+#include "call_uucico.h"
 
 void *ardop_data_worker_thread_tx(void *conn)
 {
@@ -159,8 +160,6 @@ void *ardop_data_worker_thread_rx(void *conn)
         ardop_size[0] = 0; ardop_size[1] = 0;
         tcp_read(connector->data_socket, ardop_size, 2);
 
-//        connector->timeout_counter = 0;
-
         // ARDOP TNC data format: length 2 bytes | payload
         buf_size = 0;
         buf_size = ardop_size[0];
@@ -229,9 +228,11 @@ void *ardop_control_worker_thread_rx(void *conn)
             if (!memcmp(buffer, "CONNECTED", strlen("CONNECTED"))){
                 fprintf(stderr, "TNC: %s\n", buffer);
                 connector->connected = true;
-                if (connector->waiting_for_connection == true)
-                { // if we are receiving a connection... call uucico?
-                    // TODO
+                if (connector->waiting_for_connection == false)
+                { // we are receiving a connection... call uucico!
+                    bool retval = call_uucico(connector);
+                    if (retval == false)
+                        fprintf(stderr, "Error calling call_uucico()\n");
                 }
                 connector->waiting_for_connection = false;
             } else

@@ -132,7 +132,7 @@ int main (int argc, char *argv[])
         fprintf(stderr, " -c callsign                        Station Callsign (Eg: PU2HFF).\n");
         fprintf(stderr, " -d remote_callsign           Remote Station Callsign.\n");
         fprintf(stderr, " -a tnc_ip_address            IP address of the TNC,\n");
-        fprintf(stderr, " -p tcp_base_port              TCP base port of the TNC. For VARA and ARDOP ports tcp_base_port and tcp_base_port+1 are used,\n");
+        fprintf(stderr, " -p tnc_tcp_base_port         TNC's TCP base port of the TNC. For VARA and ARDOP ports tcp_base_port and tcp_base_port+1 are used,\n");
         fprintf(stderr, " -t timeout                 Time to wait before disconnect when idling.\n");
         fprintf(stderr, " -f features                Enable/Disable features. Supported features: ofdm, noofdm.\n");
         fprintf(stderr, " -h                          Prints this help.\n");

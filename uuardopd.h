@@ -34,6 +34,7 @@
 
 #include <stdint.h>
 #include <stdatomic.h>
+#include <stdbool.h>
 #include <pthread.h>
 #include "buffer.h"
 
