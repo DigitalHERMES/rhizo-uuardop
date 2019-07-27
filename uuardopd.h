@@ -45,6 +45,8 @@ extern "C" {
 // 30s
 #define TIMEOUT_DEFAULT 30
 
+#define BUFFER_SIZE 4096
+
 typedef struct{
 // modem related data
     char call_sign[32];
@@ -76,8 +78,8 @@ typedef struct{
     atomic_int timeout_counter; // only for VARA
     atomic_int safe_state; // this means green light for changing state, only for VARA
 
-    uint64_t session_counter_read = 0;
-    uint64_t session_counter_write = 0;
+    uint64_t session_counter_read;
+    uint64_t session_counter_write;
 
 // uuardopd private buffers
     buffer in_buffer;

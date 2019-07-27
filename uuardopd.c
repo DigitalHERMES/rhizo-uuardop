@@ -119,6 +119,8 @@ int main (int argc, char *argv[])
 
     connector.ofdm_mode = true;
     connector.clean_buffers = false;
+    connector.session_counter_read = 0;
+    connector.session_counter_write = 0;
 
     if (argc < 7)
     {

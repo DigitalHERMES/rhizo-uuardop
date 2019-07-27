@@ -39,8 +39,6 @@
 extern "C" {
 #endif
 
-#define BUFFER_SIZE 4096
-
 void *pipe_read_thread(void *conn);
 void *pipe_write_thread(void *conn);
 void pipe_fucked(int s);

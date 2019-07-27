@@ -30,12 +30,26 @@
  *
  */
 
-#include "call_uucico.h"
-
+#include <sys/ioctl.h>
+#include <stdint.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <unistd.h>
+#include <signal.h>
+#include <poll.h>
 #include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
+#include <sys/inotify.h>
+#include <libgen.h>
+#include <errno.h>
+#include <fcntl.h>
 #include <sys/wait.h>
 #include <grp.h>
-#include <unistd.h>
+
+#include "call_uucico.h"
 
 bool call_uucico(rhizo_conn *connector){
     pid_t pid;
@@ -66,8 +80,8 @@ bool call_uucico(rhizo_conn *connector){
             return false;
         }
 
-        close(pipefd1[0]);
-        close(pipefd2[1]);
+        close(connector->pipefd1[0]);
+        close(connector->pipefd2[1]);
 
         // pthread_create the two threads which does the job of reading / writing from/to buffers and fds...
 
@@ -78,8 +92,8 @@ bool call_uucico(rhizo_conn *connector){
             // we should disconnect here!
         }
 
-        close(pipefd1[1]);
-        close(pipefd2[0]);
+        close(connector->pipefd1[1]);
+        close(connector->pipefd2[0]);
 
         pthread_join(tid1, NULL);
         pthread_join(tid2, NULL);
@@ -92,14 +106,14 @@ bool call_uucico(rhizo_conn *connector){
     close(1);
     close(2);
 
-    dup2(pipefd1[0], 0);
-    dup2(pipefd2[1], 1);
-    dup2(pipefd2[1], 2); // is this correct?
+    dup2(connector->pipefd1[0], 0);
+    dup2(connector->pipefd2[1], 1);
+    dup2(connector->pipefd2[1], 2); // is this correct?
 
-    close(pipefd1[0]);
-    close(pipefd2[1]);
-    close(pipefd1[1]); // closing write pipefd1 (child reads from parent)
-    close(pipefd2[0]); // closing read pipefd2 (child writes to parent)
+    close(connector->pipefd1[0]);
+    close(connector->pipefd2[1]);
+    close(connector->pipefd1[1]); // closing write pipefd1 (child reads from parent)
+    close(connector->pipefd2[0]); // closing read pipefd2 (child writes to parent)
 
     char pwd[] = "/var/spool/uucp"; // uucp home
     if (chdir(pwd) != 0) {
@@ -147,7 +161,7 @@ void *uucico_read_thread(void *conn)
 
     while(running)
     {
-        ioctl(input_fd, FIONREAD, &bytes_pipe);
+        ioctl(connector->pipefd2[0], FIONREAD, &bytes_pipe);
         if (bytes_pipe > BUFFER_SIZE)
             bytes_pipe = BUFFER_SIZE;
         if (bytes_pipe <= 0)
