@@ -46,17 +46,26 @@ extern "C" {
 #define TIMEOUT_DEFAULT 30
 
 typedef struct{
-// public
+// modem related data
     char call_sign[32];
     char remote_call_sign[32];
     int tcp_base_port;
     char ip_address[32];
     char modem_type[32];
-    char input_pipe[1024];
-    char output_pipe[1024];
     bool ofdm_mode;
     int timeout;
+    int data_socket;
+    int control_socket;
+
+// uuport pipe filenames (calling)
+    char input_pipe[1024];
+    char output_pipe[1024];
+
     uint32_t buffer_size;
+
+// pipes fd which are used to talk to uucico (receiving a call)
+    int pipefd1[2];
+    int pipefd2[2];
 
 // state variables
 // C11 atomic is used here instead of a more pedantic code with mutexes and so on... 
@@ -67,11 +76,12 @@ typedef struct{
     atomic_int timeout_counter; // only for VARA
     atomic_int safe_state; // this means green light for changing state, only for VARA
 
-// private
+    uint64_t session_counter_read = 0;
+    uint64_t session_counter_write = 0;
+
+// uuardopd private buffers
     buffer in_buffer;
     buffer out_buffer;
-    int data_socket;
-    int control_socket;
 } rhizo_conn;
 
 #ifdef __cplusplus

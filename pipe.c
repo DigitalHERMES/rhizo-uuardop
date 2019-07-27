@@ -49,9 +49,6 @@
 
 #include "pipe.h"
 
-uint64_t session_counter_read = 0;
-uint64_t session_counter_write = 0;
-
 void *pipe_read_thread(void *conn)
 {
     bool running;
@@ -100,7 +97,7 @@ try_again:
     }
 
     close(input_fd);
-    session_counter_read++;
+    connector->session_counter_read++;
     connector->clean_buffers = true;
     goto try_again;
 
@@ -135,7 +132,7 @@ try_again:
         if (bytes_to_read == 0)
         { // we spinlock here
             usleep(100000); // 0.1s
-            if (session_counter_read > session_counter_write)
+            if (connector->session_counter_read > connector->session_counter_write)
                 running = false;
             continue;
         }
@@ -160,13 +157,12 @@ try_again:
             else
             {
                 fprintf(stderr, "pipe_write_thread: write() error no: %d\n", errno);
-
             }
         }
     }
 
     close(output_fd);
-    session_counter_write++;
+    connector->session_counter_write++;
     goto try_again;
 
     return NULL;

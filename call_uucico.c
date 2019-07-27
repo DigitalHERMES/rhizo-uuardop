@@ -35,6 +35,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <grp.h>
+#include <unistd.h>
 
 bool call_uucico(rhizo_conn *connector){
     pid_t pid;
@@ -46,24 +47,60 @@ bool call_uucico(rhizo_conn *connector){
     // in the child, remap the fds to 0, 1 (and 2?) 
     // in the child, call execl() (or execlp() (uucico -l)
 
+    // parent write to child
+    pipe(connector->pipefd1); // pipe[0] is read, pipe[1] is write
+    // child write to parent
+    pipe(connector->pipefd2);
+
+    pthread_t tid1;
+    pthread_create(&tid1, NULL, uucico_read_thread, (void *) connector);
+
+    pthread_t tid2;
+    pthread_create(&tid2, NULL, uucico_write_thread, (void *) connector);
+
     // parent
     if ((pid = fork()) != 0)
     {
         if (pid < 0) {
-            /* FIXME: SCREAM (oh well..) */
+            fprintf(stderr, "fork() error.\n");
             return false;
         }
+
+        close(pipefd1[0]);
+        close(pipefd2[1]);
+
+        // pthread_create the two threads which does the job of reading / writing from/to buffers and fds...
+
         while(wait(&st) != pid);
         if ( WIFEXITED(st) ){
             fprintf(stderr, "uucico child exec exited with status = %d\n", WEXITSTATUS(st));
             // uucico ended!
             // we should disconnect here!
         }
+
+        close(pipefd1[1]);
+        close(pipefd2[0]);
+
+        pthread_join(tid1, NULL);
+        pthread_join(tid2, NULL);
+
         return true;
     }
 
-    // this is the child
-    signal(SIGHUP, SIG_DFL);
+    // this is the child (uucico)
+    close(0);
+    close(1);
+    close(2);
+
+    dup2(pipefd1[0], 0);
+    dup2(pipefd2[1], 1);
+    dup2(pipefd2[1], 2); // is this correct?
+
+    close(pipefd1[0]);
+    close(pipefd2[1]);
+    close(pipefd1[1]); // closing write pipefd1 (child reads from parent)
+    close(pipefd2[0]); // closing read pipefd2 (child writes to parent)
+
     char pwd[] = "/var/spool/uucp"; // uucp home
     if (chdir(pwd) != 0) {
         perror(pwd);
@@ -100,13 +137,90 @@ bool call_uucico(rhizo_conn *connector){
     return true;
 }
 
-void *uucico_read_thread(void *conn) {
+void *uucico_read_thread(void *conn)
+{
+    bool running;
     rhizo_conn *connector = (rhizo_conn *) conn;
+    int num_read = 0;
+    int bytes_pipe = 0;
+    uint8_t buffer[BUFFER_SIZE];
 
+    while(running)
+    {
+        ioctl(input_fd, FIONREAD, &bytes_pipe);
+        if (bytes_pipe > BUFFER_SIZE)
+            bytes_pipe = BUFFER_SIZE;
+        if (bytes_pipe <= 0)
+            bytes_pipe = 1; // so we block in read() in case of no data to read
+
+        num_read = read(connector->pipefd2[0], buffer, bytes_pipe);
+
+        if (num_read > 0)
+        {
+            write_buffer(&connector->in_buffer, buffer, num_read);
+        }
+        if (num_read == 0)
+        {
+            fprintf(stderr, "uucico_read_thread: read == 0\n");
+            running = false;
+        }
+        if (num_read == -1)
+        {
+            fprintf(stderr, "uucico_read_thread: read() error! error no: %d\n",errno);
+            running = false;
+        }
+    }
+
+    connector->session_counter_read++;
+
+    return NULL;
 }
 
 
 void *uucico_write_thread(void *conn) {
+    bool running;
     rhizo_conn *connector = (rhizo_conn *) conn;
+    int bytes_to_read = 0;
+    int num_written = 0;
+    uint8_t buffer[BUFFER_SIZE];
 
+    while (running)
+    {
+        bytes_to_read = ring_buffer_count_bytes(&connector->out_buffer.buf);
+        if (bytes_to_read == 0)
+        { // we spinlock here
+            usleep(100000); // 0.1s
+            if (connector->session_counter_read > connector->session_counter_write)
+                running = false;
+            continue;
+        }
+
+        if (bytes_to_read > BUFFER_SIZE)
+            bytes_to_read = BUFFER_SIZE;
+
+        read_buffer(&connector->out_buffer, buffer, bytes_to_read);
+
+        num_written = write(connector->pipefd1[1], buffer, bytes_to_read);
+        if (num_written == 0)
+        {
+            fprintf(stderr, "pipe_write_thread: write == 0\n");
+            running = false;
+        }
+        if (num_written == -1)
+        {
+            running = false;
+            if (errno == EPIPE)
+            {
+                fprintf(stderr, "uucico_write_thread: write() EPIPE!\n");
+            }
+            else
+            {
+                fprintf(stderr, "uucico_write_thread: write() error no: %d\n", errno);
+            }
+        }
+    }
+
+    connector->session_counter_write++;
+
+    return NULL;
 }

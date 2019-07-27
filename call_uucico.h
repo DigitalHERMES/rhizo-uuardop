@@ -40,5 +40,7 @@ extern "C" {
 #endif
 
 bool call_uucico(rhizo_conn *connector);
+void *uucico_read_thread(void *conn);
+void *uucico_write_thread(void *conn);
 
 #endif /* HAVE_CALL_UUCICO__ */
