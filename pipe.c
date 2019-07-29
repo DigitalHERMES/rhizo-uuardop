@@ -62,7 +62,6 @@ try_again:
     running = true;
     fprintf(stderr, "connector->session_counter_read: %d\n", connector->session_counter_read);
     input_fd = open(connector->input_pipe, O_RDONLY);
-    fprintf(stderr, "pipe_read_thread - After_open()\n");
 
     if (input_fd == -1)
     {
@@ -72,17 +71,14 @@ try_again:
 
     while (running)
     {
+        // TODO: block until there is data available...
         ioctl(input_fd, FIONREAD, &bytes_pipe);
         if (bytes_pipe > BUFFER_SIZE)
             bytes_pipe = BUFFER_SIZE;
         if (bytes_pipe <= 0)
             bytes_pipe = 1; // so we block in read() in case of no data to read
 
-        fprintf(stderr, "Before read in pipe_read_thread()\n");
-
         num_read = read(input_fd, buffer, bytes_pipe);
-
-        fprintf(stderr, "After read in pipe_read_thread()- num_read: %d - value:%u\n", num_read, buffer[0]);
 
         if (num_read > 0)
         {
@@ -93,8 +89,9 @@ try_again:
         {
             fprintf(stderr, "pipe_read_thread: read == 0\n");
             // should we check errorno??
+            running = false;
             continue;
-//            running = false;
+
         }
         if (num_read == -1)
         {
@@ -110,8 +107,7 @@ try_again:
     while(connector->session_counter_read > connector->session_counter_write)
         usleep(100000); // 0.1s
 
-    // should not we wait ardop to transmit all the data??
-    usleep(2000000); // 2.0s
+    usleep(2000000); // 2.0s // just to keep things cool
 
     connector->clean_buffers = true;
     goto try_again;
@@ -132,7 +128,6 @@ try_again:
     running = true;
     fprintf(stderr, "connector->session_counter_write: %d\n", connector->session_counter_write);
     output_fd = open(connector->output_pipe, O_WRONLY);
-    fprintf(stderr, "Pipe_write_thread - After_open()\n");
 
     if (output_fd == -1)
     {
@@ -179,7 +174,7 @@ try_again:
     close(output_fd);
     connector->session_counter_write++;
 
-    usleep(2000000); // 2.0s
+    usleep(2000000); // 2.0s // to cool down
 
     goto try_again;
 
