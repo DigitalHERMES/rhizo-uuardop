@@ -60,7 +60,7 @@ void *pipe_read_thread(void *conn)
 
 try_again:
     running = true;
-    fprintf(stderr, "pipe_read_thread_open()\n");
+//    fprintf(stderr, "pipe_read_thread_open()\n");
     input_fd = open(connector->input_pipe, O_RDONLY);
     fprintf(stderr, "pipe_read_thread_after_open()\n");
 
@@ -115,7 +115,7 @@ void *pipe_write_thread(void *conn)
 
 try_again:
     running = true;
-    fprintf(stderr, "pipe_write_thread_open()\n");
+//    fprintf(stderr, "pipe_write_thread_open()\n");
     output_fd = open(connector->output_pipe, O_WRONLY);
     fprintf(stderr, "pipe_write_thread_after_open()\n");
 
@@ -169,10 +169,10 @@ try_again:
 }
 
 void pipe_fucked(int s){
-    fprintf(stderr, "\nPipe fucked!\n");
+    fprintf(stderr, "\nPipe fucked! We received a SIGPIPE!\n");
 
+    // sweeet. should we do something here?
     // TODO: close the pipes here?
-
     // exit(EXIT_SUCCESS);
     return;
 }
