@@ -46,12 +46,13 @@
 #include "uuport.h"
 
 FILE *log_fd;
+bool running_read;
+bool running_write;
 
 void *read_thread(void *file_name_v)
 {
     char *file_name = file_name_v;
     uint8_t buffer[BUFFER_SIZE];
-    bool running = true;
     int bytes_pipe = 0;
     int bytes_read = 0;
     int bytes_written = 0;
@@ -66,7 +67,8 @@ void *read_thread(void *file_name_v)
         return NULL;
     }
 
-    while (running)
+    running_read = true;
+    while (running_read)
     {
         ioctl(input_fd, FIONREAD, &bytes_pipe);
         if (bytes_pipe > BUFFER_SIZE)
@@ -79,13 +81,13 @@ void *read_thread(void *file_name_v)
         if (bytes_read == -1)
         {
             fprintf(log_fd, "read_thread: read() error! error no: %d\n",errno);
-            running = false;
+            running_read = false;
             continue;
         }
         if (bytes_read == 0)
         {
             fprintf(log_fd, "read_thread: read == 0\n");
-            running = false;
+            running_read = false;
             continue;
         }
 
@@ -97,13 +99,13 @@ void *read_thread(void *file_name_v)
         if (bytes_written != bytes_read)
         {
             fprintf(log_fd, "read_thread: bytes_written: %d != bytes_read: %d.\n", bytes_written, bytes_read);
-            running = false;
+            running_read = false;
             continue;
         }
         if (bytes_written == -1)
         {
             fprintf(log_fd, "read_thread: write() error no: %d\n", errno);
-            running = false;
+            running_read = false;
             continue;
         }
 
@@ -118,7 +120,6 @@ void *write_thread(void *file_name_v)
 {
     char *file_name = file_name_v;
     uint8_t buffer[BUFFER_SIZE];
-    bool running = true;
     int bytes_read = 0;
     int bytes_written = 0;
 
@@ -132,7 +133,8 @@ void *write_thread(void *file_name_v)
         return NULL;
     }
 
-    while(running)
+    running_write = true;
+    while(running_write)
     {
         bytes_read = read(0, buffer, BUFFER_SIZE);
 
@@ -141,7 +143,7 @@ void *write_thread(void *file_name_v)
         if (bytes_read == -1)
         {
             fprintf(log_fd, "write_thread: Error in write(), errno: %d\n", errno);
-            running = false;
+            running_write = false;
             continue;
         }
         if (bytes_read == 0)
@@ -163,7 +165,7 @@ void *write_thread(void *file_name_v)
                 fprintf(log_fd, "write_thread: write() error no: %d\n", errno);
 
             }
-            running = false;
+            running_write = false;
             continue;
         }
         if (bytes_written != bytes_read)
@@ -188,8 +190,12 @@ void finish(int s){
         fprintf(log_fd, "\nSIGQUIT: Exiting.\n");
 
     if (s == SIGHUP)
-        fprintf(log_fd, "\nSIGHUP: Exiting.\n");
-
+    {
+        fprintf(log_fd, "\nSIGHUP: running shutdown...\n");
+        running_write = false;
+        running_read = false;
+        return;
+    }
     if (s == SIGPIPE)
         fprintf(log_fd, "\nSIGPIPE: Exiting\n");
 

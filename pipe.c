@@ -60,9 +60,9 @@ void *pipe_read_thread(void *conn)
 
 try_again:
     running = true;
-    fprintf(stderr, "pipe_read_thread_open()\n");
+    fprintf(stderr, "connector->session_counter_read: %d\n", connector->session_counter_read);
     input_fd = open(connector->input_pipe, O_RDONLY);
-    fprintf(stderr, "pipe_read_thread_after_open()\n");
+    fprintf(stderr, "pipe_read_thread - After_open()\n");
 
     if (input_fd == -1)
     {
@@ -87,16 +87,20 @@ try_again:
         if (num_read > 0)
         {
             write_buffer(&connector->in_buffer, buffer, num_read);
+            continue;
         }
         if (num_read == 0)
         {
             fprintf(stderr, "pipe_read_thread: read == 0\n");
-            running = false;
+            // should we check errorno??
+            continue;
+//            running = false;
         }
         if (num_read == -1)
         {
             fprintf(stderr, "pipe_read_thread: read() error! error no: %d\n",errno);
             running = false;
+            continue;
         }
     }
 
@@ -106,9 +110,10 @@ try_again:
     while(connector->session_counter_read > connector->session_counter_write)
         usleep(100000); // 0.1s
 
-    connector->clean_buffers = true;
-
+    // should not we wait ardop to transmit all the data??
     usleep(2000000); // 2.0s
+
+    connector->clean_buffers = true;
     goto try_again;
 
     return NULL;
@@ -125,9 +130,9 @@ void *pipe_write_thread(void *conn)
 
 try_again:
     running = true;
-    fprintf(stderr, "pipe_write_thread_open()\n");
+    fprintf(stderr, "connector->session_counter_write: %d\n", connector->session_counter_write);
     output_fd = open(connector->output_pipe, O_WRONLY);
-    fprintf(stderr, "pipe_write_thread_after_open()\n");
+    fprintf(stderr, "Pipe_write_thread - After_open()\n");
 
     if (output_fd == -1)
     {
