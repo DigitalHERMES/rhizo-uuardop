@@ -108,6 +108,7 @@ try_again:
 
     connector->clean_buffers = true;
 
+    usleep(2000000); // 2.0s
     goto try_again;
 
     return NULL;
@@ -172,6 +173,9 @@ try_again:
 
     close(output_fd);
     connector->session_counter_write++;
+
+    usleep(2000000); // 2.0s
+
     goto try_again;
 
     return NULL;
