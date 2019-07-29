@@ -78,8 +78,8 @@ typedef struct{
     atomic_int timeout_counter; // only for VARA
     atomic_int safe_state; // this means green light for changing state, only for VARA
 
-    uint64_t session_counter_read;
-    uint64_t session_counter_write;
+    atomic_int session_counter_read;
+    atomic_int session_counter_write;
 
 // uuardopd private buffers
     buffer in_buffer;

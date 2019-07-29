@@ -95,6 +95,8 @@ bool call_uucico(rhizo_conn *connector){
         close(connector->pipefd1[1]);
         close(connector->pipefd2[0]);
 
+        connector->clean_buffers = true;
+
         pthread_join(tid1, NULL);
         pthread_join(tid2, NULL);
 
@@ -147,13 +149,13 @@ bool call_uucico(rhizo_conn *connector){
     execl(shell, shell, "-l", NULL);
     perror(shell);
 
-
+    _exit(EXIT_SUCCESS);
     return true;
 }
 
 void *uucico_read_thread(void *conn)
 {
-    bool running;
+    bool running = true;
     rhizo_conn *connector = (rhizo_conn *) conn;
     int num_read = 0;
     int bytes_pipe = 0;
@@ -162,13 +164,16 @@ void *uucico_read_thread(void *conn)
     while(running)
     {
         ioctl(connector->pipefd2[0], FIONREAD, &bytes_pipe);
+//        fprintf(stderr, "trying to read from uucico %d bytes!\n", bytes_pipe);
+
         if (bytes_pipe > BUFFER_SIZE)
             bytes_pipe = BUFFER_SIZE;
         if (bytes_pipe <= 0)
             bytes_pipe = 1; // so we block in read() in case of no data to read
 
         num_read = read(connector->pipefd2[0], buffer, bytes_pipe);
-
+//        fprintf(stderr, "%c%c%c%c%c%c%c\n", buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], 
+//                buffer[5], buffer[6]);
         if (num_read > 0)
         {
             write_buffer(&connector->in_buffer, buffer, num_read);
@@ -192,7 +197,7 @@ void *uucico_read_thread(void *conn)
 
 
 void *uucico_write_thread(void *conn) {
-    bool running;
+    bool running = true;
     rhizo_conn *connector = (rhizo_conn *) conn;
     int bytes_to_read = 0;
     int num_written = 0;

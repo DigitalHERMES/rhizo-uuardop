@@ -65,7 +65,8 @@ void *ardop_data_worker_thread_tx(void *conn)
             sleep(1);
         }
 
-        // read header - can be blocking... TODO: 
+        // read header - can be blocking... TODO:
+        fprintf(stderr, "ardop_data_worker_thread_tx: sizeof: %u\n", buf_size);
         read_buffer(&connector->in_buffer, (uint8_t *) &buf_size, sizeof(buf_size)); // TODO: if the two parties in a connection have different endianess, we are in trouble
 
         // fprintf(stderr, "ardop_data_worker_thread_tx: Tx msg size: %u\n", buf_size);

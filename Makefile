@@ -21,7 +21,7 @@
 
 PREFIX=/usr
 CC=gcc
-CFLAGS=-g -Wall -std=gnu11 -pthread -D_FORTIFY_SOURCE=2 -fstack-protector-strong
+CFLAGS=-g -Wall -std=gnu11 -pthread
 
 all: uuardopd uuport
 
