@@ -95,10 +95,11 @@ bool call_uucico(rhizo_conn *connector){
         close(connector->pipefd1[1]);
         close(connector->pipefd2[0]);
 
-        connector->clean_buffers = true;
-
         pthread_join(tid1, NULL);
         pthread_join(tid2, NULL);
+
+        usleep(2000000); // 2s for the system to cool down
+        connector->clean_buffers = true;
 
         return true;
     }

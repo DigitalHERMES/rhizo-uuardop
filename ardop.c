@@ -300,9 +300,16 @@ void *ardop_control_worker_thread_tx(void *conn)
         {
             fprintf(stderr, "Connection closed - Cleaning internal buffers.\n");
             connector->clean_buffers = false;
+
+            memset(buffer,0,sizeof(buffer));
+            sprintf(buffer,"DISCONNECT\r");
+            tcp_write(connector->control_socket, (uint8_t *)buffer, strlen(buffer));
+
+            while (connector->connected == true)
+                usleep(100000);
+
             ring_buffer_clear (&connector->in_buffer.buf);
             ring_buffer_clear (&connector->out_buffer.buf);
-            // clean up the buffers so we prevent data in the buffer which keeps trying to connect... and send DISCONNECT
         }
 
 #if 0 // for debugging purposes
