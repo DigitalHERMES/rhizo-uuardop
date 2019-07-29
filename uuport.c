@@ -83,6 +83,7 @@ void *read_thread(void *file_name_v)
         if (bytes_read == 0)
         {
             fprintf(log_fd, "read_thread: read == 0\n");
+            running = false;
             continue;
         }
 

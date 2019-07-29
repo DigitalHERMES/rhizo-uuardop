@@ -78,7 +78,11 @@ try_again:
         if (bytes_pipe <= 0)
             bytes_pipe = 1; // so we block in read() in case of no data to read
 
+        fprintf(stderr, "Before read in pipe_read_thread()\n");
+
         num_read = read(input_fd, buffer, bytes_pipe);
+
+        fprintf(stderr, "After read in pipe_read_thread()num_read: %d\n", num_read);
 
         // for debug purposes...
         // write(2, buffer, num_read);
