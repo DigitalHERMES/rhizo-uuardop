@@ -53,10 +53,14 @@
 
 bool call_uucico(rhizo_conn *connector){
 
+    fprintf(stderr, "call_uucico: Sending signal to start uucico!\n");
+
     if (pthread_mutex_lock(&connector->uucico_mutex) != 0) {
         perror("pthread_mutex_lock() error");
         return false;
     }
+
+    fprintf(stderr, "Sending UUCICO signal!\n");
 
     if (pthread_cond_signal(&connector->uucico_cond) != 0) {
         perror("pthread_cond_signal() error");
@@ -85,10 +89,13 @@ void *uucico_thread(void *conn){
             perror("pthread_mutex_lock() error");
             return NULL;
         }
+        fprintf(stderr, "uucico_thread: before cond_wait\n");
         if (pthread_cond_wait(&connector->uucico_cond, &connector->uucico_mutex) != 0) {
             perror("pthread_cond_wait() error");
             return NULL;
         }
+
+        fprintf(stderr, "uucico_thread: after cond_wait\n");
 
         // parent write to child
         pipe(connector->pipefd1); // pipe[0] is read, pipe[1] is write
