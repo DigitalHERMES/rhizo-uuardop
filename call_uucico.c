@@ -172,8 +172,7 @@ void *uucico_read_thread(void *conn)
             bytes_pipe = 1; // so we block in read() in case of no data to read
 
         num_read = read(connector->pipefd2[0], buffer, bytes_pipe);
-//        fprintf(stderr, "%c%c%c%c%c%c%c\n", buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], 
-//                buffer[5], buffer[6]);
+
         if (num_read > 0)
         {
             write_buffer(&connector->in_buffer, buffer, num_read);

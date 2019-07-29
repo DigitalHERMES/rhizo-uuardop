@@ -84,11 +84,6 @@ try_again:
 
         fprintf(stderr, "After read in pipe_read_thread()- num_read: %d - value:%u\n", num_read, buffer[0]);
 
-        // for debug purposes...
-        // write(2, buffer, num_read);
-        for (int nrd = 0; nrd < num_read; nrd++)
-            fputc(buffer[nrd], stderr);
-
         if (num_read > 0)
         {
             write_buffer(&connector->in_buffer, buffer, num_read);
@@ -107,7 +102,12 @@ try_again:
 
     close(input_fd);
     connector->session_counter_read++;
+
+    while(connector->session_counter_read > connector->session_counter_write)
+        usleep(100000); // 0.1s
+
     connector->clean_buffers = true;
+
     goto try_again;
 
     return NULL;
