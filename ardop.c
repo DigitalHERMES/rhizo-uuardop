@@ -49,8 +49,8 @@
 void *ardop_data_worker_thread_tx(void *conn)
 {
     rhizo_conn *connector = (rhizo_conn *) conn;
-    uint8_t *buffer;
-    uint32_t buf_size; // our header is 4 bytes long
+    uint8_t buffer[BUFFER_SIZE];
+    int bytes_to_read;
     uint8_t ardop_size[2];
     uint32_t packet_size;
     bool running = true;
@@ -65,19 +65,17 @@ void *ardop_data_worker_thread_tx(void *conn)
             sleep(1);
         }
 
-        // read header - can be blocking... TODO:
-        // fprintf(stderr, "ardop_data_worker_thread_tx: sizeof: %u\n", sizeof(buf_size));
-        read_buffer(&connector->in_buffer, (uint8_t *) &buf_size, sizeof(buf_size)); // TODO: if the two parties in a connection have different endianess, we are in trouble
+        bytes_to_read = ring_buffer_count_bytes(&connector->in_buffer.buf);
+        if (bytes_to_read > BUFFER_SIZE)
+            bytes_to_read = BUFFER_SIZE;
+        if (bytes_to_read <= 0)
+            bytes_to_read = 1;
 
-        // fprintf(stderr, "ardop_data_worker_thread_tx: Tx msg size: %u\n", buf_size);
-
-        buffer = (uint8_t *) malloc(buf_size);
-        memset(buffer, 0, buf_size);
-        read_buffer(&connector->in_buffer, buffer, buf_size);
+        read_buffer(&connector->in_buffer, buffer, bytes_to_read);
 
         // fprintf(stderr, "ardop_data_worker_thread_tx: After read buffer\n");
 
-        packet_size = buf_size + 4; // added our 4 bytes header with length
+        packet_size = bytes_to_read;
 
         uint32_t counter = 0;
         uint32_t tx_size = packet_size;
@@ -101,38 +99,23 @@ void *ardop_data_worker_thread_tx(void *conn)
             tcp_write(connector->data_socket, ardop_size, sizeof(ardop_size));
 
            // fprintf(stderr, "ardop_data_worker_thread_tx: After ardop header tcp_write\n");
-
-            if (tx_size == packet_size) { // first pass, we send our size header
-                tcp_write(connector->data_socket, (uint8_t *) &buf_size, sizeof(buf_size) );
-                if (tx_size > MAX_ARDOP_PACKET){
-                    tcp_write(connector->data_socket, buffer , MAX_ARDOP_PACKET - 4);
-                    counter += MAX_ARDOP_PACKET - 4;
-                    tx_size -= MAX_ARDOP_PACKET;
-                }
-                else{
-                    tcp_write(connector->data_socket, buffer, tx_size - 4);
-                    counter += tx_size - 4;
-                    tx_size -= tx_size;
-                }
+            if (tx_size > MAX_ARDOP_PACKET)
+            {
+                tcp_write(connector->data_socket, &buffer[counter] , MAX_ARDOP_PACKET);
+                counter += MAX_ARDOP_PACKET;
+                tx_size -= MAX_ARDOP_PACKET;
             }
-            else{ // not first pass
-                if (tx_size > MAX_ARDOP_PACKET){
-                   tcp_write(connector->data_socket, &buffer[counter] , MAX_ARDOP_PACKET);
-                   counter += MAX_ARDOP_PACKET;
-                   tx_size -= MAX_ARDOP_PACKET;
-               }
-               else{
-                   tcp_write(connector->data_socket, &buffer[counter], tx_size);
-                   counter += tx_size;
-                   tx_size -= tx_size;
-               }
-           }
+            else{
+                tcp_write(connector->data_socket, &buffer[counter], tx_size);
+                counter += tx_size;
+                tx_size -= tx_size;
+            }
+
             fprintf(stderr, "Tx bytes remaining: %u\n", tx_size);
             // buffer management hack
             sleep(2);
         }
 
-        free(buffer);
     }
 
 exit_local:

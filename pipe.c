@@ -60,7 +60,7 @@ void *pipe_read_thread(void *conn)
 
 try_again:
     running = true;
-//    fprintf(stderr, "pipe_read_thread_open()\n");
+    fprintf(stderr, "pipe_read_thread_open()\n");
     input_fd = open(connector->input_pipe, O_RDONLY);
     fprintf(stderr, "pipe_read_thread_after_open()\n");
 
@@ -82,7 +82,7 @@ try_again:
 
         num_read = read(input_fd, buffer, bytes_pipe);
 
-        fprintf(stderr, "After read in pipe_read_thread()num_read: %d\n", num_read);
+        fprintf(stderr, "After read in pipe_read_thread()- num_read: %d - value:%u\n", num_read, buffer[0]);
 
         // for debug purposes...
         // write(2, buffer, num_read);
@@ -124,7 +124,7 @@ void *pipe_write_thread(void *conn)
 
 try_again:
     running = true;
-//    fprintf(stderr, "pipe_write_thread_open()\n");
+    fprintf(stderr, "pipe_write_thread_open()\n");
     output_fd = open(connector->output_pipe, O_WRONLY);
     fprintf(stderr, "pipe_write_thread_after_open()\n");
 

@@ -20,7 +20,7 @@
  */
 
 /**
- * @file uuardopd.c
+ * @file uuardopd.h
  * @author Rafael Diniz
  * @date 12 Apr 2018
  * @brief Rhizo HF Connector main header file

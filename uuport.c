@@ -56,7 +56,9 @@ void *read_thread(void *file_name_v)
     int bytes_read = 0;
     int bytes_written = 0;
 
+    fprintf(log_fd, "read_thread: Before open()\n");
     int input_fd = open(file_name, O_RDONLY);
+    fprintf(log_fd, "read_thread: After open()\n");
 
     if (input_fd == -1)
     {
@@ -89,6 +91,9 @@ void *read_thread(void *file_name_v)
 
         bytes_written = write(1, buffer, bytes_read);
 
+        fprintf(log_fd, "uuport: %d bytes written to uucico\n", bytes_written);
+
+
         if (bytes_written != bytes_read)
         {
             fprintf(log_fd, "read_thread: bytes_written: %d != bytes_read: %d.\n", bytes_written, bytes_read);
@@ -117,7 +122,9 @@ void *write_thread(void *file_name_v)
     int bytes_read = 0;
     int bytes_written = 0;
 
+    fprintf(log_fd, "write_thread: Before open()\n");
     int output_fd = open(file_name, O_WRONLY);
+    fprintf(log_fd, "write_thread: After open()\n");
 
     if (output_fd == -1)
     {
@@ -128,6 +135,8 @@ void *write_thread(void *file_name_v)
     while(running)
     {
         bytes_read = read(0, buffer, BUFFER_SIZE);
+
+        fprintf(log_fd, "uuport: %d bytes read from uucico\n", bytes_read);
 
         if (bytes_read == -1)
         {
