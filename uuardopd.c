@@ -42,6 +42,7 @@
 #include <sys/socket.h>
 #include <dirent.h>
 
+#include "call_uucico.h"
 #include "uuardopd.h"
 #include "pipe.h"
 #include "vara.h"
@@ -66,6 +67,7 @@ void finish(int s){
     }
 
     // TODO: close the pipes here
+    // join all the threads?
 
     exit(EXIT_SUCCESS);
 }
@@ -101,6 +103,15 @@ bool initialize_connector(rhizo_conn *connector){
     connector->clean_buffers = false;
     connector->session_counter_read = 0;
     connector->session_counter_write = 0;
+
+    if (pthread_mutex_init(&connector->uucico_mutex, NULL) != 0) {
+        perror("pthread_mutex_init() error");
+        return false;
+    }
+    if (pthread_cond_init(&connector->uucico_cond, NULL) != 0) {
+        perror("pthread_cond_init() error");
+        return false;
+    }
 
     return true;
 }
@@ -188,6 +199,8 @@ int main (int argc, char *argv[])
 
     pthread_create(&tid[0], NULL, pipe_read_thread, (void *) &connector);
     pthread_create(&tid[1], NULL, pipe_write_thread, (void *) &connector);
+
+    pthread_create(&tid[2], NULL, uucico_thread, (void *) &connector);
 
     // pthread_create(&tid[2], NULL, modem_thread, (void *) &connector);
     modem_thread((void *) &connector);

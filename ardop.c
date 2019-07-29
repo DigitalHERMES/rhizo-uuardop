@@ -111,7 +111,7 @@ void *ardop_data_worker_thread_tx(void *conn)
                 tx_size -= tx_size;
             }
 
-            fprintf(stderr, "Tx bytes remaining: %u\n", tx_size);
+            // fprintf(stderr, "Tx bytes remaining: %u\n", tx_size);
             // buffer management hack
             sleep(2);
         }
@@ -298,7 +298,6 @@ void *ardop_control_worker_thread_tx(void *conn)
 
         if (connector->clean_buffers == true && connector->buffer_size == 0)
         {
-            fprintf(stderr, "Connection closed - Cleaning internal buffers.\n");
             connector->clean_buffers = false;
 
             memset(buffer,0,sizeof(buffer));
@@ -308,6 +307,7 @@ void *ardop_control_worker_thread_tx(void *conn)
             while (connector->connected == true)
                 usleep(100000);
 
+            fprintf(stderr, "Connection closed - Cleaning internal buffers.\n");
             ring_buffer_clear (&connector->in_buffer.buf);
             ring_buffer_clear (&connector->out_buffer.buf);
         }

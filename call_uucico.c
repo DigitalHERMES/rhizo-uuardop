@@ -52,8 +52,26 @@
 #include "call_uucico.h"
 
 bool call_uucico(rhizo_conn *connector){
+
+    if (pthread_mutex_lock(&connector->uucico_mutex) != 0) {
+        perror("pthread_mutex_lock() error");
+        return false;
+    }
+
+    if (pthread_cond_signal(&connector->uucico_cond) != 0) {
+        perror("pthread_cond_signal() error");
+        return false;
+    }
+
+    return true;
+}
+
+void *uucico_thread(void *conn){
+//bool call_uucico(rhizo_conn *connector){
+    rhizo_conn *connector = conn;
     pid_t pid;
     int st;
+    bool running = true;
     // set some file descriptors as in in.uucpd...
     // use 2 pipe() to create the fds for I/O
     // fork()
@@ -61,97 +79,114 @@ bool call_uucico(rhizo_conn *connector){
     // in the child, remap the fds to 0, 1 (and 2?) 
     // in the child, call execl() (or execlp() (uucico -l)
 
-    // parent write to child
-    pipe(connector->pipefd1); // pipe[0] is read, pipe[1] is write
-    // child write to parent
-    pipe(connector->pipefd2);
-
-    pthread_t tid1;
-    pthread_create(&tid1, NULL, uucico_read_thread, (void *) connector);
-
-    pthread_t tid2;
-    pthread_create(&tid2, NULL, uucico_write_thread, (void *) connector);
-
-    // parent
-    if ((pid = fork()) != 0)
+    while (running)
     {
-        if (pid < 0) {
-            fprintf(stderr, "fork() error.\n");
-            return false;
+        if (pthread_mutex_lock(&connector->uucico_mutex) != 0) {
+            perror("pthread_mutex_lock() error");
+            return NULL;
         }
+        if (pthread_cond_wait(&connector->uucico_cond, &connector->uucico_mutex) != 0) {
+            perror("pthread_cond_wait() error");
+            return NULL;
+        }
+
+        // parent write to child
+        pipe(connector->pipefd1); // pipe[0] is read, pipe[1] is write
+        // child write to parent
+        pipe(connector->pipefd2);
+
+        pthread_t tid1;
+        pthread_create(&tid1, NULL, uucico_read_thread, (void *) connector);
+
+        pthread_t tid2;
+        pthread_create(&tid2, NULL, uucico_write_thread, (void *) connector);
+
+        // parent
+        if ((pid = fork()) != 0)
+        {
+            if (pid < 0) {
+                fprintf(stderr, "fork() error.\n");
+                return NULL;
+            }
+
+            close(connector->pipefd1[0]);
+            close(connector->pipefd2[1]);
+
+            // pthread_create the two threads which does the job of reading / writing from/to buffers and fds...
+
+            while(wait(&st) != pid);
+            if ( WIFEXITED(st) ){
+                fprintf(stderr, "uucico child exec exited with status = %d\n", WEXITSTATUS(st));
+                // uucico ended!
+                // we should disconnect here!
+            }
+
+            close(connector->pipefd1[1]);
+            close(connector->pipefd2[0]);
+
+            pthread_join(tid1, NULL);
+            pthread_join(tid2, NULL);
+
+            // usleep(2000000); // 2s for the system to cool down
+            connector->clean_buffers = true;
+
+            if (pthread_mutex_unlock(&connector->uucico_mutex) != 0) {
+                perror("pthread_mutex_unlock() error");
+                return NULL;
+            }
+            continue;
+        }
+
+        // this is the child (uucico)
+        close(0);
+        close(1);
+        close(2);
+
+        dup2(connector->pipefd1[0], 0);
+        dup2(connector->pipefd2[1], 1);
+        dup2(connector->pipefd2[1], 2); // is this correct?
 
         close(connector->pipefd1[0]);
         close(connector->pipefd2[1]);
+        close(connector->pipefd1[1]); // closing write pipefd1 (child reads from parent)
+        close(connector->pipefd2[0]); // closing read pipefd2 (child writes to parent)
 
-        // pthread_create the two threads which does the job of reading / writing from/to buffers and fds...
-
-        while(wait(&st) != pid);
-        if ( WIFEXITED(st) ){
-            fprintf(stderr, "uucico child exec exited with status = %d\n", WEXITSTATUS(st));
-            // uucico ended!
-            // we should disconnect here!
+        char pwd[] = "/var/spool/uucp"; // uucp home
+        if (chdir(pwd) != 0) {
+            perror(pwd);
+            exit(1);
+        }
+        gid_t gid = 10; // uucp gid
+        if (setgid(gid) != 0) {
+            perror("setgid");
+            exit(1);
+        }
+        char user[] = "uucp";
+        if (initgroups(user, gid) < 0) {
+            perror("initgroups");
+            exit(1);
+        }
+        uid_t uid = 10; // uucp uid
+        if (setuid(uid) != 0) {
+            perror("setuid");
+            exit(1);
         }
 
-        close(connector->pipefd1[1]);
-        close(connector->pipefd2[0]);
+        char shell[] = "/usr/sbin/uucico";
 
-        pthread_join(tid1, NULL);
-        pthread_join(tid2, NULL);
+        setenv("LOGNAME", user, 1);
+        setenv("USER", user, 1);
+        setenv("SHELL", shell, 1);
+        setenv("TERM", "dumb", 1);
 
-        usleep(2000000); // 2s for the system to cool down
-        connector->clean_buffers = true;
 
-        return true;
+        execl(shell, shell, "-l", NULL);
+        perror(shell);
+
+        _exit(EXIT_SUCCESS);
     }
 
-    // this is the child (uucico)
-    close(0);
-    close(1);
-    close(2);
-
-    dup2(connector->pipefd1[0], 0);
-    dup2(connector->pipefd2[1], 1);
-    dup2(connector->pipefd2[1], 2); // is this correct?
-
-    close(connector->pipefd1[0]);
-    close(connector->pipefd2[1]);
-    close(connector->pipefd1[1]); // closing write pipefd1 (child reads from parent)
-    close(connector->pipefd2[0]); // closing read pipefd2 (child writes to parent)
-
-    char pwd[] = "/var/spool/uucp"; // uucp home
-    if (chdir(pwd) != 0) {
-        perror(pwd);
-        exit(1);
-    }
-    gid_t gid = 10; // uucp gid
-    if (setgid(gid) != 0) {
-        perror("setgid");
-        exit(1);
-    }
-    char user[] = "uucp";
-    if (initgroups(user, gid) < 0) {
-        perror("initgroups");
-        exit(1);
-    }
-    uid_t uid = 10; // uucp uid
-    if (setuid(uid) != 0) {
-        perror("setuid");
-        exit(1);
-    }
-
-    char shell[] = "/usr/sbin/uucico";
-
-    setenv("LOGNAME", user, 1);
-    setenv("USER", user, 1);
-    setenv("SHELL", shell, 1);
-    setenv("TERM", "dumb", 1);
-
-
-    execl(shell, shell, "-l", NULL);
-    perror(shell);
-
-    _exit(EXIT_SUCCESS);
-    return true;
+    return NULL;
 }
 
 void *uucico_read_thread(void *conn)

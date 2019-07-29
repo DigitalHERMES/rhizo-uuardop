@@ -75,6 +75,12 @@ typedef struct{
     atomic_bool connected;
     atomic_bool waiting_for_connection;
     atomic_bool clean_buffers;
+
+    // some mutexes needed in call_uucico code
+    pthread_cond_t uucico_cond;
+    pthread_mutex_t uucico_mutex;
+
+// TODO: remove-me!
     atomic_int timeout_counter; // only for VARA
     atomic_int safe_state; // this means green light for changing state, only for VARA
 
