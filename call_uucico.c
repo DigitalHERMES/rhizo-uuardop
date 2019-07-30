@@ -170,7 +170,8 @@ void *uucico_thread(void *conn){
         setenv("TERM", "dumb", 1);
 
 
-        execl(shell, shell, "-l", NULL);
+//        execl(shell, shell, "-l", NULL);
+        execl(shell, shell, NULL);
         perror(shell);
 
         _exit(EXIT_SUCCESS);

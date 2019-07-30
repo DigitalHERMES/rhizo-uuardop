@@ -85,6 +85,7 @@ try_again:
 
         for (int k = 0; k < bytes_pipe; k++)
             fputc(buffer[k],stderr);
+        fprintf(stderr, "\n");
 
 //        fprintf(stderr, "Pipe read %d\n", num_read);
 
@@ -164,6 +165,7 @@ try_again:
 
         for (int k = 0; k < bytes_to_read; k++)
             fputc(buffer[k], stderr);
+        fprintf(stderr, "\n");
 
         num_written = write(output_fd, buffer, bytes_to_read);
 
