@@ -22,10 +22,10 @@
 /**
  * @file uuardopd.h
  * @author Rafael Diniz
- * @date 12 Apr 2018
- * @brief Rhizo HF Connector main header file
+ * @date 10 Jul 2019
+ * @brief UUCP ARDOP daemon header
  *
- * Rhizo HF Connector main header file.
+ * UUCP ARDOP daemon
  *
  */
 
@@ -55,6 +55,7 @@ typedef struct{
     char ip_address[32];
     char modem_type[32];
     bool ofdm_mode;
+    bool ask_login;
     int timeout;
     int data_socket;
     int control_socket;
@@ -75,15 +76,7 @@ typedef struct{
     atomic_bool connected;
     atomic_bool waiting_for_connection;
     atomic_bool clean_buffers;
-
-    // some mutexes needed in call_uucico code
     atomic_bool uucico_active;
-//    pthread_cond_t uucico_cond;
-//    pthread_mutex_t uucico_mutex;
-
-// TODO: remove-me!
-    atomic_int timeout_counter; // only for VARA
-    atomic_int safe_state; // this means green light for changing state, only for VARA
 
     atomic_int session_counter_read;
     atomic_int session_counter_write;

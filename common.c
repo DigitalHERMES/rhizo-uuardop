@@ -44,30 +44,6 @@
 
 #include "common.h"
 
-void *connection_timeout_thread(void *conn){
-    rhizo_conn *connector = (rhizo_conn *) conn;
-
-    connector->timeout_counter = 0;
-
-    while(connector->tcp_ret_ok){
-
-        if (connector->connected == true){
-	  if (connector->safe_state == 2){
-	    connector->timeout_counter++;
-	  }
-	  else{
-	    connector->timeout_counter = 0;
-	  }
-	}
-        else{
-            connector->timeout_counter = 0;
-        }
-        sleep(1);
-    }
-
-    return EXIT_SUCCESS;
-}
-
 bool inotify_wait(char *file_name){
     // now starts inotify marvelous...
 #define EVENT_SIZE  (sizeof(struct inotify_event))

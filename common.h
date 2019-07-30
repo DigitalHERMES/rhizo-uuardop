@@ -42,7 +42,6 @@
 extern "C" {
 #endif
 
-void *connection_timeout_thread(void *conn);
 bool inotify_wait(char *file_name);
 
 #ifdef __cplusplus

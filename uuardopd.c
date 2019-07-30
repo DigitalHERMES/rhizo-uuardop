@@ -46,7 +46,6 @@
 #include "call_uucico.h"
 #include "uuardopd.h"
 #include "pipe.h"
-#include "vara.h"
 #include "ardop.h"
 
 // temporary global variable to enable sockets closure
@@ -77,13 +76,7 @@ void *modem_thread(void *conn)
 {
     rhizo_conn *connector = (rhizo_conn *) conn;
 
-    if (!strcmp("vara", connector->modem_type)){
-        initialize_modem_vara(connector);
-    }
-
-    if (!strcmp("ardop", connector->modem_type)){
-        initialize_modem_ardop(connector);
-    }
+    initialize_modem_ardop(connector);
 
     return NULL;
 }
@@ -95,8 +88,8 @@ bool initialize_connector(rhizo_conn *connector){
 
     connector->connected = false;
     connector->waiting_for_connection = false;
+    connector->ask_login = false;
     connector->tcp_ret_ok = true;
-    connector->safe_state = 0;
 
     connector->timeout = TIMEOUT_DEFAULT;
     connector->ofdm_mode = true;
@@ -106,17 +99,6 @@ bool initialize_connector(rhizo_conn *connector){
     connector->session_counter_write = 0;
 
     connector->uucico_active = false;
-
-#if 0
-    if (pthread_mutex_init(&connector->uucico_mutex, NULL) != 0) {
-        perror("pthread_mutex_init() error");
-        return false;
-    }
-    if (pthread_cond_init(&connector->uucico_cond, NULL) != 0) {
-        perror("pthread_cond_init() error");
-        return false;
-    }
-#endif
 
     return true;
 }
@@ -141,10 +123,9 @@ int main (int argc, char *argv[])
     if (argc < 7)
     {
     manual:
-        fprintf(stderr, "Usage modes: \n%s -r radio_modem_type -i input_pipe.uucp -o output_pipe.uucp -c callsign -d remote_callsign -a tnc_ip_address -p tcp_base_port\n", argv[0]);
+        fprintf(stderr, "Usage modes: \n%s -i input_pipe.uucp -o output_pipe.uucp -c callsign -d remote_callsign -a tnc_ip_address -p tcp_base_port [-l]\n", argv[0]);
         fprintf(stderr, "%s -h\n", argv[0]);
         fprintf(stderr, "\nOptions:\n");
-        fprintf(stderr, " -r [ardop,vara]           Choose modem/radio type.\n");
         fprintf(stderr, " -i input_pipe.uucp          Pipe to be read from uucico.\n");
         fprintf(stderr, " -o output_pipe.uucp         Pipe to be written to uucico.\n");
         fprintf(stderr, " -c callsign                        Station Callsign (Eg: PU2HFF).\n");
@@ -153,17 +134,21 @@ int main (int argc, char *argv[])
         fprintf(stderr, " -p tnc_tcp_base_port         TNC's TCP base port of the TNC. For VARA and ARDOP ports tcp_base_port and tcp_base_port+1 are used,\n");
         fprintf(stderr, " -t timeout                 Time to wait before disconnect when idling.\n");
         fprintf(stderr, " -f features                Enable/Disable features. Supported features: ofdm, noofdm.\n");
+        fprintf(stderr, " -l                         Tell UUCICO to ask login prompt (default: disabled).\n");
         fprintf(stderr, " -h                          Prints this help.\n");
         exit(EXIT_FAILURE);
     }
 
     int opt;
-    while ((opt = getopt(argc, argv, "hr:i:o:c:d:p:a:t:f:")) != -1)
+    while ((opt = getopt(argc, argv, "hli:o:c:d:p:a:t:f:")) != -1)
     {
         switch (opt)
         {
         case 'h':
             goto manual;
+            break;
+        case 'l':
+            connector.ask_login = true;
             break;
         case 'c':
             strcpy(connector.call_sign, optarg);
@@ -179,9 +164,6 @@ int main (int argc, char *argv[])
             break;
         case 'a':
             strcpy(connector.ip_address, optarg);
-            break;
-        case 'r':
-            strcpy(connector.modem_type, optarg);
             break;
         case 'i':
             strcpy(connector.input_pipe, optarg);
@@ -209,6 +191,10 @@ int main (int argc, char *argv[])
 
     // pthread_create(&tid[2], NULL, modem_thread, (void *) &connector);
     modem_thread((void *) &connector);
+
+    pthread_join(tid[0], NULL);
+    pthread_join(tid[1], NULL);
+    pthread_join(tid[2], NULL);
 
     if (connector.tcp_ret_ok == false){
         // reconnect and call modem_thread again?

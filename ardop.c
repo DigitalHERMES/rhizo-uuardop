@@ -101,13 +101,13 @@ void *ardop_data_worker_thread_tx(void *conn)
            // fprintf(stderr, "ardop_data_worker_thread_tx: After ardop header tcp_write\n");
             if (tx_size > MAX_ARDOP_PACKET)
             {
-                fprintf(stderr,"Ardop Transmit: %u bytes.\n", MAX_ARDOP_PACKET);
+                fprintf(stderr,"Sent to ARDOP: %u bytes.\n", MAX_ARDOP_PACKET);
                 tcp_write(connector->data_socket, &buffer[counter] , MAX_ARDOP_PACKET);
                 counter += MAX_ARDOP_PACKET;
                 tx_size -= MAX_ARDOP_PACKET;
             }
             else{
-                fprintf(stderr,"Ardop Transmit: %u bytes.\n", tx_size);
+                fprintf(stderr,"Sent to ARDOP: %u bytes.\n", tx_size);
                 tcp_write(connector->data_socket, &buffer[counter], tx_size);
                 counter += tx_size;
                 tx_size -= tx_size;
@@ -163,7 +163,7 @@ void *ardop_data_worker_thread_rx(void *conn)
         }
         else{
             buffer[buf_size] = 0;
-            fprintf(stderr, "Ardop non-payload data rx: %s\n", buffer);
+//            fprintf(stderr, "Ardop non-payload data rx: %s\n", buffer);
         }
 
     }
@@ -262,7 +262,7 @@ void *ardop_control_worker_thread_tx(void *conn)
     if (connector->timeout < 240)
         sprintf(buffer, "ARQTIMEOUT %d\r", connector->timeout);
     else
-        sprintf(buffer, "ARQTIMEOUT %d\r", 240); // maximum timeout
+        sprintf(buffer, "ARQTIMEOUT %d\r", MAX_TIMEOUT);
     tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
 
     memset(buffer,0,sizeof(buffer));
