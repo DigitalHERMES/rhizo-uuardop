@@ -126,14 +126,14 @@ int main (int argc, char *argv[])
         fprintf(stderr, "Usage modes: \n%s -i input_pipe.uucp -o output_pipe.uucp -c callsign -d remote_callsign -a tnc_ip_address -p tcp_base_port [-l]\n", argv[0]);
         fprintf(stderr, "%s -h\n", argv[0]);
         fprintf(stderr, "\nOptions:\n");
-        fprintf(stderr, " -i input_pipe.uucp          Pipe to be read from uucico.\n");
-        fprintf(stderr, " -o output_pipe.uucp         Pipe to be written to uucico.\n");
+        fprintf(stderr, " -i input_pipe.uucp          Pipe to be read from uucico in master mode.\n");
+        fprintf(stderr, " -o output_pipe.uucp         Pipe to be written to uucico in master mode.\n");
         fprintf(stderr, " -c callsign                        Station Callsign (Eg: PU2HFF).\n");
         fprintf(stderr, " -d remote_callsign           Remote Station Callsign.\n");
         fprintf(stderr, " -a tnc_ip_address            IP address of the TNC,\n");
-        fprintf(stderr, " -p tnc_tcp_base_port         TNC's TCP base port of the TNC. For VARA and ARDOP ports tcp_base_port and tcp_base_port+1 are used,\n");
+        fprintf(stderr, " -p tnc_tcp_base_port         TNC's TCP base port of the TNC. ARDOP uses ports tcp_base_port and tcp_base_port+1.\n");
         fprintf(stderr, " -t timeout                 Time to wait before disconnect when idling.\n");
-        fprintf(stderr, " -f features                Enable/Disable features. Supported features: ofdm, noofdm.\n");
+        fprintf(stderr, " -f features                Enable/Disable features. Supported features: ofdm, noofdm (default: ofdm).\n");
         fprintf(stderr, " -l                         Tell UUCICO to ask login prompt (default: disabled).\n");
         fprintf(stderr, " -h                          Prints this help.\n");
         exit(EXIT_FAILURE);

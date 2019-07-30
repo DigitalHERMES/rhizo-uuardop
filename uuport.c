@@ -239,15 +239,15 @@ int main (int argc, char *argv[])
         fprintf(stderr, "Usage modes: \n%s -i input_pipe -o output_pipe -l logfile\n", argv[0]);
         fprintf(stderr, "%s -h\n", argv[0]);
         fprintf(stderr, "\nOptions:\n");
-        fprintf(stderr, " -i input_pipe.uucp           Data to be written to uucico.\n");
-        fprintf(stderr, " -o output_pipe.uucp          Data read from uucico.\n");
-        fprintf(stderr, " -l logfile.txt               Log file (default is stderr).\n");
+        fprintf(stderr, " -i input_pipe.uucp           Pipe with data written by uucico.\n");
+        fprintf(stderr, " -o output_pipe.uucp          Pipe to be read by uucico.\n");
+        fprintf(stderr, " -e logfile.txt               Log file (default is stderr).\n");
         fprintf(stderr, " -h                           Prints this help.\n");
         exit(EXIT_FAILURE);
     }
 
     int opt;
-    while ((opt = getopt(argc, argv, "i:o:hl:")) != -1)
+    while ((opt = getopt(argc, argv, "i:o:he:")) != -1)
     {
         switch (opt)
         {
@@ -260,7 +260,7 @@ int main (int argc, char *argv[])
         case 'o':
             strcpy(output_pipe, optarg);
             break;
-        case 'l':
+        case 'e':
             strcpy(log_file, optarg);
             break;
         default:
