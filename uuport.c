@@ -49,6 +49,9 @@ FILE *log_fd;
 bool running_read;
 bool running_write;
 
+int input_fd;
+int output_fd;
+
 void *read_thread(void *file_name_v)
 {
     char *file_name = file_name_v;
@@ -58,7 +61,7 @@ void *read_thread(void *file_name_v)
     int bytes_written = 0;
 
     fprintf(log_fd, "read_thread: Before open()\n");
-    int input_fd = open(file_name, O_RDONLY);
+    input_fd = open(file_name, O_RDONLY);
     fprintf(log_fd, "read_thread: After open()\n");
 
     if (input_fd == -1)
@@ -124,7 +127,7 @@ void *write_thread(void *file_name_v)
     int bytes_written = 0;
 
     fprintf(log_fd, "write_thread: Before open()\n");
-    int output_fd = open(file_name, O_WRONLY);
+    output_fd = open(file_name, O_WRONLY);
     fprintf(log_fd, "write_thread: After open()\n");
 
     if (output_fd == -1)
@@ -196,9 +199,10 @@ void finish(int s){
         running_read = false;
         return;
     }
-    if (s == SIGPIPE)
-        fprintf(log_fd, "\nSIGPIPE: Exiting\n");
-
+    if (s == SIGPIPE){
+        fprintf(log_fd, "\nSIGPIPE: Doing nothing.\n");
+        return;
+    }
 
     // some house keeping here?
 
@@ -223,8 +227,8 @@ int main (int argc, char *argv[])
 
 //    signal (SIGPIPE, SIG_IGN); // ignores SIGPIPE...
 
-    fprintf(stderr, "Rhizomatica's uuport version 0.1 by Rafael Diniz -  rafael (AT) rhizomatica (DOT) org\n");
-    fprintf(stderr, "License: GPLv3+\n\n");
+//    fprintf(stderr, "Rhizomatica's uuport version 0.1 by Rafael Diniz -  rafael (AT) rhizomatica (DOT) org\n");
+//    fprintf(stderr, "License: GPLv3+\n\n");
 
     if (argc < 4)
     {
@@ -276,8 +280,28 @@ int main (int argc, char *argv[])
         log_fd = stderr;
     }
 
-    pthread_t tid;
 
+    if (unlink(input_pipe) != 0){
+        fprintf(log_fd, "Failed to delete: %s\n", input_pipe);
+    }
+
+    if (mkfifo(input_pipe, S_IRWXU | S_IRWXG | S_IRWXO) != 0){
+        fprintf(log_fd, "Failed to create fifo: %s\n", input_pipe);
+        return EXIT_FAILURE;
+    }
+
+    if (unlink(output_pipe) != 0){
+        fprintf(log_fd, "Failed to delete: %s\n", output_pipe);
+    }
+
+    if (mkfifo(output_pipe, S_IRWXU | S_IRWXG | S_IRWXO) != 0){
+        fprintf(log_fd, "Failed to create fifo: %s\n", output_pipe);
+        return EXIT_FAILURE;
+    }
+
+    // send a signal to uuardopd?
+
+    pthread_t tid;
     pthread_create(&tid, NULL, read_thread, (void *) input_pipe);
 
 //    pthread_create(&tid, NULL, write_thread, (void *) &connector);

@@ -47,6 +47,7 @@
 #include <errno.h>
 #include <fcntl.h>
 
+#include "common.h"
 #include "pipe.h"
 
 void *pipe_read_thread(void *conn)
@@ -59,6 +60,7 @@ void *pipe_read_thread(void *conn)
     int input_fd;
 
 try_again:
+    inotify_wait(connector->input_pipe);
     running = true;
     fprintf(stderr, "connector->session_counter_read: %d\n", connector->session_counter_read);
     input_fd = open(connector->input_pipe, O_RDONLY);
@@ -79,6 +81,8 @@ try_again:
             bytes_pipe = 1; // so we block in read() in case of no data to read
 
         num_read = read(input_fd, buffer, bytes_pipe);
+
+        fprintf(stderr, "Pipe read %d\n", num_read);
 
         if (num_read > 0)
         {
@@ -125,6 +129,7 @@ void *pipe_write_thread(void *conn)
     int output_fd;
 
 try_again:
+    inotify_wait(connector->output_pipe);
     running = true;
     fprintf(stderr, "connector->session_counter_write: %d\n", connector->session_counter_write);
     output_fd = open(connector->output_pipe, O_WRONLY);
@@ -153,6 +158,9 @@ try_again:
         read_buffer(&connector->out_buffer, buffer, bytes_to_read);
 
         num_written = write(output_fd, buffer, bytes_to_read);
+
+        fprintf(stderr, "Pipe wrote %d\n", num_written);
+
         if (num_written == 0)
         {
             fprintf(stderr, "pipe_write_thread: write == 0\n");

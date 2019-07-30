@@ -1,4 +1,4 @@
-/* Rhizo-HF-connector: A connector to different HF modems
+/* Rhizo-UUCP
  * Copyright (C) 2018 Rhizomatica
  * Author: Rafael Diniz <rafael@riseup.net>
  *
@@ -43,6 +43,7 @@ extern "C" {
 #endif
 
 void *connection_timeout_thread(void *conn);
+bool inotify_wait(char *file_name);
 
 #ifdef __cplusplus
 };
