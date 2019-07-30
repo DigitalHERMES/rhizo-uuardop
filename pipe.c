@@ -60,6 +60,7 @@ void *pipe_read_thread(void *conn)
     int input_fd;
 
 try_again:
+    fprintf(stderr, "before inotify_wait\n");
     inotify_wait(connector->input_pipe);
     running = true;
     fprintf(stderr, "connector->session_counter_read: %d\n", connector->session_counter_read);
@@ -129,6 +130,7 @@ void *pipe_write_thread(void *conn)
     int output_fd;
 
 try_again:
+    fprintf(stderr, "before inotify_wait\n");
     inotify_wait(connector->output_pipe);
     running = true;
     fprintf(stderr, "connector->session_counter_write: %d\n", connector->session_counter_write);

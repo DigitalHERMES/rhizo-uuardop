@@ -77,40 +77,42 @@ bool inotify_wait(char *file_name){
     int wd;
     char buffer_inot[BUF_LEN];
 
+
+
     fd = inotify_init();
 
     if (fd < 0) {
         perror("inotify_init");
     }
 
-    wd = inotify_add_watch(fd, file_name, IN_CREATE);
+    wd = inotify_add_watch(fd, file_name, IN_CREATE | IN_DELETE);
 
-    bool running = true;
-    while (running)
-    {
-        i = 0;
-        length = read(fd, buffer_inot, BUF_LEN);
+    i = 0;
+    length = read(fd, buffer_inot, BUF_LEN);
 
-        if (length < 0) {
-            perror("read");
-        }
-
-        while (i < length) {
-            struct inotify_event *event =
-                (struct inotify_event *) &buffer_inot[i];
-            if (event->len) {
-                if (event->mask & IN_CREATE) {
-                    running = false;
-                }
-
-            }
-            i += EVENT_SIZE + event->len;
-        }
+    if (length < 0) {
+        perror("read");
     }
 
-    //
+    while (i < length) {
+        struct inotify_event *event =
+            (struct inotify_event *) &buffer_inot[i];
+        if (event->len) {
+            if (event->mask & IN_CREATE) {
+                goto exitt;
+            }
+            if (event->mask & IN_DELETE) {
+                goto exitt;
+            }
+        }
+            i += EVENT_SIZE + event->len;
+        }
+
+exitt:
     inotify_rm_watch(fd, wd);
     close(fd);
+
+    sleep(1);
 
     return true;
 }

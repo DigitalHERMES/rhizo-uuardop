@@ -77,8 +77,9 @@ typedef struct{
     atomic_bool clean_buffers;
 
     // some mutexes needed in call_uucico code
-    pthread_cond_t uucico_cond;
-    pthread_mutex_t uucico_mutex;
+    atomic_bool uucico_active;
+//    pthread_cond_t uucico_cond;
+//    pthread_mutex_t uucico_mutex;
 
 // TODO: remove-me!
     atomic_int timeout_counter; // only for VARA

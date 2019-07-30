@@ -55,23 +55,15 @@ bool call_uucico(rhizo_conn *connector){
 
     fprintf(stderr, "call_uucico: Sending signal to start uucico!\n");
 
-    if (pthread_mutex_lock(&connector->uucico_mutex) != 0) {
-        perror("pthread_mutex_lock() error");
-        return false;
-    }
-
-    fprintf(stderr, "Sending UUCICO signal!\n");
-
-    if (pthread_cond_signal(&connector->uucico_cond) != 0) {
-        perror("pthread_cond_signal() error");
-        return false;
-    }
+    if (connector->uucico_active == true)
+        fprintf(stderr, "Warning: trying to activate already active uucico!\n");
+    else
+        connector->uucico_active = true;
 
     return true;
 }
 
 void *uucico_thread(void *conn){
-//bool call_uucico(rhizo_conn *connector){
     rhizo_conn *connector = conn;
     pid_t pid;
     int st;
@@ -85,17 +77,10 @@ void *uucico_thread(void *conn){
 
     while (running)
     {
-        if (pthread_mutex_lock(&connector->uucico_mutex) != 0) {
-            perror("pthread_mutex_lock() error");
-            return NULL;
-        }
-        fprintf(stderr, "uucico_thread: before cond_wait\n");
-        if (pthread_cond_wait(&connector->uucico_cond, &connector->uucico_mutex) != 0) {
-            perror("pthread_cond_wait() error");
-            return NULL;
-        }
+        while (connector->uucico_active == false)
+            usleep(100000); // 0.1s
 
-        fprintf(stderr, "uucico_thread: after cond_wait\n");
+        fprintf(stderr, "uucico_thread: session started!\n");
 
         // parent write to child
         pipe(connector->pipefd1); // pipe[0] is read, pipe[1] is write
@@ -137,10 +122,8 @@ void *uucico_thread(void *conn){
             // usleep(2000000); // 2s for the system to cool down
             connector->clean_buffers = true;
 
-            if (pthread_mutex_unlock(&connector->uucico_mutex) != 0) {
-                perror("pthread_mutex_unlock() error");
-                return NULL;
-            }
+            connector->uucico_active = false;
+
             continue;
         }
 

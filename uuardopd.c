@@ -41,6 +41,7 @@
 #include <sys/stat.h>
 #include <sys/socket.h>
 #include <dirent.h>
+#include <pthread.h>
 
 #include "call_uucico.h"
 #include "uuardopd.h"
@@ -104,6 +105,9 @@ bool initialize_connector(rhizo_conn *connector){
     connector->session_counter_read = 0;
     connector->session_counter_write = 0;
 
+    connector->uucico_active = false;
+
+#if 0
     if (pthread_mutex_init(&connector->uucico_mutex, NULL) != 0) {
         perror("pthread_mutex_init() error");
         return false;
@@ -112,6 +116,7 @@ bool initialize_connector(rhizo_conn *connector){
         perror("pthread_cond_init() error");
         return false;
     }
+#endif
 
     return true;
 }
