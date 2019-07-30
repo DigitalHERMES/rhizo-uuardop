@@ -67,7 +67,7 @@ Sys configuration example of remote system at "/etc/uucp/sys" (without login pro
     $ port HFP
     $ chat "" \r
 
- Sys configuration example of remote system at "/etc/uucp/sys" (with login prompt - should can uuardopd with "-l"):
+ Sys configuration example of remote system at "/etc/uucp/sys" (with login prompt - should call uuardopd with "-l"):
 
     $ system remote
     $ call-login *
