@@ -296,7 +296,8 @@ void *ardop_control_worker_thread_tx(void *conn)
             connector->waiting_for_connection = true;
         }
 
-        if (connector->clean_buffers == true && connector->buffer_size == 0)
+//        if (connector->clean_buffers == true && connector->buffer_size == 0)
+        if (connector->clean_buffers == true)
         {
             connector->clean_buffers = false;
 
