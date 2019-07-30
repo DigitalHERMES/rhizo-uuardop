@@ -68,3 +68,11 @@ Port configuration example at "/etc/uucp/port":
     $ time any
     $ port HFP
     $ chat "" \r\c ogin: \L word: \P
+
+### Running uuardopd
+
+Example of uuardop invocation (be aware that the "-i" pipe here corresponds the "-o"
+pipe in uuport call, and "-o" in uuardopd corresponds to the "-i" pipe in
+uuport call):
+
+    $ uuardopd -l -i /tmp/uucp2.fifo -o /tmp/uucp1.fifo -c BB2UIT -d PP2UIT -a 127.0.0.1 -p 8515 -t 60
