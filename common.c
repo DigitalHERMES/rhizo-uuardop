@@ -41,11 +41,22 @@
 #include <arpa/inet.h>
 #include <sched.h>
 #include <sys/inotify.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include "common.h"
 
 bool inotify_wait(char *file_name){
-    // now starts inotify marvelous...
+    struct stat   buffer;
+    if (stat(file_name, &buffer) != 0)
+    {
+        if (mkfifo(file_name, S_IRWXU | S_IRWXG | S_IRWXO) != 0){
+            fprintf(stderr, "Failed to create fifo: %s\n", file_name);
+            return false;
+        }
+        chown(file_name, 10, 20);
+    }
+
 #define EVENT_SIZE  (sizeof(struct inotify_event))
 #define BUF_LEN     (1024 * (EVENT_SIZE + 16))
     int length, i = 0;

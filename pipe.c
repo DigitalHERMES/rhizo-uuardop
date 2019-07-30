@@ -60,7 +60,6 @@ void *pipe_read_thread(void *conn)
     int input_fd;
 
 try_again:
-    // fprintf(stderr, "before inotify_wait\n");
     inotify_wait(connector->input_pipe);
     running = true;
     fprintf(stderr, "connector->session_counter_read: %d\n", connector->session_counter_read);
@@ -83,9 +82,9 @@ try_again:
 
         num_read = read(input_fd, buffer, bytes_pipe);
 
-        for (int k = 0; k < bytes_pipe; k++)
-            fputc(buffer[k],stderr);
-        fprintf(stderr, "\n");
+//        for (int k = 0; k < bytes_pipe; k++)
+//            fputc(buffer[k],stderr);
+//        fprintf(stderr, "\n");
 
 //        fprintf(stderr, "Pipe read %d\n", num_read);
 
@@ -163,9 +162,9 @@ try_again:
 
         read_buffer(&connector->out_buffer, buffer, bytes_to_read);
 
-        for (int k = 0; k < bytes_to_read; k++)
-            fputc(buffer[k], stderr);
-        fprintf(stderr, "\n");
+//        for (int k = 0; k < bytes_to_read; k++)
+//            fputc(buffer[k], stderr);
+//        fprintf(stderr, "\n");
 
         num_written = write(output_fd, buffer, bytes_to_read);
 
