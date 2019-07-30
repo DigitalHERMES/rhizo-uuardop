@@ -85,30 +85,19 @@ bool inotify_wait(char *file_name){
 
     wd = inotify_add_watch(fd, file_name, IN_CREATE | IN_DELETE);
 
-    i = 0;
     length = read(fd, buffer_inot, BUF_LEN);
 
     if (length < 0) {
         perror("read");
     }
 
+    i = 0;
     while (i < length) {
-        struct inotify_event *event =
-            (struct inotify_event *) &buffer_inot[i];
-        if (event->len) {
-            if (event->mask & IN_CREATE) {
-                fprintf(stderr, "Got IN_CREATE!\n");
-                goto exitt;
-            }
-            if (event->mask & IN_DELETE) {
-                fprintf(stderr, "Got IN_DELETE!\n");
-                goto exitt;
-            }
-        }
-            i += EVENT_SIZE + event->len;
-        }
+        struct inotify_event *event = (struct inotify_event *) &buffer_inot[i];
+        i += EVENT_SIZE + event->len;
+//        fprintf(stderr, "Got some unnamed event!\n");
+    }
 
-exitt:
     inotify_rm_watch(fd, wd);
     close(fd);
 

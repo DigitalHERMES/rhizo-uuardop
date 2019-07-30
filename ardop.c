@@ -101,17 +101,18 @@ void *ardop_data_worker_thread_tx(void *conn)
            // fprintf(stderr, "ardop_data_worker_thread_tx: After ardop header tcp_write\n");
             if (tx_size > MAX_ARDOP_PACKET)
             {
+                fprintf(stderr,"Ardop Transmit: %u bytes.\n", MAX_ARDOP_PACKET);
                 tcp_write(connector->data_socket, &buffer[counter] , MAX_ARDOP_PACKET);
                 counter += MAX_ARDOP_PACKET;
                 tx_size -= MAX_ARDOP_PACKET;
             }
             else{
+                fprintf(stderr,"Ardop Transmit: %u bytes.\n", tx_size);
                 tcp_write(connector->data_socket, &buffer[counter], tx_size);
                 counter += tx_size;
                 tx_size -= tx_size;
             }
 
-            // fprintf(stderr, "Tx bytes remaining: %u\n", tx_size);
             // buffer management hack
             sleep(2);
         }
@@ -150,7 +151,7 @@ void *ardop_data_worker_thread_rx(void *conn)
         buf_size <<= 8;
         buf_size |= ardop_size[1];
 
-        fprintf(stderr,"Ardop Rcv Pkt: %u bytes.\n", buf_size);
+        fprintf(stderr,"Ardop Receive: %u bytes.\n", buf_size);
 
         tcp_read(connector->data_socket, buffer, buf_size);
 

@@ -175,6 +175,8 @@ void *write_thread(void *file_name_v)
         if (bytes_written != bytes_read)
         {
             fprintf(log_fd, "write_thread: bytes_written: %d !=  bytes_read: %d\n", bytes_written, bytes_read);
+            running_write = false;
+            continue;
         }
     }
 
