@@ -15,7 +15,6 @@ initiating a call (uucico master mode).
 
 | Option | Description |
 | --- | --- |
-
 | -i input_pipe.uucp | Pipe to be read from uucico in master mode. |
 | -o output_pipe.uucp | Pipe to be written to uucico in master mode. |
 | -c callsign | Station Callsign (Eg: PU2HFF) |
@@ -32,7 +31,6 @@ initiating a call (uucico master mode).
 
 | Option | Description |
 | --- | --- |
-
 | -i input_pipe.uucp | Pipe with data written by uucico. |
 | -o output_pipe.uucp | Pipe to be read by uucico. |
 | -e logfile.txt | Log file (default is stderr). |
