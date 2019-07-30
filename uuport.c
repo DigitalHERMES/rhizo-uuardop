@@ -60,9 +60,9 @@ void *read_thread(void *file_name_v)
     int bytes_read = 0;
     int bytes_written = 0;
 
-    fprintf(log_fd, "read_thread: Before open()\n");
+//    fprintf(log_fd, "read_thread: Before open()\n");
     input_fd = open(file_name, O_RDONLY);
-    fprintf(log_fd, "read_thread: After open()\n");
+//    fprintf(log_fd, "read_thread: After open()\n");
 
     if (input_fd == -1)
     {
@@ -96,7 +96,7 @@ void *read_thread(void *file_name_v)
 
         bytes_written = write(1, buffer, bytes_read);
 
-        fprintf(log_fd, "uuport: %d bytes written to uucico\n", bytes_written);
+//        fprintf(log_fd, "uuport: %d bytes written to uucico\n", bytes_written);
 
 
         if (bytes_written != bytes_read)
@@ -141,7 +141,7 @@ void *write_thread(void *file_name_v)
     {
         bytes_read = read(0, buffer, BUFFER_SIZE);
 
-        fprintf(log_fd, "uuport: %d bytes read from uucico\n", bytes_read);
+//        fprintf(log_fd, "uuport: %d bytes read from uucico\n", bytes_read);
 
         if (bytes_read == -1)
         {
@@ -200,6 +200,7 @@ void finish(int s){
         fprintf(log_fd, "\nSIGHUP: running shutdown...\n");
         running_write = false;
         running_read = false;
+        fflush(log_fd);
         return;
     }
     if (s == SIGPIPE){
@@ -311,6 +312,8 @@ int main (int argc, char *argv[])
     write_thread(output_pipe);
 
     pthread_join(tid, NULL);
+
+    fclose(log_fd);
 
     return EXIT_SUCCESS;
 }
