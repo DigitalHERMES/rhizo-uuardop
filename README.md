@@ -71,7 +71,7 @@ Port configuration example at "/etc/uucp/port":
 
 ### Running uuardopd
 
-Example of uuardop invocation (be aware that the "-i" pipe here corresponds the "-o"
+Example of uuardopd invocation (be aware that the "-i" pipe here corresponds the "-o"
 pipe in uuport call, and "-o" in uuardopd corresponds to the "-i" pipe in
 uuport call):
 
