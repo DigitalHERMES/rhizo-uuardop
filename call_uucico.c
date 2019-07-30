@@ -169,9 +169,11 @@ void *uucico_thread(void *conn){
         setenv("SHELL", shell, 1);
         setenv("TERM", "dumb", 1);
 
+        if (connector->ask_login == true)
+            execl(shell, shell, "-l", NULL);
+        else
+            execl(shell, shell, NULL);
 
-//        execl(shell, shell, "-l", NULL);
-        execl(shell, shell, NULL);
         perror(shell);
 
         _exit(EXIT_SUCCESS);
