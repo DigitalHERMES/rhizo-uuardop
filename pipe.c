@@ -83,7 +83,10 @@ try_again:
 
         num_read = read(input_fd, buffer, bytes_pipe);
 
-        fprintf(stderr, "Pipe read %d\n", num_read);
+        for (int k = 0; k < bytes_pipe; k++)
+            fputc(buffer[k],stderr);
+
+//        fprintf(stderr, "Pipe read %d\n", num_read);
 
         if (num_read > 0)
         {
@@ -159,9 +162,12 @@ try_again:
 
         read_buffer(&connector->out_buffer, buffer, bytes_to_read);
 
+        for (int k = 0; k < bytes_to_read; k++)
+            fputc(buffer[k], stderr);
+
         num_written = write(output_fd, buffer, bytes_to_read);
 
-        fprintf(stderr, "Pipe wrote %d\n", num_written);
+//        fprintf(stderr, "Pipe wrote %d\n", num_written);
 
         if (num_written == 0)
         {

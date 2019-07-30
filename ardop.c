@@ -226,8 +226,7 @@ void *ardop_control_worker_thread_rx(void *conn)
             } else
             if (!memcmp(buffer, "BUFFER", strlen("BUFFER"))){
                 sscanf( (char *) buffer, "BUFFER %u", & connector->buffer_size);
-                fprintf(stderr, "BUFFER: %u\n", connector->buffer_size);
-
+                // fprintf(stderr, "BUFFER: %u\n", connector->buffer_size);
 
             } else
                 if (!memcmp(buffer, "INPUTPEAKS", strlen("INPUTPEAKS"))){

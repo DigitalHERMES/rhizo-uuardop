@@ -152,6 +152,7 @@ void *write_thread(void *file_name_v)
         if (bytes_read == 0)
         {
             fprintf(log_fd, "write_thread: read() returned 0\n");
+            running_write = false;
             continue;
         }
 
@@ -306,6 +307,8 @@ int main (int argc, char *argv[])
 
 //    pthread_create(&tid, NULL, write_thread, (void *) &connector);
     write_thread(output_pipe);
+
+    pthread_join(tid, NULL);
 
     return EXIT_SUCCESS;
 }

@@ -77,8 +77,6 @@ bool inotify_wait(char *file_name){
     int wd;
     char buffer_inot[BUF_LEN];
 
-
-
     fd = inotify_init();
 
     if (fd < 0) {
@@ -99,9 +97,11 @@ bool inotify_wait(char *file_name){
             (struct inotify_event *) &buffer_inot[i];
         if (event->len) {
             if (event->mask & IN_CREATE) {
+                fprintf(stderr, "Got IN_CREATE!\n");
                 goto exitt;
             }
             if (event->mask & IN_DELETE) {
+                fprintf(stderr, "Got IN_DELETE!\n");
                 goto exitt;
             }
         }
