@@ -52,6 +52,7 @@ Port configuration example at "/etc/uucp/port":
     $ command /usr/bin/uuport -e /var/log/uucp/uuport.LOG -i /tmp/uucp1.fifo -o /tmp/uucp2.fifo
 
 Sys protocol example (tested and works fine) at "/etc/uucp/sys":
+
     $ protocol y
     $ protocol-parameter y packet-size 512
     $ protocol-parameter y timeout 360
