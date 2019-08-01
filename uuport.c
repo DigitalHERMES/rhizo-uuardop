@@ -310,7 +310,7 @@ int main (int argc, char *argv[])
     pthread_create(&tid, NULL, write_thread, (void *) output_pipe);
 
 //    pthread_create(&tid, NULL, read_thread, (void *) input_pipe);
-    read_thread(output_pipe);
+    read_thread(input_pipe);
 
     // workaround... as write_thread blocks in fd 0...
     fclose(log_fd);
