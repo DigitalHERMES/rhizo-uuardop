@@ -201,6 +201,7 @@ void finish(int s){
         running_write = false;
         running_read = false;
         fflush(log_fd);
+        exit(EXIT_SUCCESS); // this is not perfect... but it is what we can do now.
         return;
     }
     if (s == SIGPIPE){
@@ -306,14 +307,18 @@ int main (int argc, char *argv[])
     // send a signal to uuardopd?
 
     pthread_t tid;
-    pthread_create(&tid, NULL, read_thread, (void *) input_pipe);
+    pthread_create(&tid, NULL, write_thread, (void *) output_pipe);
 
-//    pthread_create(&tid, NULL, write_thread, (void *) &connector);
-    write_thread(output_pipe);
+//    pthread_create(&tid, NULL, read_thread, (void *) input_pipe);
+    read_thread(output_pipe);
 
-    pthread_join(tid, NULL);
-
+    // workaround... as write_thread blocks in fd 0...
     fclose(log_fd);
+    return EXIT_SUCCESS;
+
+    // correct should be this...
+    pthread_join(tid, NULL);
+    // fclose(log_fd);
 
     return EXIT_SUCCESS;
 }

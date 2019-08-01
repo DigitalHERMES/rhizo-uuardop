@@ -194,7 +194,14 @@ int main (int argc, char *argv[])
     modem_thread((void *) &connector);
 
     // workaround! please try to reconnect!
-    // if ((connector.shutdown == true) && reconnect)
+#if 0
+    if ((connector.shutdown == true) && reconnect)
+    {
+        pthread_cancel(everybody);
+        ring_buffer_clean(all_buffers);
+        goto start_again;
+    }
+#endif
     fprintf(stderr, "Modem connection lost.\n");
     return EXIT_SUCCESS;
 
