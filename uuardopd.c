@@ -89,7 +89,8 @@ bool initialize_connector(rhizo_conn *connector){
     connector->connected = false;
     connector->waiting_for_connection = false;
     connector->ask_login = false;
-    connector->tcp_ret_ok = true;
+
+    connector->shutdown = false;
 
     connector->timeout = TIMEOUT_DEFAULT;
     connector->ofdm_mode = true;
@@ -192,16 +193,14 @@ int main (int argc, char *argv[])
     // pthread_create(&tid[2], NULL, modem_thread, (void *) &connector);
     modem_thread((void *) &connector);
 
+    // workaround! please try to reconnect!
+    // if ((connector.shutdown == true) && reconnect)
+    fprintf(stderr, "Modem connection lost.\n");
+    return EXIT_SUCCESS;
+
     pthread_join(tid[0], NULL);
     pthread_join(tid[1], NULL);
     pthread_join(tid[2], NULL);
-
-    if (connector.tcp_ret_ok == false){
-        // reconnect and call modem_thread again?
-        // say something to the spool threads??
-        // we cant guarantee nothing about data passed to tnc... pthread_cancel? select?
-        // spool needs to re-read the input directory...
-    }
 
     return EXIT_SUCCESS;
 }

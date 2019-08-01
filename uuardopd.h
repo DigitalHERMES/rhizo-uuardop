@@ -72,7 +72,7 @@ typedef struct{
 
 // state variables
 // C11 atomic is used here instead of a more pedantic code with mutexes and so on... 
-    atomic_bool tcp_ret_ok;
+    atomic_bool shutdown;
     atomic_bool connected;
     atomic_bool waiting_for_connection;
     atomic_bool clean_buffers;

@@ -52,7 +52,6 @@
 
 void *pipe_read_thread(void *conn)
 {
-    bool running;
     int num_read = 0;
     int bytes_pipe = 0;
     uint8_t buffer[BUFFER_SIZE];
@@ -61,8 +60,9 @@ void *pipe_read_thread(void *conn)
 
 try_again:
     inotify_wait(connector->input_pipe);
-    running = true;
+
     fprintf(stderr, "connector->session_counter_read: %d\n", connector->session_counter_read);
+
     input_fd = open(connector->input_pipe, O_RDONLY);
 
     if (input_fd == -1)
@@ -71,6 +71,7 @@ try_again:
         goto try_again;
     }
 
+    bool running = true;
     while (running)
     {
         // TODO: block until there is data available...

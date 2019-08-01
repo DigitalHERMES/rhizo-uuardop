@@ -53,13 +53,12 @@ void *ardop_data_worker_thread_tx(void *conn)
     int bytes_to_read;
     uint8_t ardop_size[2];
     uint32_t packet_size;
-    bool running = true;
 
-    while(running){
+    while(connector->shutdown == false){
 
         // check if we are connected, otherwise, wait
         while (connector->connected == false || ring_buffer_count_bytes(&connector->in_buffer.buf) == 0){
-            if (running == false){
+            if (connector->shutdown == true){
                 goto exit_local;
             }
             sleep(1);
@@ -96,21 +95,36 @@ void *ardop_data_worker_thread_tx(void *conn)
             }
 
             // ardop header
-            tcp_write(connector->data_socket, ardop_size, sizeof(ardop_size));
+            if (tcp_write(connector->data_socket, ardop_size, sizeof(ardop_size))
+                == false)
+            {
+                fprintf(stderr, "Error in tcp_write(data_socket)\n");
+                connector->shutdown = true;
+                goto exit_local;
+            }
 
            // fprintf(stderr, "ardop_data_worker_thread_tx: After ardop header tcp_write\n");
+            bool ret;
             if (tx_size > MAX_ARDOP_PACKET)
             {
                 fprintf(stderr,"Sent to ARDOP: %u bytes.\n", MAX_ARDOP_PACKET);
-                tcp_write(connector->data_socket, &buffer[counter] , MAX_ARDOP_PACKET);
+                ret = tcp_write(connector->data_socket, &buffer[counter] , MAX_ARDOP_PACKET);
                 counter += MAX_ARDOP_PACKET;
                 tx_size -= MAX_ARDOP_PACKET;
             }
             else{
                 fprintf(stderr,"Sent to ARDOP: %u bytes.\n", tx_size);
-                tcp_write(connector->data_socket, &buffer[counter], tx_size);
+                ret = tcp_write(connector->data_socket, &buffer[counter], tx_size);
                 counter += tx_size;
                 tx_size -= tx_size;
+            }
+
+            // check lost tcp connection
+            if (ret == false)
+            {
+                fprintf(stderr, "Error in tcp_write(data_socket)\n");
+                connector->shutdown = true;
+                goto exit_local;
             }
 
             // buffer management hack
@@ -121,7 +135,7 @@ void *ardop_data_worker_thread_tx(void *conn)
 
 exit_local:
 
-    fprintf(stderr, "Exiting ardop_data_worker_thread_tx... Do we really want this?\n");
+    fprintf(stderr, "Exiting ardop_data_worker_thread_tx.\n");
     return EXIT_SUCCESS;
 }
 
@@ -132,10 +146,10 @@ void *ardop_data_worker_thread_rx(void *conn)
     uint32_t buf_size; // our header is 4 bytes long
     uint8_t ardop_size[2];
 
-    while(connector->tcp_ret_ok){
+    while(connector->shutdown == false){
 
         while (connector->connected == false){
-            if (connector->tcp_ret_ok == false){
+            if (connector->shutdown == true){
                 goto exit_local;
             }
             sleep(1);
@@ -143,7 +157,12 @@ void *ardop_data_worker_thread_rx(void *conn)
 
         // fprintf(stderr,"Before tcp_read.\n");
         ardop_size[0] = 0; ardop_size[1] = 0;
-        tcp_read(connector->data_socket, ardop_size, 2);
+        if (tcp_read(connector->data_socket, ardop_size, 2) == false)
+        {
+            fprintf(stderr, "Error in tcp_read(data_socket)\n");
+            connector->shutdown = true;
+            goto exit_local;
+        }
 
         // ARDOP TNC data format: length 2 bytes | payload
         buf_size = 0;
@@ -153,7 +172,12 @@ void *ardop_data_worker_thread_rx(void *conn)
 
         fprintf(stderr,"Ardop Receive: %u bytes.\n", buf_size);
 
-        tcp_read(connector->data_socket, buffer, buf_size);
+        if (tcp_read(connector->data_socket, buffer, buf_size) == false)
+        {
+            fprintf(stderr, "Error in tcp_read(data_socket)\n");
+            connector->shutdown = true;
+            goto exit_local;
+        }
 
         if (buf_size > 3 && !memcmp("ARQ", buffer,  3)){
             buf_size -= 3;
@@ -169,6 +193,7 @@ void *ardop_data_worker_thread_rx(void *conn)
     }
 
 exit_local:
+    fprintf(stderr, "ardop_data_worker_thread_rx exit.\n");
     return EXIT_SUCCESS;
 }
 
@@ -179,11 +204,15 @@ void *ardop_control_worker_thread_rx(void *conn)
     uint8_t buffer[1024];
     int counter = 0;
     bool new_cmd = false;
-    bool running = true;
 
-    while(running){
+    while(connector->shutdown == false){
 
-        running &= tcp_read(connector->control_socket, &rcv_byte, 1);
+        if (tcp_read(connector->control_socket, &rcv_byte, 1) == false)
+        {
+            fprintf(stderr, "Error in tcp_read(control_socket)\n");
+            connector->shutdown = true;
+            goto exit_local;
+        }
 
         if (rcv_byte == '\r'){
             buffer[counter] = 0;
@@ -217,7 +246,7 @@ void *ardop_control_worker_thread_rx(void *conn)
                 { // we are receiving a connection... call uucico!
                     bool retval = call_uucico(connector);
                     if (retval == false)
-                        fprintf(stderr, "Error calling call_uucico()\n");
+                        fprintf(stderr, "Error calling call_uucico()!\n");
                 }
                 connector->waiting_for_connection = false;
             } else
@@ -238,7 +267,8 @@ void *ardop_control_worker_thread_rx(void *conn)
         }
     }
 
-    fprintf(stderr, "Leaving ardop_control_worker_thread_rx... Not good.\n");
+exit_local:
+    fprintf(stderr, "ardop_control_worker_thread_rx exit.\n");
     return EXIT_SUCCESS;
 }
 
@@ -246,16 +276,17 @@ void *ardop_control_worker_thread_tx(void *conn)
 {
     rhizo_conn *connector = (rhizo_conn *) conn;
     char buffer[1024];
+    bool ret = true;
 
     // initialize
     memset(buffer,0,sizeof(buffer));
     sprintf(buffer, "INITIALIZE\r");
-    tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
+    ret &= tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
 
     // We set a call sign
     memset(buffer,0,sizeof(buffer));
     sprintf(buffer, "MYCALL %s\r", connector->call_sign);
-    tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
+    ret &= tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
 
     // we take care of timeout, here we just set the wanted timeout + 5
     memset(buffer,0,sizeof(buffer));
@@ -263,26 +294,36 @@ void *ardop_control_worker_thread_tx(void *conn)
         sprintf(buffer, "ARQTIMEOUT %d\r", connector->timeout);
     else
         sprintf(buffer, "ARQTIMEOUT %d\r", MAX_TIMEOUT);
-    tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
+    ret &= tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
 
     memset(buffer,0,sizeof(buffer));
     strcpy(buffer,"LISTEN True\r");
-    tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
+    ret &= tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
 
     memset(buffer,0,sizeof(buffer));
     strcpy(buffer,"BUSYDET 10\r");
-    tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
+    ret &= tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
 
     memset(buffer,0,sizeof(buffer));
     if (connector->ofdm_mode == true)
         strcpy(buffer,"ENABLEOFDM True\r");
     else
         strcpy(buffer,"ENABLEOFDM False\r");
-    tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
+    ret &= tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
+
+    // check lost tcp connection
+    if (ret == false)
+    {
+        fprintf(stderr, "Error in tcp_write(control_socket)\n");
+        connector->shutdown = true;
+        goto exit_local;
+    }
+
 
     // 1Hz function
-    while(connector->tcp_ret_ok){
+    while(connector->shutdown == false){
 
+        ret = true;
         // Logic to start a connection
         if (connector->connected == false &&
             ring_buffer_count_bytes(&connector->in_buffer.buf) > 0 &&
@@ -290,7 +331,7 @@ void *ardop_control_worker_thread_tx(void *conn)
 
             memset(buffer,0,sizeof(buffer));
             sprintf(buffer,"ARQCALL %s 5\r", connector->remote_call_sign);
-            tcp_write(connector->control_socket, (uint8_t *)buffer, strlen(buffer));
+            ret &= tcp_write(connector->control_socket, (uint8_t *)buffer, strlen(buffer));
 
 //            fprintf(stderr, "CONNECTING... %s\n", buffer);
             connector->waiting_for_connection = true;
@@ -303,7 +344,7 @@ void *ardop_control_worker_thread_tx(void *conn)
 
             memset(buffer,0,sizeof(buffer));
             sprintf(buffer,"DISCONNECT\r");
-            tcp_write(connector->control_socket, (uint8_t *)buffer, strlen(buffer));
+            ret &= tcp_write(connector->control_socket, (uint8_t *)buffer, strlen(buffer));
 
             while (connector->connected == true)
                 usleep(100000);
@@ -313,30 +354,38 @@ void *ardop_control_worker_thread_tx(void *conn)
             ring_buffer_clear (&connector->out_buffer.buf);
         }
 
-#if 0 // for debugging purposes
-        // just calling buffer to help us...
-        if (connector->connected == true){
-            if (connector->timeout_counter % 2){
-                memset(buffer,0,sizeof(buffer));
-                sprintf(buffer, "BUFFER\r");
-                tcp_write(connector->control_socket, (uint8_t *)buffer, strlen(buffer));
-            }
+        // check lost tcp connection
+        if (ret == false)
+        {
+            fprintf(stderr, "Error in tcp_write(control_socket)\n");
+            connector->shutdown = true;
+            goto exit_local;
         }
-#endif
 
-        sleep(1);
+        sleep(1); // 1Hz function
 
     }
 
+exit_local:
+    fprintf(stderr, "ardop_control_worker_thread_tx exit.\n");
     return EXIT_SUCCESS;
 }
 
 bool initialize_modem_ardop(rhizo_conn *connector){
-    connector->tcp_ret_ok &= tcp_connect(connector->ip_address, connector->tcp_base_port, &connector->control_socket);
-    connector->tcp_ret_ok &= tcp_connect(connector->ip_address, connector->tcp_base_port+1, &connector->data_socket);
 
-    if (connector->tcp_ret_ok == false){
-        fprintf(stderr, "Connection to TNC failure.\n");
+    if (tcp_connect(connector->ip_address, connector->tcp_base_port, &connector->control_socket)
+        == false)
+    {
+        fprintf(stderr, "Connection to TNC's control socket failed.\n");
+        connector->shutdown = true;
+        return false;
+    }
+
+    if (tcp_connect(connector->ip_address, connector->tcp_base_port+1, &connector->data_socket)
+        == false)
+    {
+        fprintf(stderr, "Connection to TNC's data socket failed.\n");
+        connector->shutdown = true;
         return false;
     }
 
