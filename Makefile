@@ -25,9 +25,6 @@ CFLAGS=-g -Wall -std=gnu11 -pthread
 
 all: uuardopd uuport
 
-SRCS=$(wildcard *.c)
-OBJS=$(SRCS:.c=.o)
-
 %.o : %.c %.h
 	gcc -c $(CFLAGS) $< -o $@
 
@@ -37,6 +34,7 @@ uuardopd: ardop.o buffer.o common.o net.o pipe.o ring_buffer.o uuardopd.o call_u
 install: uuardopd uuport
 	install uuardopd $(PREFIX)/bin
 	install uuport $(PREFIX)/bin
+	install initscripts/uuardopd.service /etc/systemd/system
 
 doc:
 	doxygen doxyfile
