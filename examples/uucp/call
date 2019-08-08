@@ -1,0 +1,15 @@
+#
+# call		This file is used when the ``call-login'' or ``call-password''
+#		commands are used in the sys file with a "*" argument (e.g.,
+#		``call-login *'').  The system name is looked up in this file,
+#		and the login name and password are used.
+#
+#		The point of this is that the sys file may then be publically
+#		readable, while still concealing the login names and passwords
+#		used to connect to the remote system.
+#
+#		The format is just system-name login-name password.
+#
+
+#alphen		Utester		grumblesmurf
+remote		remoteuser	remotepass

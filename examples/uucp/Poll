@@ -1,0 +1,17 @@
+#
+# Poll		This file contains a list of the systems which are to be
+#		polled, and the hours during which they are to be polled.
+#		Normally, uudemon.hr processes this file hourly.
+#
+# Version:	@(#)Poll	2.10	19-Dec-1996
+#
+# Example:
+#		schedule alphen	18
+#		poll     alphen	18 19 20 02 03 04 05 06
+#
+#		Note that every system needs 1 line for schedule AND
+#		1 line for poll. The schedule action only touches an empty
+#		file so that UUCP knows there is work to do for the remote
+#		system. The "poll" is then only done if that file is present.
+#		This is a crude dialing retry system.
+#

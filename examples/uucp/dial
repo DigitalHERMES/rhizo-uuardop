@@ -1,0 +1,20 @@
+#
+# dial		This file defines "dialers". Nothing special here - you
+#		just define the init and dial strings for the modems.
+#
+#		Most systems should be able to just use the "hayes" entry.
+#		Try that first before changing this file.
+#
+dialer hayes
+chat "" ATZ\r\d\c OK\r \dATM0L0E1Q0\r\d\c OK\r ATDT\D CONNECT
+chat-fail RING
+chat-fail NO\sCARRIER
+chat-fail ERROR
+chat-fail NO\sDIALTONE
+chat-fail BUSY
+chat-fail NO\sANSWER
+chat-fail VOICE
+complete \d\d+++\d\dATM0H\r\c
+abort \d\d+++\d\dATM0H\r\c
+
+# Add extra dialer definitions here.

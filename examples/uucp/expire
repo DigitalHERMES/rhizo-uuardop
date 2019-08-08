@@ -1,0 +1,78 @@
+#
+# This configuration file is used by uudemon.day
+# uudemon.day is run daily from cron.daily and sends status information
+# to the administrator. It also bounces old mail and kills old news.
+# Furthermore it reports a list of old jobs to the admin.
+#
+# You can configure the time after which news and mail expire as well as how
+# old jobs must be so they get reported in the daily status information.
+# You can set a global default and override this number for each system.
+#
+ 
+
+#### NEWS ####
+
+# Specify how long rnews commands stay in the spool before
+# they are killed. You can specify a default for all systems
+# and override this setting on a per system basis.
+#
+# The time is to be given in hours with 0 meaning that
+# jobs will be kept forever.
+
+# news will be kept for 2 weeks by default
+$news			= 336;
+
+# # for system alpamayo only for 24 hours
+# $news{'alpamayo'}	= 24;
+
+
+
+#### MAIL ####
+
+# Specify how long rmail commands stay in the spool before
+# they are killed and a bounce message is sent to the author
+# or the mail message. You can specify a default for all systems
+# and override this on a per system basis.
+#
+# Time in hours, 0 means jobs will be kept forever
+
+# mail will be bounced after 672 hours or 4 weeks.
+$mail			= 672;
+
+# # but keep it longer for system marvin and defiant
+# $mail{'marvin'}	= 672*4;
+# $mail{'defiant'} 	= 672*2;
+
+
+
+#### LISTING ####
+
+# Jobs of a certain age will be listed in the daily report the
+# local administrator gets. 
+
+# Jobs older than one week will be listed in the daily report
+$list				= 168;	
+
+# # Don't report jobs for system defiant at all.
+# $list{'defiant'}		= 0;
+
+
+
+
+
+
+
+# After which time (__in days__) to expire files in uucppublic
+
+$expire_uucppublic		= 14;	# NOTE: This time is in days;
+					# system specific settings are not supported
+
+
+
+# If this is set to 1, only important reports will be sent. A report is important
+# if there's more than just uustat and uutraf/uurate output.
+$important_only = 0;
+
+# Don't edit stuff below here
+$expireversion = 1;
+1;
