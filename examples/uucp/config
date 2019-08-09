@@ -6,7 +6,7 @@
 #		different from your normal hostname.
 #
 
-nodename	central
+nodename	PY2CBA
 
 # Defaults.
 #sysfile	/etc/uucp/sys
