@@ -299,6 +299,10 @@ void *ardop_control_worker_thread_tx(void *conn)
     ret &= tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
 
     memset(buffer,0,sizeof(buffer));
+    sprintf(buffer, "ARQBW 2000MAX\r");
+    ret &= tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer)); 
+
+    memset(buffer,0,sizeof(buffer));
     strcpy(buffer,"LISTEN True\r");
     ret &= tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
 
