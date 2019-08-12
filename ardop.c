@@ -231,11 +231,13 @@ void *ardop_control_worker_thread_rx(void *conn)
         if (new_cmd){
             if (!memcmp(buffer, "DISCONNECTED", strlen("DISCONNECTED"))){
                 fprintf(stderr, "TNC: %s\n", buffer);
+                connector->clean_buffers = true;
                 connector->connected = false;
                 connector->waiting_for_connection = false;
             } else
             if (!memcmp(buffer, "NEWSTATE DISC", strlen("NEWSTATE DISC"))){
                 fprintf(stderr, "TNC: %s\n", buffer);
+                connector->clean_buffers = true;
                 connector->connected = false;
                 connector->waiting_for_connection = false;
             } else
@@ -325,6 +327,28 @@ void *ardop_control_worker_thread_tx(void *conn)
 
         ret = true;
         // Logic to start a connection
+
+        if (connector->clean_buffers == true)
+        {
+            connector->clean_buffers = false;
+
+            if (connector->connected == true)
+            {
+                memset(buffer,0,sizeof(buffer));
+                sprintf(buffer,"DISCONNECT\r");
+                ret &= tcp_write(connector->control_socket, (uint8_t *)buffer, strlen(buffer));
+            }
+
+            while (connector->connected == true)
+                usleep(100000);
+
+            usleep(1200000); // sleep for threads finish their jobs (more than 1s here)
+
+            fprintf(stderr, "Connection closed - Cleaning internal buffers.\n");
+            ring_buffer_clear (&connector->in_buffer.buf);
+            ring_buffer_clear (&connector->out_buffer.buf);
+        }
+
         if (connector->connected == false &&
             ring_buffer_count_bytes(&connector->in_buffer.buf) > 0 &&
             !connector->waiting_for_connection){
@@ -337,24 +361,6 @@ void *ardop_control_worker_thread_tx(void *conn)
             connector->waiting_for_connection = true;
         }
 
-//        if (connector->clean_buffers == true && connector->buffer_size == 0)
-        if (connector->clean_buffers == true)
-        {
-            connector->clean_buffers = false;
-
-            memset(buffer,0,sizeof(buffer));
-            sprintf(buffer,"DISCONNECT\r");
-            ret &= tcp_write(connector->control_socket, (uint8_t *)buffer, strlen(buffer));
-
-            while (connector->connected == true)
-                usleep(100000);
-
-            usleep(1200000); // sleep for threads finish their jobs (more than 1s here)
-
-            fprintf(stderr, "Connection closed - Cleaning internal buffers.\n");
-            ring_buffer_clear (&connector->in_buffer.buf);
-            ring_buffer_clear (&connector->out_buffer.buf);
-        }
 
         // check lost tcp connection
         if (ret == false)
