@@ -42,6 +42,7 @@
 extern "C" {
 #endif
 
+#define UUCP_CONFIG "/etc/uucp/config"
 // 30s
 #define TIMEOUT_DEFAULT 30
 
@@ -64,8 +65,6 @@ typedef struct{
     char input_pipe[1024];
     char output_pipe[1024];
 
-    uint32_t buffer_size;
-
 // pipes fd which are used to talk to uucico (receiving a call)
     int pipefd1[2];
     int pipefd2[2];
@@ -80,6 +79,9 @@ typedef struct{
 
     atomic_int session_counter_read;
     atomic_int session_counter_write;
+
+    // internal ardop buffer size
+    atomic_int buffer_size;
 
 // uuardopd private buffers
     buffer in_buffer;

@@ -42,6 +42,7 @@
 #include <sys/socket.h>
 #include <dirent.h>
 #include <pthread.h>
+#include <ctype.h>
 
 #include "call_uucico.h"
 #include "uuardopd.h"
@@ -89,19 +90,75 @@ bool initialize_connector(rhizo_conn *connector){
     connector->connected = false;
     connector->waiting_for_connection = false;
     connector->ask_login = false;
+    connector->clean_buffers = false; // <-  this also means -> ask for disconnection!
 
     connector->shutdown = false;
 
     connector->timeout = TIMEOUT_DEFAULT;
     connector->ofdm_mode = true;
     connector->buffer_size = 0;
-    connector->clean_buffers = false;
     connector->session_counter_read = 0;
     connector->session_counter_write = 0;
+
+    connector->call_sign[0] = 0;       // --> set default to uucp nodename
+    connector->remote_call_sign[0] = 0;// --> set default to CQ
 
     connector->uucico_active = false;
 
     return true;
+}
+
+bool get_call_sign_from_uucp(rhizo_conn *connector)
+{
+    FILE *uuconf = fopen(UUCP_CONFIG, "r");
+    if (uuconf == NULL)
+    {
+        fprintf(stderr, "No Call sign specified and UUCP config could not be opened.\n");
+        return false;
+    }
+
+    int j, i;
+    char buff_call[BUFFER_SIZE];
+    char local_buff[BUFFER_SIZE];
+    while(fgets(buff_call, BUFFER_SIZE, uuconf))
+    {
+        i = 0; j = 0;
+        while (buff_call[i] != '\n')
+        {
+            if(buff_call[i] == '#' || isblank(buff_call[i]))
+            {
+                j = 0;
+                break;
+            }
+
+            if(isalnum(buff_call[i]))
+            {
+                local_buff[j] = buff_call[i];
+                local_buff[++j] = 0;
+            }
+            i++;
+
+            if (!strncmp("nodename", local_buff, 8))
+            {
+                while (buff_call[i] == ' ')
+                    i++;
+                sscanf(&buff_call[i], "%s", connector->call_sign);
+                goto got_callsign;
+            }
+        }
+    }
+
+    fclose(uuconf);
+
+    if (connector->call_sign[0] == 0)
+    {
+        fprintf(stderr, "No Call sign specified and could not read call sign from UUCP config.\n");
+        return false;
+    }
+
+got_callsign:
+    return true;
+
 }
 
 int main (int argc, char *argv[])
@@ -118,7 +175,7 @@ int main (int argc, char *argv[])
     // signal(SIGPIPE, SIG_IGN); // ignores SIGPIPE...
 
     fprintf(stderr, "Rhizomatica's uuardopd version 0.1 by Rafael Diniz -  rafael (AT) rhizomatica (DOT) org\n");
-    fprintf(stderr, "License: GPLv3+\n\n");
+    fprintf(stderr, "License: GNU AGPL version 3+\n\n");
 
 
     if (argc < 7)
@@ -181,6 +238,19 @@ int main (int argc, char *argv[])
         default:
             goto manual;
         }
+    }
+
+    if (connector.call_sign[0] == 0)
+    {
+        if (get_call_sign_from_uucp(&connector) == false)
+            goto manual;
+        fprintf(stderr, "Call-sign obtained from uucp config: %s\n", connector.call_sign);
+    }
+
+    if (connector.remote_call_sign[0] == 0)
+    {
+        strcpy(connector.remote_call_sign, "CQ");
+        fprintf(stderr, "Destination call-sign not set. Using CQ.\n");
     }
 
     pthread_t tid[3];

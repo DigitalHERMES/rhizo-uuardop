@@ -135,7 +135,7 @@ void *ardop_data_worker_thread_tx(void *conn)
 
 exit_local:
 
-    fprintf(stderr, "Exiting ardop_data_worker_thread_tx.\n");
+    fprintf(stderr, "ardop_data_worker_thread_tx exit.\n");
     return EXIT_SUCCESS;
 }
 
@@ -301,7 +301,7 @@ void *ardop_control_worker_thread_tx(void *conn)
     ret &= tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
 
     memset(buffer,0,sizeof(buffer));
-    strcpy(buffer,"BUSYDET 10\r");
+    strcpy(buffer,"BUSYDET 0\r"); // disabling busy detection
     ret &= tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
 
     memset(buffer,0,sizeof(buffer));
@@ -330,7 +330,7 @@ void *ardop_control_worker_thread_tx(void *conn)
             !connector->waiting_for_connection){
 
             memset(buffer,0,sizeof(buffer));
-            sprintf(buffer,"ARQCALL %s 5\r", connector->remote_call_sign);
+            sprintf(buffer,"ARQCALL %s 4\r", connector->remote_call_sign);
             ret &= tcp_write(connector->control_socket, (uint8_t *)buffer, strlen(buffer));
 
 //            fprintf(stderr, "CONNECTING... %s\n", buffer);
@@ -348,6 +348,8 @@ void *ardop_control_worker_thread_tx(void *conn)
 
             while (connector->connected == true)
                 usleep(100000);
+
+            usleep(1200000); // sleep for threads finish their jobs (more than 1s here)
 
             fprintf(stderr, "Connection closed - Cleaning internal buffers.\n");
             ring_buffer_clear (&connector->in_buffer.buf);
@@ -408,6 +410,8 @@ bool initialize_modem_ardop(rhizo_conn *connector){
     pthread_join(tid2, NULL);
     pthread_join(tid3, NULL);
     pthread_join(tid4, NULL);
+
+    // should we write a tcp_write (CLOSE) to the TNC?
 
     return true;
 }
