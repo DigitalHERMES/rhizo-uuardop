@@ -5,7 +5,7 @@ Requires=ardop.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/uuardopd -i /tmp/uucp2.fifo -o /tmp/uucp1.fifo -c AA2AAA -d AA2AAA -a 127.0.0.1 -p 8515 -t 60
+ExecStart=/usr/bin/uuardopd -i /tmp/uucp2.fifo -o /tmp/uucp1.fifo -a 127.0.0.1 -p 8515 -t 60
 ExecStop=/usr/bin/killall -s QUIT uuardopd
 IgnoreSIGPIPE=no
 #StandardOutput=null

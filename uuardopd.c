@@ -100,8 +100,8 @@ bool initialize_connector(rhizo_conn *connector){
     connector->session_counter_read = 0;
     connector->session_counter_write = 0;
 
-    connector->call_sign[0] = 0;       // --> set default to uucp nodename
-    connector->remote_call_sign[0] = 0;// --> set default to CQ
+    connector->call_sign[0] = 0;        // --> set default to uucp nodename
+    connector->remote_call_sign[0] = 0; // --> set default to CQ
 
     connector->uucico_active = false;
 
@@ -148,15 +148,15 @@ bool get_call_sign_from_uucp(rhizo_conn *connector)
         }
     }
 
-    fclose(uuconf);
-
     if (connector->call_sign[0] == 0)
     {
         fprintf(stderr, "No Call sign specified and could not read call sign from UUCP config.\n");
+        fclose(uuconf);
         return false;
     }
 
 got_callsign:
+    fclose(uuconf);
     return true;
 
 }
