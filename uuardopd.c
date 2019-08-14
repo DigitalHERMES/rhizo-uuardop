@@ -84,8 +84,8 @@ void *modem_thread(void *conn)
 
 bool initialize_connector(rhizo_conn *connector){
 
-    initialize_buffer(&connector->in_buffer, 26); // 64MB
-    initialize_buffer(&connector->out_buffer, 26); // 64MB
+    ring_buffer_create (&connector->in_buffer, 20, SYSV_SHM_KEY_IB);
+    ring_buffer_create (&connector->out_buffer, 20, SYSV_SHM_KEY_OB);
 
     connector->connected = false;
     connector->waiting_for_connection = false;
@@ -253,10 +253,18 @@ int main (int argc, char *argv[])
         fprintf(stderr, "Destination call-sign not set. Using CQ.\n");
     }
 
+    // test if ardop is connected to a functioning serial device...
+
     pthread_t tid[3];
 
+#if PIPE_MODE
     pthread_create(&tid[0], NULL, pipe_read_thread, (void *) &connector);
     pthread_create(&tid[1], NULL, pipe_write_thread, (void *) &connector);
+#endif
+
+#if SHM_MODE
+    pthread_create(&tid[0], NULL, shm_thread, (void *) &connector);
+#endif
 
     pthread_create(&tid[2], NULL, uucico_thread, (void *) &connector);
 

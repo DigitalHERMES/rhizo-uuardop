@@ -36,13 +36,21 @@
 #include <stdatomic.h>
 #include <stdbool.h>
 #include <pthread.h>
-#include "buffer.h"
+
+#include "ring_buffer.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#define PIPE_MODE 1
+#define SHM_MODE 0
+
 #define UUCP_CONFIG "/etc/uucp/config"
+
+#define SYSV_SHM_KEY_IB 66666
+#define SYSV_SHM_KEY_OB 66668
+
 // 30s
 #define TIMEOUT_DEFAULT 30
 
@@ -65,11 +73,13 @@ typedef struct{
     char input_pipe[1024];
     char output_pipe[1024];
 
-// pipes fd which are used to talk to uucico (receiving a call)
+#if PIPE_MODE
+// pipes fd which are used to talk to uucico (receiving a call) -> this will go away for good!
     int pipefd1[2];
     int pipefd2[2];
+#endif
 
-// state variables
+// state variables (TODO: use FSM!)
 // C11 atomic is used here instead of a more pedantic code with mutexes and so on... 
     atomic_bool shutdown;
     atomic_bool connected;
@@ -84,8 +94,8 @@ typedef struct{
     atomic_int buffer_size;
 
 // uuardopd private buffers
-    buffer in_buffer;
-    buffer out_buffer;
+    struct ring_buffer in_buffer;
+    struct ring_buffer out_buffer;
 } rhizo_conn;
 
 #ifdef __cplusplus

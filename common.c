@@ -43,8 +43,12 @@
 #include <sys/inotify.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <errno.h>
+#include <unistd.h>
 
+#include "uuardopd.h"
 #include "common.h"
+
 
 bool inotify_wait(char *file_name){
     struct stat   buffer;

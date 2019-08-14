@@ -218,8 +218,15 @@ void finish(int s){
 
 int main (int argc, char *argv[])
 {
+#if 1
     char input_pipe[BUFFER_SIZE];
     char output_pipe[BUFFER_SIZE];
+#endif
+
+#if 0 // shmmed rhizo_connector...
+    rhizo_conn connector;
+#endif
+
     char log_file[BUFFER_SIZE];
     log_file[0] = 0;
 

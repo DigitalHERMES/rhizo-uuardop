@@ -39,6 +39,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <unistd.h>
+
 
 #include "common.h"
 #include "ardop.h"
@@ -57,14 +59,14 @@ void *ardop_data_worker_thread_tx(void *conn)
     while(connector->shutdown == false){
 
         // check if we are connected, otherwise, wait
-        while (connector->connected == false || ring_buffer_count_bytes(&connector->in_buffer.buf) == 0){
+        while (connector->connected == false || ring_buffer_count_bytes(&connector->in_buffer) == 0){
             if (connector->shutdown == true){
                 goto exit_local;
             }
             sleep(1);
         }
 
-        bytes_to_read = ring_buffer_count_bytes(&connector->in_buffer.buf);
+        bytes_to_read = ring_buffer_count_bytes(&connector->in_buffer);
         if (bytes_to_read > BUFFER_SIZE)
             bytes_to_read = BUFFER_SIZE;
         if (bytes_to_read <= 0)
@@ -187,7 +189,7 @@ void *ardop_data_worker_thread_rx(void *conn)
         }
         else{
             buffer[buf_size] = 0;
-//            fprintf(stderr, "Ardop non-payload data rx: %s\n", buffer);
+            fprintf(stderr, "Ardop non-payload data rx: %s\n", buffer);
         }
 
     }
@@ -349,12 +351,12 @@ void *ardop_control_worker_thread_tx(void *conn)
             usleep(1200000); // sleep for threads finish their jobs (more than 1s here)
 
             fprintf(stderr, "Connection closed - Cleaning internal buffers.\n");
-            ring_buffer_clear (&connector->in_buffer.buf);
-            ring_buffer_clear (&connector->out_buffer.buf);
+            ring_buffer_clear (&connector->in_buffer);
+            ring_buffer_clear (&connector->out_buffer);
         }
 
         if (connector->connected == false &&
-            ring_buffer_count_bytes(&connector->in_buffer.buf) > 0 &&
+            ring_buffer_count_bytes(&connector->in_buffer) > 0 &&
             !connector->waiting_for_connection){
 
             memset(buffer,0,sizeof(buffer));
