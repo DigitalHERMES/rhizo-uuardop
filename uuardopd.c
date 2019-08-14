@@ -48,6 +48,8 @@
 #include "uuardopd.h"
 #include "pipe.h"
 #include "ardop.h"
+#include "shm.h"
+#include "ring_buffer.h"
 
 // temporary global variable to enable sockets closure
 rhizo_conn *tmp_conn = NULL;
@@ -163,10 +165,12 @@ got_callsign:
 
 int main (int argc, char *argv[])
 {
-    rhizo_conn connector;
-    tmp_conn = &connector;
+    rhizo_conn *connector;
 
-    initialize_connector(&connector);
+    connector = create_shm(sizeof(rhizo_conn), SYSV_SHM_KEY_STR);
+    tmp_conn = connector;
+
+    initialize_connector(connector);
 
     signal (SIGINT, finish);
 
@@ -206,50 +210,50 @@ int main (int argc, char *argv[])
             goto manual;
             break;
         case 'l':
-            connector.ask_login = true;
+            connector->ask_login = true;
             break;
         case 'c':
-            strcpy(connector.call_sign, optarg);
+            strcpy(connector->call_sign, optarg);
             break;
         case 'd':
-            strcpy(connector.remote_call_sign, optarg);
+            strcpy(connector->remote_call_sign, optarg);
             break;
         case 't':
-            connector.timeout = atoi(optarg);
+            connector->timeout = atoi(optarg);
             break;
         case 'p':
-            connector.tcp_base_port = atoi(optarg);
+            connector->tcp_base_port = atoi(optarg);
             break;
         case 'a':
-            strcpy(connector.ip_address, optarg);
+            strcpy(connector->ip_address, optarg);
             break;
         case 'i':
-            strcpy(connector.input_pipe, optarg);
+            strcpy(connector->input_pipe, optarg);
             break;
         case 'o':
-            strcpy(connector.output_pipe, optarg);
+            strcpy(connector->output_pipe, optarg);
             break;
         case 'f':
             if(strstr(optarg, "noofdm"))
-                connector.ofdm_mode = false;
+                connector->ofdm_mode = false;
             else
-                connector.ofdm_mode = true;
+                connector->ofdm_mode = true;
             break;
         default:
             goto manual;
         }
     }
 
-    if (connector.call_sign[0] == 0)
+    if (connector->call_sign[0] == 0)
     {
-        if (get_call_sign_from_uucp(&connector) == false)
+        if (get_call_sign_from_uucp(connector) == false)
             goto manual;
-        fprintf(stderr, "Call-sign obtained from uucp config: %s\n", connector.call_sign);
+        fprintf(stderr, "Call-sign obtained from uucp config: %s\n", connector->call_sign);
     }
 
-    if (connector.remote_call_sign[0] == 0)
+    if (connector->remote_call_sign[0] == 0)
     {
-        strcpy(connector.remote_call_sign, "CQ");
+        strcpy(connector->remote_call_sign, "CQ");
         fprintf(stderr, "Destination call-sign not set. Using CQ.\n");
     }
 
@@ -258,22 +262,22 @@ int main (int argc, char *argv[])
     pthread_t tid[3];
 
 #if PIPE_MODE
-    pthread_create(&tid[0], NULL, pipe_read_thread, (void *) &connector);
-    pthread_create(&tid[1], NULL, pipe_write_thread, (void *) &connector);
+    pthread_create(&tid[0], NULL, pipe_read_thread, (void *) connector);
+    pthread_create(&tid[1], NULL, pipe_write_thread, (void *) connector);
 #endif
 
 #if SHM_MODE
-    pthread_create(&tid[0], NULL, shm_thread, (void *) &connector);
+    pthread_create(&tid[0], NULL, shm_thread, (void *) connector);
 #endif
 
-    pthread_create(&tid[2], NULL, uucico_thread, (void *) &connector);
+    pthread_create(&tid[2], NULL, uucico_thread, (void *) connector);
 
-    // pthread_create(&tid[2], NULL, modem_thread, (void *) &connector);
-    modem_thread((void *) &connector);
+    // pthread_create(&tid[2], NULL, modem_thread, (void *) connector);
+    modem_thread((void *) connector);
 
     // workaround! please try to reconnect!
 #if 0
-    if ((connector.shutdown == true) && reconnect)
+    if ((connector->shutdown == true) && reconnect)
     {
         pthread_cancel(everybody);
         ring_buffer_clean(all_buffers);

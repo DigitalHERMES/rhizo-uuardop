@@ -48,6 +48,7 @@ extern "C" {
 
 #define UUCP_CONFIG "/etc/uucp/config"
 
+#define SYSV_SHM_KEY_STR 66664
 #define SYSV_SHM_KEY_IB 66666
 #define SYSV_SHM_KEY_OB 66668
 
