@@ -49,8 +49,8 @@
 #include "ring_buffer.h"
 
 FILE *log_fd;
-bool running_read;
-bool running_write;
+atomic_bool running_read;
+atomic_bool running_write;
 
 #define TIMEOUT 15
 
