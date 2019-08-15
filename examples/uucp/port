@@ -8,7 +8,7 @@
 #
 port HFP
 type pipe
-command /usr/bin/uuport -e /var/log/uucp/UuportLog -i /tmp/uucp1.fifo -o /tmp/uucp2.fifo
+command /usr/bin/uuport
 
 #
 # Description for the TCP port - pretty trivial. DON'T DELETE.
