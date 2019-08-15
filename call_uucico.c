@@ -67,7 +67,7 @@ void *uucico_thread(void *conn){
     rhizo_conn *connector = conn;
     pid_t pid;
     int st;
-    bool running = true;
+
     // set some file descriptors as in in.uucpd...
     // use 2 pipe() to create the fds for I/O
     // fork()
@@ -75,7 +75,7 @@ void *uucico_thread(void *conn){
     // in the child, remap the fds to 0, 1 (and 2?) 
     // in the child, call execl() (or execlp() (uucico -l)
 
-    while (running)
+    while (connector->shutdown == false)
     {
         while (connector->uucico_active == false)
             usleep(100000); // 0.1s

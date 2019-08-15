@@ -50,6 +50,7 @@
 #include <grp.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <sys/mman.h>
 
 #include "shm.h"
 
@@ -86,6 +87,54 @@ void *create_shm(size_t size, key_t key)
 
     return address;
 }
+
+void *connect_shm(size_t size, void *address, key_t key)
+{
+    int shmid;
+    void *ret_address;
+
+
+    ret_address = mmap(address, size, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE |  MAP_FIXED,
+                       -1, 0);
+
+    if (ret_address != address){
+        fprintf(stderr, "Error creating in mmap.\n");
+        return NULL;
+    }
+
+    /*  create the segment 1: */
+    if ((shmid = shmget(key, size, 0666 | IPC_CREAT | IPC_EXCL)) == -1)
+    {
+        if (errno != EEXIST)
+        {
+            fprintf(stderr, "Error creating Shm memory segment.\n");
+            return NULL;
+        }
+
+        fprintf(stderr, "Shm memory segment already created, attaching.\n");
+
+        if ((shmid = shmget(key, size, 0)) == -1)
+        {
+            fprintf(stderr, "Error creating attaching to shm memory segment.\n");
+            return NULL;
+        }
+    }
+
+    /* attach to the segment to get a pointer to it: */
+    ret_address = shmat(shmid, address, SHM_REMAP);
+    if (ret_address == (void *) -1) {
+        fprintf(stderr, "Error in shmat with shm.\n");
+        return NULL;
+    }
+
+    if (ret_address != address) {
+        fprintf(stderr, "Error in shmat with shm.\n");
+        return NULL;
+    }
+
+    return address;
+}
+
 
 bool disconnect_shm(void *address)
 {

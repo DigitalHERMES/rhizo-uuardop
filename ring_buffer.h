@@ -61,7 +61,6 @@ void write_buffer(struct ring_buffer *buffer, uint8_t *buffer_in, int size);
 
 void ring_buffer_create (struct ring_buffer *buffer, unsigned long order, key_t key);
 void ring_buffer_connect (struct ring_buffer *buffer, unsigned long order, key_t key);
-void ring_buffer_shm (struct ring_buffer *buffer, unsigned long order, key_t key);
 
 void ring_buffer_free (struct ring_buffer *buffer);
 void *ring_buffer_write_address (struct ring_buffer *buffer);
@@ -71,6 +70,11 @@ void ring_buffer_read_advance (struct ring_buffer *buffer, atomic_ulong count_by
 atomic_ulong ring_buffer_count_bytes (struct ring_buffer *buffer);
 atomic_ulong ring_buffer_count_free_bytes (struct ring_buffer *buffer);
 void ring_buffer_clear (struct ring_buffer *buffer);
+
+// private functions
+void ring_create_shm (struct ring_buffer *buffer, unsigned long order, key_t key);
+void ring_connect_shm (struct ring_buffer *buffer, unsigned long order, key_t key);
+
 
 #ifdef __cplusplus
 };

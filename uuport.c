@@ -22,8 +22,8 @@
 /**
  * @file uuport.c
  * @author Rafael Diniz
- * @date 17 Jul 2019
- * @brief UUCP port pipe command
+ * @date 14 Aug 2019
+ * @brief UUCP port
  *
  * UUPORT main C file.
  *
@@ -43,65 +43,45 @@
 #include <errno.h>
 #include <fcntl.h>
 
+#include "uuardopd.h"
 #include "uuport.h"
+#include "shm.h"
+#include "ring_buffer.h"
 
 FILE *log_fd;
 bool running_read;
 bool running_write;
 
-int input_fd;
-int output_fd;
-
-void *read_thread(void *file_name_v)
+void *read_thread(void *conn)
 {
-    char *file_name = file_name_v;
+    rhizo_conn *connector = (rhizo_conn *) conn;
     uint8_t buffer[BUFFER_SIZE];
-    int bytes_pipe = 0;
-    int bytes_read = 0;
+    int bytes_to_read = 0;
     int bytes_written = 0;
 
-//    fprintf(log_fd, "read_thread: Before open()\n");
-    input_fd = open(file_name, O_RDONLY);
-//    fprintf(log_fd, "read_thread: After open()\n");
-
-    if (input_fd == -1)
-    {
-        fprintf(log_fd, "read_thread: Error opening: %s\n", file_name);
-        return NULL;
-    }
-
     running_read = true;
-    while (running_read)
+    while (running_read && (connector->shutdown == false))
     {
-        ioctl(input_fd, FIONREAD, &bytes_pipe);
-        if (bytes_pipe > BUFFER_SIZE)
-            bytes_pipe = BUFFER_SIZE;
-        if (bytes_pipe == 0)
-            bytes_pipe = 1;
+        bytes_to_read = ring_buffer_count_bytes(&connector->out_buffer);
 
-        bytes_read = read(input_fd, buffer, bytes_pipe);
-
-        if (bytes_read == -1)
-        {
-            fprintf(log_fd, "read_thread: read() error! error no: %d\n",errno);
-            running_read = false;
-            continue;
-        }
-        if (bytes_read == 0)
-        {
-            fprintf(log_fd, "read_thread: read == 0\n");
-            running_read = false;
+        if (bytes_to_read == 0)
+        { // we spinlock here
+            usleep(100000); // 0.1s
             continue;
         }
 
-        bytes_written = write(1, buffer, bytes_read);
+        if (bytes_to_read > BUFFER_SIZE)
+            bytes_to_read = BUFFER_SIZE;
+
+        read_buffer(&connector->out_buffer, buffer, bytes_to_read);
+
+        bytes_written = write(1, buffer, bytes_to_read);
 
 //        fprintf(log_fd, "uuport: %d bytes written to uucico\n", bytes_written);
 
-
-        if (bytes_written != bytes_read)
+        if (bytes_written != bytes_to_read)
         {
-            fprintf(log_fd, "read_thread: bytes_written: %d != bytes_read: %d.\n", bytes_written, bytes_read);
+            fprintf(log_fd, "read_thread: bytes_written: %d != bytes_read: %d.\n", bytes_written, bytes_to_read);
             running_read = false;
             continue;
         }
@@ -113,39 +93,40 @@ void *read_thread(void *file_name_v)
         }
 
     }
+//    connector->session_counter_read++;
 
-    close(input_fd);
     return NULL;
 
 }
 
-void *write_thread(void *file_name_v)
+void *write_thread(void *conn)
 {
-    char *file_name = file_name_v;
+    rhizo_conn *connector = (rhizo_conn *) conn;
     uint8_t buffer[BUFFER_SIZE];
+    int bytes_to_read = 0;
     int bytes_read = 0;
-    int bytes_written = 0;
-
-    fprintf(log_fd, "write_thread: Before open()\n");
-    output_fd = open(file_name, O_WRONLY);
-    fprintf(log_fd, "write_thread: After open()\n");
-
-    if (output_fd == -1)
-    {
-        fprintf(log_fd, "write_thread: Error opening: %s\n", file_name);
-        return NULL;
-    }
 
     running_write = true;
-    while(running_write)
+    while(running_write && (connector->shutdown == false))
     {
-        bytes_read = read(0, buffer, BUFFER_SIZE);
+        // workaround to make protocol 'y' work better
+        if (ring_buffer_count_bytes(&connector->in_buffer) > BUFFER_SIZE / 2)
+        {
+            usleep(100000); // 0.1s
+            bytes_to_read = 1; // slow down...
+        }
+        else
+        {
+            bytes_to_read = 512; // protocol 'y' packet size
+        }
 
-//        fprintf(log_fd, "uuport: %d bytes read from uucico\n", bytes_read);
+        bytes_read = read(0, buffer, bytes_to_read);
+
+        fprintf(log_fd, "uuport: %d bytes read from uucico\n", bytes_read);
 
         if (bytes_read == -1)
         {
-            fprintf(log_fd, "write_thread: Error in write(), errno: %d\n", errno);
+            fprintf(log_fd, "write_thread: Error in read(), errno: %d\n", errno);
             running_write = false;
             continue;
         }
@@ -156,31 +137,16 @@ void *write_thread(void *file_name_v)
             continue;
         }
 
-        bytes_written = write(output_fd, buffer, bytes_read);
-
-        if (bytes_written == -1)
+        while (ring_buffer_count_free_bytes(&connector->in_buffer) < bytes_read)
         {
-            if (errno == EPIPE)
-            {
-                fprintf(log_fd, "write_thread: write() EPIPE!\n");
-            }
-            else
-            {
-                fprintf(log_fd, "write_thread: write() error no: %d\n", errno);
-
-            }
-            running_write = false;
-            continue;
+            fprintf(log_fd, "Buffer full!\n");
+            usleep(100000);
         }
-        if (bytes_written != bytes_read)
-        {
-            fprintf(log_fd, "write_thread: bytes_written: %d !=  bytes_read: %d\n", bytes_written, bytes_read);
-            running_write = false;
-            continue;
-        }
+        write_buffer(&connector->in_buffer, buffer, bytes_read);
     }
 
-    close(output_fd);
+//    connector->session_counter_write++;
+
     return NULL;
 }
 
@@ -201,6 +167,7 @@ void finish(int s){
         running_write = false;
         running_read = false;
         fflush(log_fd);
+        sleep(1);
         exit(EXIT_SUCCESS); // this is not perfect... but it is what we can do now.
         return;
     }
@@ -218,14 +185,12 @@ void finish(int s){
 
 int main (int argc, char *argv[])
 {
-#if 1
-    char input_pipe[BUFFER_SIZE];
-    char output_pipe[BUFFER_SIZE];
-#endif
+    rhizo_conn *connector;
 
-#if 0 // shmmed rhizo_connector...
-    rhizo_conn connector;
-#endif
+    connector = create_shm(sizeof(rhizo_conn), SYSV_SHM_KEY_STR);
+
+    ring_buffer_connect (&connector->in_buffer, 20, SYSV_SHM_KEY_IB);
+    ring_buffer_connect (&connector->out_buffer, 20, SYSV_SHM_KEY_OB);
 
     char log_file[BUFFER_SIZE];
     log_file[0] = 0;
@@ -242,32 +207,24 @@ int main (int argc, char *argv[])
 //    fprintf(stderr, "Rhizomatica's uuport version 0.1 by Rafael Diniz -  rafael (AT) rhizomatica (DOT) org\n");
 //    fprintf(stderr, "License: GPLv3+\n\n");
 
-    if (argc < 4)
+    if (argc < 1)
     {
     manual:
-        fprintf(stderr, "Usage modes: \n%s -i input_pipe -o output_pipe -l logfile\n", argv[0]);
+        fprintf(stderr, "Usage modes: \n%s -l logfile\n", argv[0]);
         fprintf(stderr, "%s -h\n", argv[0]);
         fprintf(stderr, "\nOptions:\n");
-        fprintf(stderr, " -i input_pipe.uucp           Pipe with data written by uucico.\n");
-        fprintf(stderr, " -o output_pipe.uucp          Pipe to be read by uucico.\n");
         fprintf(stderr, " -e logfile.txt               Log file (default is stderr).\n");
         fprintf(stderr, " -h                           Prints this help.\n");
         exit(EXIT_FAILURE);
     }
 
     int opt;
-    while ((opt = getopt(argc, argv, "i:o:he:")) != -1)
+    while ((opt = getopt(argc, argv, "he:")) != -1)
     {
         switch (opt)
         {
         case 'h':
             goto manual;
-            break;
-        case 'i':
-            strcpy(input_pipe, optarg);
-            break;
-        case 'o':
-            strcpy(output_pipe, optarg);
             break;
         case 'e':
             strcpy(log_file, optarg);
@@ -293,31 +250,16 @@ int main (int argc, char *argv[])
     }
 
 
-    if (unlink(input_pipe) != 0){
-        fprintf(log_fd, "Failed to delete: %s\n", input_pipe);
-    }
-
-    if (mkfifo(input_pipe, S_IRWXU | S_IRWXG | S_IRWXO) != 0){
-        fprintf(log_fd, "Failed to create fifo: %s\n", input_pipe);
+    if (connector->shutdown == true)
+    {
+        fprintf(stderr, "uuardopd is in shutdown state. Exiting.\n");
         return EXIT_FAILURE;
     }
-
-    if (unlink(output_pipe) != 0){
-        fprintf(log_fd, "Failed to delete: %s\n", output_pipe);
-    }
-
-    if (mkfifo(output_pipe, S_IRWXU | S_IRWXG | S_IRWXO) != 0){
-        fprintf(log_fd, "Failed to create fifo: %s\n", output_pipe);
-        return EXIT_FAILURE;
-    }
-
-    // send a signal to uuardopd?
 
     pthread_t tid;
-    pthread_create(&tid, NULL, write_thread, (void *) output_pipe);
+    pthread_create(&tid, NULL, write_thread, (void *) connector);
 
-//    pthread_create(&tid, NULL, read_thread, (void *) input_pipe);
-    read_thread(input_pipe);
+    read_thread(connector);
 
     // workaround... as write_thread blocks in fd 0...
     fclose(log_fd);
@@ -325,7 +267,5 @@ int main (int argc, char *argv[])
 
     // correct should be this...
     pthread_join(tid, NULL);
-    // fclose(log_fd);
-
     return EXIT_SUCCESS;
 }

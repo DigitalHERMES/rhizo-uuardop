@@ -69,6 +69,8 @@ void finish(int s){
         }
     }
 
+    tmp_conn->shutdown = true;
+
     // TODO: close the pipes here
     // join all the threads?
 
@@ -175,8 +177,8 @@ int main (int argc, char *argv[])
     signal (SIGINT, finish);
 
     // Catch SIGPIPE
-    signal (SIGPIPE, pipe_fucked);
-    // signal(SIGPIPE, SIG_IGN); // ignores SIGPIPE...
+    // signal (SIGPIPE, pipe_fucked);
+    signal(SIGPIPE, SIG_IGN); // ignores SIGPIPE...
 
     fprintf(stderr, "Rhizomatica's uuardopd version 0.1 by Rafael Diniz -  rafael (AT) rhizomatica (DOT) org\n");
     fprintf(stderr, "License: GNU AGPL version 3+\n\n");
@@ -188,8 +190,6 @@ int main (int argc, char *argv[])
         fprintf(stderr, "Usage modes: \n%s -i input_pipe.uucp -o output_pipe.uucp -c callsign -d remote_callsign -a tnc_ip_address -p tcp_base_port [-l]\n", argv[0]);
         fprintf(stderr, "%s -h\n", argv[0]);
         fprintf(stderr, "\nOptions:\n");
-        fprintf(stderr, " -i input_pipe.uucp          Pipe to be read from uucico in master mode.\n");
-        fprintf(stderr, " -o output_pipe.uucp         Pipe to be written to uucico in master mode.\n");
         fprintf(stderr, " -c callsign                        Station Callsign (Eg: PU2HFF).\n");
         fprintf(stderr, " -d remote_callsign           Remote Station Callsign.\n");
         fprintf(stderr, " -a tnc_ip_address            IP address of the TNC,\n");
@@ -202,7 +202,7 @@ int main (int argc, char *argv[])
     }
 
     int opt;
-    while ((opt = getopt(argc, argv, "hli:o:c:d:p:a:t:f:")) != -1)
+    while ((opt = getopt(argc, argv, "hlc:d:p:a:t:f:")) != -1)
     {
         switch (opt)
         {
@@ -226,12 +226,6 @@ int main (int argc, char *argv[])
             break;
         case 'a':
             strcpy(connector->ip_address, optarg);
-            break;
-        case 'i':
-            strcpy(connector->input_pipe, optarg);
-            break;
-        case 'o':
-            strcpy(connector->output_pipe, optarg);
             break;
         case 'f':
             if(strstr(optarg, "noofdm"))
@@ -259,23 +253,14 @@ int main (int argc, char *argv[])
 
     // test if ardop is connected to a functioning serial device...
 
-    pthread_t tid[3];
+    pthread_t tid;
 
-#if PIPE_MODE
-    pthread_create(&tid[0], NULL, pipe_read_thread, (void *) connector);
-    pthread_create(&tid[1], NULL, pipe_write_thread, (void *) connector);
-#endif
+    pthread_create(&tid, NULL, uucico_thread, (void *) connector);
 
-#if SHM_MODE
-    pthread_create(&tid[0], NULL, shm_thread, (void *) connector);
-#endif
-
-    pthread_create(&tid[2], NULL, uucico_thread, (void *) connector);
-
-    // pthread_create(&tid[2], NULL, modem_thread, (void *) connector);
     modem_thread((void *) connector);
+    fprintf(stderr, "Modem connection lost.\n");
 
-    // workaround! please try to reconnect!
+    // should we try to reconnect!
 #if 0
     if ((connector->shutdown == true) && reconnect)
     {
@@ -284,12 +269,9 @@ int main (int argc, char *argv[])
         goto start_again;
     }
 #endif
-    fprintf(stderr, "Modem connection lost.\n");
-    return EXIT_SUCCESS;
 
-    pthread_join(tid[0], NULL);
-    pthread_join(tid[1], NULL);
-    pthread_join(tid[2], NULL);
+    pthread_join(tid, NULL);
+    fprintf(stderr, "uucico recv listener thread finish.\n");
 
     return EXIT_SUCCESS;
 }

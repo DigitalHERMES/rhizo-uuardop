@@ -43,14 +43,7 @@
 extern "C" {
 #endif
 
-#define PIPE_MODE 1
-#define SHM_MODE 0
-
 #define UUCP_CONFIG "/etc/uucp/config"
-
-#define SYSV_SHM_KEY_STR 66664
-#define SYSV_SHM_KEY_IB 66666
-#define SYSV_SHM_KEY_OB 66668
 
 // 30s
 #define TIMEOUT_DEFAULT 30
@@ -70,15 +63,9 @@ typedef struct{
     int data_socket;
     int control_socket;
 
-// uuport pipe filenames (calling)
-    char input_pipe[1024];
-    char output_pipe[1024];
-
-#if PIPE_MODE
-// pipes fd which are used to talk to uucico (receiving a call) -> this will go away for good!
+    // pipe fd's for talking to exec'ed uucico (recv call)
     int pipefd1[2];
     int pipefd2[2];
-#endif
 
 // state variables (TODO: use FSM!)
 // C11 atomic is used here instead of a more pedantic code with mutexes and so on... 
