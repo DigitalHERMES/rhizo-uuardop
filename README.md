@@ -15,8 +15,6 @@ initiating a call (uucico master mode).
 
 | Option | Description |
 | --- | --- |
-| -i input_pipe.uucp | Pipe to be read from uucico in master mode. |
-| -o output_pipe.uucp | Pipe to be written to uucico in master mode. |
 | -c callsign | Station Callsign (Eg: PU2HFF) |
 | -d remote_callsign | Remote Station Callsign |
 | -a tnc_ip_address | IP address of the TNC |
@@ -31,8 +29,6 @@ initiating a call (uucico master mode).
 
 | Option | Description |
 | --- | --- |
-| -i input_pipe.uucp | Pipe with data written by uucico. |
-| -o output_pipe.uucp | Pipe to be read by uucico. |
 | -e logfile.txt | Log file (default is stderr). |
 | -h | Prints this help |
 
@@ -49,13 +45,13 @@ Port configuration example at "/etc/uucp/port":
 
     $ port HFP
     $ type pipe
-    $ command /usr/bin/uuport -e /var/log/uucp/uuport.LOG -i /tmp/uucp1.fifo -o /tmp/uucp2.fifo
+    $ command /usr/bin/uuport -e /var/log/uucp/uuport.LOG
 
 Sys protocol example (tested and works fine) at "/etc/uucp/sys":
 
     $ protocol y
     $ protocol-parameter y packet-size 512
-    $ protocol-parameter y timeout 360
+    $ protocol-parameter y timeout 540
     $ chat-timeout 100
 
 Sys configuration example of remote system at "/etc/uucp/sys" (without login prompt):
@@ -82,4 +78,4 @@ Example of uuardopd invocation (be aware that the "-i" pipe here corresponds the
 pipe in uuport call, and "-o" in uuardopd corresponds to the "-i" pipe in
 uuport call):
 
-    $ uuardopd -l -i /tmp/uucp2.fifo -o /tmp/uucp1.fifo -c BB2UIT -d PP2UIT -a 127.0.0.1 -p 8515 -t 60
+    $ uuardopd -l -c BB2UIT -d PP2UIT -a 127.0.0.1 -p 8515 -t 60
