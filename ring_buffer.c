@@ -83,7 +83,7 @@ void ring_buffer_create (struct ring_buffer *buffer, unsigned long order, key_t 
 
     if (buffer->ctr == NULL)
     {
-        fprintf(stderr, "Critical error...\n");
+        abort();
     }
 
     buffer->ctr->count_bytes = 1UL << order;
@@ -101,7 +101,7 @@ void ring_buffer_connect (struct ring_buffer *buffer, unsigned long order, key_t
 
     if (addr == NULL)
     {
-        fprintf(stderr, "Critical error...\n");
+        abort();
     }
 
     ring_connect_shm (buffer, order, key);
@@ -120,41 +120,41 @@ void ring_create_shm (struct ring_buffer *buffer, unsigned long order, key_t key
     {
         if (errno != EEXIST)
         {
-            fprintf(stderr, "Error creating Shm memory segment.\n");
-            return;
+            // fprintf(stderr, "Error creating Shm memory segment.\n");
+            abort();
         }
 
-        fprintf(stderr, "Shm memory segment already created, attaching.\n");
+        // fprintf(stderr, "Shm memory segment already created, attaching.\n");
 
         if ((shmid = shmget(key, buffer->ctr->count_bytes, 0)) == -1)
         {
-            fprintf(stderr, "Error creating attaching to shm memory segment.\n");
-            return;
+            // fprintf(stderr, "Error creating attaching to shm memory segment.\n");
+            abort();
         }
     }
 
     /* attach to the segment to get a pointer to it: */
     buffer->address = shmat(shmid, address, SHM_REMAP);
     if (buffer->address == (void *) -1) {
-        fprintf(stderr, "Error in shmat with shm.\n");
-        return;
+        // fprintf(stderr, "Error in shmat with shm.\n");
+        abort();
     }
 
     if (address != buffer->address){
-        fprintf(stderr, "Error in shmat addr != addr.\n");
-        return;
+        // fprintf(stderr, "Error in shmat addr != addr.\n");
+        abort();
     }
 
     address = shmat(shmid, address + buffer->ctr->count_bytes, SHM_REMAP);
 
     if (address == (void *) -1) {
-        fprintf(stderr, "Error in shmat with shm.\n");
-        return;
+        // fprintf(stderr, "Error in shmat with shm.\n");
+        abort();
     }
 
     if (address != buffer->address + buffer->ctr->count_bytes){
-        fprintf(stderr, "Error in buffer madness.\n");
-        return;
+        // fprintf(stderr, "Error in buffer madness.\n");
+        abort();
     }
 
 }
@@ -168,7 +168,8 @@ void ring_connect_shm (struct ring_buffer *buffer, unsigned long order, key_t ke
                        -1, 0);
 
     if (ret_address != buffer->address){
-        fprintf(stderr, "Error creating in mmap.\n");
+        // fprintf(stderr, "Error creating in mmap.\n");
+        abort();
     }
 
     /*  create the segment */
@@ -176,41 +177,41 @@ void ring_connect_shm (struct ring_buffer *buffer, unsigned long order, key_t ke
     {
         if (errno != EEXIST)
         {
-            fprintf(stderr, "Error creating Shm memory segment.\n");
-            return;
+            // fprintf(stderr, "Error creating Shm memory segment.\n");
+            abort();
         }
 
-        fprintf(stderr, "Shm memory segment already created, attaching.\n");
+        // fprintf(stderr, "Shm memory segment already created, attaching.\n");
 
         if ((shmid = shmget(key, buffer->ctr->count_bytes, 0)) == -1)
         {
-            fprintf(stderr, "Error creating attaching to shm memory segment.\n");
-            return;
+            // fprintf(stderr, "Error creating attaching to shm memory segment.\n");
+            abort();
         }
     }
 
     /* attach to the segment to get a pointer to it: */
     ret_address = shmat(shmid, buffer->address, SHM_REMAP);
     if (ret_address == (void *) -1) {
-        fprintf(stderr, "Error in shmat with shm.\n");
-        return;
+        // fprintf(stderr, "Error in shmat with shm.\n");
+        abort();
     }
 
     if (ret_address != buffer->address){
-        fprintf(stderr, "Error in shmat addr != addr.\n");
-        return;
+        // fprintf(stderr, "Error in shmat addr != addr.\n");
+        abort();
     }
 
     ret_address = shmat(shmid, buffer->address + buffer->ctr->count_bytes, SHM_REMAP);
 
     if (ret_address == (void *) -1) {
-        fprintf(stderr, "Error in shmat with shm.\n");
-        return;
+        // fprintf(stderr, "Error in shmat with shm.\n");
+        abort();
     }
 
     if (ret_address != buffer->address + buffer->ctr->count_bytes){
-        fprintf(stderr, "Error in buffer madness.\n");
-        return;
+        // fprintf(stderr, "Error in buffer madness.\n");
+        abort();
     }
 
 }
@@ -222,15 +223,17 @@ void ring_buffer_free (struct ring_buffer *buffer)
 
     status = shmdt(buffer->address);
     if (status){
-        fprintf(stderr, "Error in ring_buffer_free.\n");
-        return;
+        // fprintf(stderr, "Error in ring_buffer_free.\n");
+        abort();
     }
 
     status = shmdt(buffer->address + buffer->ctr->count_bytes);
     if (status){
-        fprintf(stderr, "Error in ring_buffer_free.\n");
-        return;
+        // fprintf(stderr, "Error in ring_buffer_free.\n");
+        abort();
     }
+
+    // free and munmap also?
 
 }
 

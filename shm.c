@@ -65,15 +65,15 @@ void *create_shm(size_t size, key_t key)
     {
         if (errno != EEXIST)
         {
-            fprintf(stderr, "Error creating Shm memory segment.\n");
+            // fprintf(stderr, "Error creating Shm memory segment.\n");
             return NULL;
         }
 
-        fprintf(stderr, "Shm memory segment already created, attaching.\n");
+        // fprintf(stderr, "Shm memory segment already created, attaching.\n");
 
         if ((shmid = shmget(key, size, 0)) == -1)
         {
-            fprintf(stderr, "Error creating attaching to shm memory segment.\n");
+            // fprintf(stderr, "Error creating attaching to shm memory segment.\n");
             return NULL;
         }
     }
@@ -81,7 +81,7 @@ void *create_shm(size_t size, key_t key)
     /* attach to the segment to get a pointer to it: */
     address = shmat(shmid, (void *)0, 0);
     if (address == (void *) -1) {
-        fprintf(stderr, "Error in shmat with shm.\n");
+        // fprintf(stderr, "Error in shmat with shm.\n");
         return NULL;
     }
 
@@ -98,7 +98,7 @@ void *connect_shm(size_t size, void *address, key_t key)
                        -1, 0);
 
     if (ret_address != address){
-        fprintf(stderr, "Error creating in mmap.\n");
+        // fprintf(stderr, "Error creating in mmap.\n");
         return NULL;
     }
 
@@ -107,15 +107,15 @@ void *connect_shm(size_t size, void *address, key_t key)
     {
         if (errno != EEXIST)
         {
-            fprintf(stderr, "Error creating Shm memory segment.\n");
+            // fprintf(stderr, "Error creating Shm memory segment.\n");
             return NULL;
         }
 
-        fprintf(stderr, "Shm memory segment already created, attaching.\n");
+        // fprintf(stderr, "Shm memory segment already created, attaching.\n");
 
         if ((shmid = shmget(key, size, 0)) == -1)
         {
-            fprintf(stderr, "Error creating attaching to shm memory segment.\n");
+            // fprintf(stderr, "Error creating attaching to shm memory segment.\n");
             return NULL;
         }
     }
@@ -123,12 +123,12 @@ void *connect_shm(size_t size, void *address, key_t key)
     /* attach to the segment to get a pointer to it: */
     ret_address = shmat(shmid, address, SHM_REMAP);
     if (ret_address == (void *) -1) {
-        fprintf(stderr, "Error in shmat with shm.\n");
+        // fprintf(stderr, "Error in shmat with shm.\n");
         return NULL;
     }
 
     if (ret_address != address) {
-        fprintf(stderr, "Error in shmat with shm.\n");
+        // fprintf(stderr, "Error in shmat with shm.\n");
         return NULL;
     }
 
@@ -141,7 +141,7 @@ bool disconnect_shm(void *address)
 
     /* detach from the segment*/
     if (shmdt(address) == -1) {
-        fprintf(stderr, "Error in shmdt shm.\n");
+        // fprintf(stderr, "Error in shmdt shm.\n");
         return false;
     }
 
