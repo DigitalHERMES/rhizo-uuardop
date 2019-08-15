@@ -52,16 +52,32 @@ FILE *log_fd;
 bool running_read;
 bool running_write;
 
+#define TIMEOUT 15
+
 void *read_thread(void *conn)
 {
     rhizo_conn *connector = (rhizo_conn *) conn;
     uint8_t buffer[BUFFER_SIZE];
     int bytes_to_read = 0;
     int bytes_written = 0;
+    int timeout_counter = TIMEOUT;
 
     running_read = true;
     while (running_read && (connector->shutdown == false))
     {
+        if (connector->connected == false)
+        {
+            sleep(1);
+            timeout_counter--;
+            if (timeout_counter == 0)
+            {
+                running_read = false;
+            }
+        }
+        else{
+            timeout_counter = TIMEOUT;
+        }
+
         bytes_to_read = ring_buffer_count_bytes(&connector->out_buffer);
 
         if (bytes_to_read == 0)
