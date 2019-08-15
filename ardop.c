@@ -44,7 +44,6 @@
 
 #include "common.h"
 #include "ardop.h"
-#include "pipe.h"
 #include "net.h"
 #include "call_uucico.h"
 

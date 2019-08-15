@@ -46,7 +46,6 @@
 
 #include "call_uucico.h"
 #include "uuardopd.h"
-#include "pipe.h"
 #include "ardop.h"
 #include "shm.h"
 #include "ring_buffer.h"
