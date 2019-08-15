@@ -6,7 +6,7 @@ Rhizo-uuardop comes with two tools: uuardopd and uuport.
 
 UUARDOPD is the daemon which keeps connected to ARDOP modem and properly
  receive calls (calling uucico) and initiate calls (uucico calls thought
- UUPORT pipes connection).
+ UUPORT connection).
 
 UUPORT is the command invoked by UUCICO (using port type = pipe) when
 initiating a call (uucico master mode).
@@ -45,7 +45,7 @@ Port configuration example at "/etc/uucp/port":
 
     $ port HFP
     $ type pipe
-    $ command /usr/bin/uuport -e /var/log/uucp/uuport.LOG
+    $ command /usr/bin/uuport
 
 Sys protocol example (tested and works fine) at "/etc/uucp/sys":
 
@@ -74,8 +74,6 @@ Sys configuration example of remote system at "/etc/uucp/sys" (without login pro
 
 ### Running uuardopd
 
-Example of uuardopd invocation (be aware that the "-i" pipe here corresponds the "-o"
-pipe in uuport call, and "-o" in uuardopd corresponds to the "-i" pipe in
-uuport call):
+Example of uuardopd invocation:
 
     $ uuardopd -l -c BB2UIT -d PP2UIT -a 127.0.0.1 -p 8515 -t 60
