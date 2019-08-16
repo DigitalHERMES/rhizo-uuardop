@@ -29,6 +29,7 @@ initiating a call (uucico master mode).
 
 | Option | Description |
 | --- | --- |
+| -c system_name | Name of the remote system (default is don't change). |
 | -e logfile.txt | Log file (default is stderr). |
 | -h | Prints this help |
 
