@@ -259,6 +259,10 @@ int main (int argc, char *argv[])
     modem_thread((void *) connector);
     fprintf(stderr, "Modem connection lost.\n");
 
+    connector->shutdown = true;
+    // workaround... this was supposed to be the last line of code...
+    return EXIT_SUCCESS;
+
     // should we try to reconnect!
 #if 0
     if ((connector->shutdown == true) && reconnect)
