@@ -203,25 +203,17 @@ int main (int argc, char *argv[])
 {
     rhizo_conn *connector;
 
-    connector = create_shm(sizeof(rhizo_conn), SYSV_SHM_KEY_STR);
-
-    ring_buffer_connect (&connector->in_buffer, 20, SYSV_SHM_KEY_IB);
-    ring_buffer_connect (&connector->out_buffer, 20, SYSV_SHM_KEY_OB);
-
     char log_file[BUFFER_SIZE];
     log_file[0] = 0;
+
+    char remote_system[32];
+    remote_system[0] = 0;
 
     signal (SIGINT, finish);
     signal (SIGTERM, finish);
     signal (SIGQUIT, finish);
     signal (SIGHUP, finish);
-
     signal (SIGPIPE, finish);
-
-//    signal (SIGPIPE, SIG_IGN); // ignores SIGPIPE...
-
-//    fprintf(stderr, "Rhizomatica's uuport version 0.1 by Rafael Diniz -  rafael (AT) rhizomatica (DOT) org\n");
-//    fprintf(stderr, "License: GPLv3+\n\n");
 
     if (argc < 1)
     {
@@ -230,12 +222,13 @@ int main (int argc, char *argv[])
         fprintf(stderr, "%s -h\n", argv[0]);
         fprintf(stderr, "\nOptions:\n");
         fprintf(stderr, " -e logfile.txt               Log file (default is stderr).\n");
+        fprintf(stderr, " -c system_name               Name of the remote system (default is don't change).\n");
         fprintf(stderr, " -h                           Prints this help.\n");
         exit(EXIT_FAILURE);
     }
 
     int opt;
-    while ((opt = getopt(argc, argv, "he:")) != -1)
+    while ((opt = getopt(argc, argv, "hc:e:")) != -1)
     {
         switch (opt)
         {
@@ -245,10 +238,24 @@ int main (int argc, char *argv[])
         case 'e':
             strcpy(log_file, optarg);
             break;
+        case 'c':
+            strcpy(remote_system, optarg);
+            break;
         default:
             goto manual;
         }
     }
+
+    connector = create_shm(sizeof(rhizo_conn), SYSV_SHM_KEY_STR);
+
+    if (connector->shutdown == true)
+    {
+        fprintf(stderr, "uuardopd is in shutdown state. Exiting.\n");
+        return EXIT_FAILURE;
+    }
+
+    ring_buffer_connect (&connector->in_buffer, 20, SYSV_SHM_KEY_IB);
+    ring_buffer_connect (&connector->out_buffer, 20, SYSV_SHM_KEY_OB);
 
     if (log_file[0])
     {
@@ -265,11 +272,9 @@ int main (int argc, char *argv[])
         log_fd = stderr;
     }
 
-
-    if (connector->shutdown == true)
+    if (remote_system[0])
     {
-        fprintf(stderr, "uuardopd is in shutdown state. Exiting.\n");
-        return EXIT_FAILURE;
+        strcpy(connector->remote_call_sign, remote_system);
     }
 
     pthread_t tid;
