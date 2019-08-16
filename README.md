@@ -48,6 +48,16 @@ Port configuration example at "/etc/uucp/port":
     $ type pipe
     $ command /usr/bin/uuport
 
+An alternative Port configuration if you use a patched uucp ( for "\Z"
+support, available in https://github.com/DigitalHERMES/uucp ), where uuport
+sets the callsign of the station to be called from uucp remote
+station name (allowing a single uuardopd instance to be used for different
+remote station callsigns):
+
+    $ port HFP
+    $ type pipe
+    $ command /usr/bin/uuport -c \Z
+
 Sys protocol example (tested and works fine) at "/etc/uucp/sys":
 
     $ protocol y
