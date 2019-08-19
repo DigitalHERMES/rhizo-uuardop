@@ -50,8 +50,8 @@ Port configuration example at "/etc/uucp/port":
 
 An alternative Port configuration if you use a patched uucp ( for "\Z"
 support, available in "improved-pipe.patch" which was added to uucp debian 
-package version 1.07-27 ), where uuport
-sets the callsign of the station to be called from uucp remote
+package version 1.07-27 ), where uuport pass
+the callsign of the station to be called to uuardopd with the uucp remote
 station name (allowing a single uuardopd instance to be used for different
 remote station callsigns):
 
