@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang='pt'>
+  <head>
+    <meta charset='UTF-8'/>
+    <title>Serviços de Comunicação Digital</title>
+    <link rel='stylesheet' href='styles.css'/>
+  </head>
+  <body>
+    <h2>Estação: AA2AAA</h2>
+
+    <h2>Estado do Sistema: Parado / Pronto para Receber Chamada / Em
+    Chamada (Put here if uuardopd is running or not)</h2>
+
+    <h2>Recebimento de arquivos</h2>
+    <p>
+    Ver pasta de arquivos recebidos (link to the folder where received files
+    are placed by uucp)
+    </p>
+    <h2>Envio de arquivo</h2>
+    <p>
+    Arquivos a serem enviados:
+    <form action="upload.php" method="post" enctype="multipart/form-data">
+      Escolha o arquivo:
+    <input type="file" name="fileToUpload" id="fileToUpload">
+    <!-- Put a checkbox with the option "SEND NOW?" -->
+    <!-- Put an option for choosing "Callsign da estação de destino". -->
+    <!-- Encrypt option? -->
+    <input type="submit" value="Enviar Arquivo" name="submit">
+    </form>
+    </p>
+    <p>
+      Botão Enviar (put here the send button)
+    </p>
+<br/>
+<br/>
+
+<br/>
+Ver fila de trabalho (put here the information of the pending jobs)
+
+Status (put here uulog output, or a parsed uulog output)
+
+
+  </body>
+</html>
