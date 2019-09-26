@@ -1,0 +1,2 @@
+. Make a script to modify a reference RPi image with correct gpg keyring and
+uucp files with correct map and nodename set.
