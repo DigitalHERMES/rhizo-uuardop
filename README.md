@@ -9,7 +9,7 @@ UUARDOPD is the daemon which keeps connected to ARDOP modem and properly
  UUPORT connection).
 
 UUPORT is the command invoked by UUCICO (using port type = pipe) when
-initiating a call (uucico master mode).
+initiating a call (uucico master mode). Communication between uuport and uuardopd is done over shared memory.
 
 ## UUARDOPD Usage
 
