@@ -1,0 +1,111 @@
+\documentclass[11pt,a4paper]{article}
+% \usepackage[brazil]{babel} % carrega portugues brasileiro
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry} %margens menores!
+\usepackage{graphicx} % incluir figuras .eps
+\usepackage{tabularx}
+\usepackage{color} % colorir texto
+\usepackage{indentfirst}
+\usepackage{textcomp}
+\usepackage[colorlinks=true]{hyperref}
+\usepackage{amssymb,amsmath}
+\usepackage{float}
+% \usepackage{siunitx}
+% \usepackage[ampersand]{easylist}
+
+\title{Manual de uso do sistema de telecomunicação digital para banda de HF}
+
+\author{
+       \large
+        \textsc{Rafael Diniz}
+        \mbox{}\\ %
+        rafael@rhizomatica.org\\
+        \mbox{Rhizomatica} \\ %
+        \normalsize
+        \texttt{Brasília - Brasil}\\
+}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Este é o manual do sistema de comunicação digital em HF usando o modem ARDOP
+(Amateur Radio Digital Open Protocol) e o sistema UUCP (Unix to Unix
+Communication Protocol). O manual também abrange a interface gráfica
+para usuário baseada em tecnologia Web, assim como os serviços e principais
+configurações do sistema de referência baseado na raspberry pi.
+
+\end{abstract}
+
+\newpage
+
+\tableofcontents
+
+\section{Sistema de referência}
+
+Um rádio ICOM IC-7100 (ou opcionalmente o ICOM IC-78 ou Vertex VX-1700)
+conectado a uma Raspberry Pi 3 rodando Linux.
+
+\section{Configuração}
+
+O ARDOP é um modem SDR feito por rádio amadores que utiliza modernas
+técnicas de modulação (OFDM) e UUCP é uma sistema para comunicação
+assíncrona da década de 70 para sistemas UNIX, muito utilizado até
+hoje em nichos, como comunicação em HF.
+
+Debian Buster (10) arm64 (multilib com armhf no caso se querer usar os
+binários ``piardopc'' do John Wiseman) é o sistema Linux de referência,
+rodando numa Raspberry Pi 3 com Wifi configurado no modo AP (Access Point),
+para provimento de interface do sistema via Web.
+
+Para integrar o sistema UUCP ao modem ARDOP, o projeto RHIZO-UUARDOPD
+foi desenvolvido para prover ferramentas que integram o UUCP ao ARDOP.
+
+\subsection{ARDOP}
+
+Link para download: \url{http://www.cantab.net/users/john.wiseman/Downloads/Test/TeensyProjects.zip}
+
+\subsection{UUCP}
+
+Usar versão do pacote do debian 1.07-27 ou superior, por exemplo, a versão
+do Debian Bullseye: \url{https://packages.debian.org/bullseye/uucp}.
+
+ps: baixar o .deb e instalar na mão.
+
+\subsection{rhizo-uuardopd}
+
+Dois binários, uuport (para ser usado pelo uucp) e uuardopd que é o software
+que conecta com o modem Ardop através do uucico ou uuport.
+
+\url{http://github.com/DigitalHERMES/rhizo-uuardop}
+
+\subsection{DHCP}
+
+\subsection{DNS}
+
+\subsection{Apache + PHP}
+
+\section{Interface com o usuário}
+
+A interface do sistema é baseada em Web, utilizando HTML+PHP e
+alguns shell scripts.
+
+\section{Pré-requisitos}
+
+\begin{itemize}
+\item ImageMagic: para descomprimir imagens
+\item mozjpeg: para comprimir em jpg: https://github.com/mozilla/mozjpeg
+\item opusenc: para comprimir áudio
+\item gpg: para criptografia
+\end{itemize}
+
+\subsection{Interface Web}
+
+Acessível digitando qualquer endereço no navegador, ou 192.168.1.1.
+
+
+\end{document}
