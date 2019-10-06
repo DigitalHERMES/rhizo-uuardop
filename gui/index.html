@@ -1,44 +1,66 @@
-<!DOCTYPE html>
-<html lang='pt'>
-  <head>
-    <meta charset='UTF-8'/>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="UTF-8">
+    <h1>  <center>rhizo-uuardop</center></h1>
     <title>Serviços de Comunicação Digital</title>
-    <link rel='stylesheet' href='styles.css'/>
-  </head>
-  <body>
-    <h2>Estação: AA2AAA</h2>
+    <link rel="stylesheet" href="style.css">
+	</head>
+
+<body>
+
+<div class="w3-container w3-teal">
+    <h2>Serviços de Comunicação Digital</h2>
+</div>
+<h2>Estação: AA2AAA</h2>
 
     <h2>Estado do Sistema: Parado / Pronto para Receber Chamada / Em
     Chamada (Put here if uuardopd is running or not)</h2>
 
-    <h2>Recebimento de arquivos</h2>
+
+<h2>Recebimento de arquivos</h2>
     <p>
-    Ver pasta de arquivos recebidos (link to the folder where received files
-    are placed by uucp)
+    
     </p>
     <h2>Envio de arquivo</h2>
-    <p>
-    Arquivos a serem enviados:
+    Escolher destinatario
+    <select class="form" id="prefix" name="prefix">
+    <option>Selecionar </option>
+    <option>111111</option>
+    <option>111111</option>
+    <option>111111</option>
+    <option>111111</option>
+    <option>111111</option>
+    <option>111111</option>
+    <option>111111</option>
+    <option>111111</option>
+    </select>
+    <br>
+        <br>         
     <form action="upload.php" method="post" enctype="multipart/form-data">
-      Escolha o arquivo:
-    <input type="file" name="fileToUpload" id="fileToUpload">
-    <!-- Put a checkbox with the option "SEND NOW?" -->
-    <!-- Put an option for choosing "Callsign da estação de destino". -->
-    <!-- Encrypt option? -->
-    <input type="submit" value="Enviar Arquivo" name="submit">
+      Escolha o arquivo: 
+      <input type="file" name="fileToUpload" id="fileToUpload">
+      <input type="submit" value="Colocar arquivo na fila" name="submit">
+      
+          <br/>
+    
     </form>
-    </p>
-    <p>
-      Botão Enviar (put here the send button)
-    </p>
+            
+    
+
+    
+
+   
 <br/>
-<br/>
+
 
 <br/>
 Ver fila de trabalho (put here the information of the pending jobs)
 
+
+<br/>
 Status (put here uulog output, or a parsed uulog output)
 
 
-  </body>
+</body>
 </html>
