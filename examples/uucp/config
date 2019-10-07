@@ -6,7 +6,7 @@
 #		different from your normal hostname.
 #
 
-nodename	PY2CBA
+nodename	AM4AAB
 
 # Defaults.
 #sysfile	/etc/uucp/sys
