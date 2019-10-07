@@ -18,16 +18,19 @@
     </p>
     <h2>Envio de arquivo</h2>
     <p>
-      <select class="form" id="prefix" name="prefix">
+    </p>
+    <form action="upload.php" method="post" enctype="multipart/form-data">
+      Estação de destino: 
+      <select id="prefix" name="prefix">
         <?php include('get_systems.php') ?>
       </select>
-    </p>
-    Arquivo a ser enviado:
-    <form action="upload.php" method="post" enctype="multipart/form-data">
+      <br />
       Escolha o arquivo:
-    <input type="file" name="fileToUpload" id="fileToUpload">
-    <input type="submit" value="Colocar arquivo na fila" name="submit">
-    <br/>
+      <input type="file" name="fileToUpload" id="fileToUpload" />
+      <input type="submit" value="Colocar arquivo na fila" name="submit" />
+	
+
+      <br />
 
     </form>
     </p>

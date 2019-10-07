@@ -11,8 +11,9 @@
 
 <br />
 <?php
-$target_dir = "uploads/";
+$target_dir = "/var/www/html/uploads/";
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+$remote_dir = "/var/www/html/arquivos/";
 $uploadPic = 0;
 $uploadOk = 1;
 $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
@@ -31,10 +32,9 @@ if(isset($_POST["submit"])) {
 }
 // Check if file already exists
 if (file_exists($target_file)) {
-    echo "Sorry, file already exists.";
-    $uploadOk = 0;
+    echo "Sorry, file already exists, cotinuing...";
+    $uploadOk = 1;
 }
-
 
 if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
 && $imageFileType != "gif" && $uploadPic == 1) {
@@ -45,7 +45,7 @@ if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg
 // limit not to reduce size is 50k!
 if (($_FILES["fileToUpload"]["size"] > 50*1024) && $uploadPic == 1 ) { // 10MB max
     echo "Sua imagem é muito grande - convertendo para um tamanho menor.<br />";
-    $command = "compress_image.sh" . ;
+    $command = "compress_image.sh" .  $_FILES["fileToUpload"]["name"] . "";
     ob_start();
     system($command , $return_var);
     $output = ob_get_contents();
@@ -61,9 +61,19 @@ if ($uploadOk == 0) {
 // if everything is ok, try to upload file
 } else {
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) { //  should I run UUCP from here?
-        echo "</br>O arquivo  ". basename( $_FILES["fileToUpload"]["name"]). " foi adicionado à fila.</br>";
-        //$list= scandir($target_dir,1);
+        echo "</br>O arquivo  ". $_FILES["fileToUpload"]["name"] . " foi adicionado à fila.</br>";
+//        echo "destino: " . $_POST['prefix'] . ""; 
+        $command = "uucp -C -d " .  $target_file . " " . $_POST['prefix'] . "\!" . $remote_dir . "";
+        echo "Command: " . $command . "";
+        ob_start();
+        system($command , $return_var);
+        $output = ob_get_contents();
+        ob_end_clean();
+        echo "Output: " . $output . " Return value: " . $return_var; 
+// now delete the file...
+//$list= scandir($target_dir,1);
         //print_r($list);
+        echo "<br />";
         include 'list.php';
     } else {
         echo "Erro no carregamento do arquivo 2.";
