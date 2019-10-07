@@ -1,5 +1,5 @@
 <?php
-$dir = "uploads/";
+$dir = "/var/www/html/arquivos/";
 // Open a directory, and read its contents
 if (is_dir($dir)){
   if ($dh = opendir($dir)){

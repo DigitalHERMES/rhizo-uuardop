@@ -32,7 +32,7 @@ if(isset($_POST["submit"])) {
 }
 // Check if file already exists
 if (file_exists($target_file)) {
-    echo "Sorry, file already exists, cotinuing...";
+//    echo "Sorry, file already exists, cotinuing...";
     $uploadOk = 1;
 }
 
@@ -69,12 +69,9 @@ if ($uploadOk == 0) {
         system($command , $return_var);
         $output = ob_get_contents();
         ob_end_clean();
-        echo "Output: " . $output . " Return value: " . $return_var; 
-// now delete the file...
-//$list= scandir($target_dir,1);
-        //print_r($list);
-        echo "<br />";
-        include 'list.php';
+//        echo "Output: " . $output . " Return value: " . $return_var; 
+        unlink($target_file);
+//        include 'list.php';
     } else {
         echo "Erro no carregamento do arquivo 2.";
     }

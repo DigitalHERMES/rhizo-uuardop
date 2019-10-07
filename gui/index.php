@@ -13,9 +13,10 @@
 
     <h2>Recebimento de arquivos</h2>
     <p>
-    Ver pasta de arquivos recebidos (link to the folder where received files
-    are placed by uucp)
+    Conteúdo recebido: <br />
+    <?php include('list.php') ?>
     </p>
+    <br />
     <h2>Envio de arquivo</h2>
     <p>
     </p>
