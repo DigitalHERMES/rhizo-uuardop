@@ -1,27 +1,92 @@
+#
+# sys		This is the file where you define all the remote
+#		UUCP systems you know about, whether you dial in to them
+#		or they dial in to you.
+#
+#		Note that if you want to dial into another system, you
+#		have to enter the loginname and password NOT here but
+#		in the file /etc/uucp/call.
+#
+
+#
+# First some defaults. These are for all other entries (unless overridden).
+#
+#protocol gvG
+#protocol-parameter G packet-size 1024
+# protocol-parameter G window 7
+#protocol-parameter G short-packets
+
 protocol y
 protocol-parameter y packet-size 512
 protocol-parameter y timeout 540
 chat-timeout 100
 
-#
-# Our remote uucp connections.
-#
-system PY2ABC
+
 call-login *
 call-password *
 time any
 port HFP
 chat "" \r
-# chat "" \d\d\r\c ogin: \d\L word: \P
-#chat "" \r\c ogin: \L word: \P
 
+local-send /
+local-receive /
+remote-send /
+remote-receive /
 
-#system remote-tcp
-#call-login *
-#call-password *
-#time any
-#chat "" \d\d\r\c ogin: \d\L word: \P
-#address 192.168.0.8
-#port TCP
-#protocol t
+#
+# Our remote uucp connection.
+#
+# system remote
 
+system AM4AAA
+system AM4AAB
+system AM4AAC
+system AM4AAD
+system AM4AAE
+system AM4AAF
+system AM4AAG
+system AM4AAH
+system AM4AAI
+system AM4AAJ
+system AM4AAK
+system AM4AAL
+system AM4AAM
+system AM4AAN
+system AM4AAO
+system AM4AAP
+system AM4AAQ
+system AM4AAR
+system AM4AAS
+system AM4AAT
+system AM4AAU
+system AM4AAV
+system AM4AAW
+system AM4AAX
+system AM4AAY
+system AM4AAZ
+system AM4ABA
+system AM4ABB
+system AM4ABC
+system AM4ABD
+system AM4ABE
+system AM4ABF
+system AM4ABG
+system AM4ABH
+system AM4ABI
+system AM4ABJ
+system AM4ABK
+system AM4ABL
+system AM4ABM
+system AM4ABN
+system AM4ABO
+system AM4ABP
+system AM4ABQ
+system AM4ABR
+system AM4ABS
+system AM4ABT
+system AM4ABU
+system AM4ABV
+system AM4ABW
+system AM4ABX
+system AM4ABY
+system AM4ABZ
