@@ -65,9 +65,69 @@ para provimento de interface do sistema via Web.
 Para integrar o sistema UUCP ao modem ARDOP, o projeto RHIZO-UUARDOPD
 foi desenvolvido para prover ferramentas que integram o UUCP ao ARDOP.
 
+\subsection{Radio e/ou interface}
+
+Signalink com ajusta de ``delay'' zerado.
+
+
 \subsection{ARDOP}
 
 Link para download: \url{http://www.cantab.net/users/john.wiseman/Downloads/Test/TeensyProjects.zip}
+
+O binário utilizado do ardop deve ficar em /usr/bin/ardop, que pode ser um
+link simbólico para /usr/bin/ardop2, por exemplo.
+
+Configuração do ardop para uso com o ICOM IC-7100 (via porta USB, com PTT
+via seria):
+\begin{verbatim}
+[Unit]
+Description=ARDOP daemon
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ardop 8515 -c /dev/ttyUSB0 ARDOP ARDOP -k FEFE88E01C0001FD -u FEFE88E01C0000FD
+ExecStop=/usr/bin/killall -s QUIT ardop
+IgnoreSIGPIPE=no
+#StandardOutput=null
+#StandardError=null
+StandardOutput=syslog
+StandardError=syslog
+
+[Install]
+WantedBy=multi-user.target
+\end{verbatim}
+
+Configuração para uso com a interface Signalink:
+\begin{verbatim}
+[Unit]
+Description=ARDOP daemon
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ardop 8515 ARDOP ARDOP
+ExecStop=/usr/bin/killall -s QUIT ardop
+IgnoreSIGPIPE=no
+#StandardOutput=null
+#StandardError=null
+StandardOutput=syslog
+StandardError=syslog
+
+[Install]
+WantedBy=multi-user.target
+\end{verbatim}
+
+
+Iniciar / Parar serviço:
+\begin{verbatim}
+systemctl start ardop.service
+systemctl stop ardop.service
+\end{verbatim}
+
+
+Ver log:
+\begin{verbatim}
+journalctl -f -u ardop
+\end{verbatim}
 
 \subsection{UUCP}
 
@@ -76,12 +136,27 @@ do Debian Bullseye: \url{https://packages.debian.org/bullseye/uucp}.
 
 ps: baixar o .deb e instalar na mão.
 
+\subsec
+
 \subsection{rhizo-uuardopd}
 
 Dois binários, uuport (para ser usado pelo uucp) e uuardopd que é o software
 que conecta com o modem Ardop através do uucico ou uuport.
 
 \url{http://github.com/DigitalHERMES/rhizo-uuardop}
+
+
+Iniciar / Parar serviço:
+\begin{verbatim}
+systemctl start uuardopd.service
+systemctl stop uuardopd.service
+\end{verbatim}
+
+
+Ver log:
+\begin{verbatim}
+journalctl -f -u uuardopd
+\end{verbatim}
 
 \subsection{DHCP}
 
