@@ -3,7 +3,11 @@
     $command = "get_systems.sh";
     ob_start();
     system($command , $return_var);
-    $output = "<option>" . ob_get_contents() . "</option>";
+    $output = ob_get_contents();
+    $keywords = preg_split("/[\s,]+/", $output);
+    foreach($keywords as $word){
+        echo "<option>" . $word . "</option>";
+    }
     ob_end_clean();
     echo $output; 
 ?>
