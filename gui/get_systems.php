@@ -4,10 +4,14 @@
     ob_start();
     system($command , $return_var);
     $output = ob_get_contents();
-    $keywords = preg_split("/[\s,]+/", $output);
-    foreach($keywords as $word){
-        echo "<option>" . $word . "</option>";
-    }
     ob_end_clean();
-    echo $output; 
+    $sysnames = explode("\n", $output);
+    for ($i = "0" ; $i < count($sysnames); $i++) {
+        if(!empty($sysnames[$i])) {
+       	       	echo "<option>";
+       	       	echo $sysnames[$i];
+       	       	echo "</option>";
+	}
+    }
+
 ?>
