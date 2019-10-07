@@ -1,12 +1,12 @@
-<!DOCTYPE html>
-<html lang='pt'>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset='UTF-8'/>
     <title>Serviços de Comunicação Digital</title>
     <link rel='stylesheet' href='styles.css'/>
   </head>
   <body>
-    <h2>Estação: AA2AAA</h2>
+    <h2>Estação: <?php include('get_name.php') ?></h2>
 
     <h2>Estado do Sistema: Parado / Pronto para Receber Chamada / Em
     Chamada (Put here if uuardopd is running or not)</h2>
@@ -18,26 +18,26 @@
     </p>
     <h2>Envio de arquivo</h2>
     <p>
-    Arquivos a serem enviados:
+      <select class="form" id="prefix" name="prefix">
+        <?php include('get_systems.php') ?>
+      </select>
+    </p>
+    Arquivo a ser enviado:
     <form action="upload.php" method="post" enctype="multipart/form-data">
       Escolha o arquivo:
     <input type="file" name="fileToUpload" id="fileToUpload">
-    <!-- Put a checkbox with the option "SEND NOW?" -->
-    <!-- Put an option for choosing "Callsign da estação de destino". -->
-    <!-- Encrypt option? -->
-    <input type="submit" value="Enviar Arquivo" name="submit">
+    <input type="submit" value="Colocar arquivo na fila" name="submit">
+    <br/>
+
     </form>
     </p>
-    <p>
-      Botão Enviar (put here the send button)
-    </p>
 <br/>
 <br/>
 
 <br/>
-Ver fila de trabalho (put here the information of the pending jobs)
+Ver fila de trabalho (uustat.php)
 
-Status (put here uulog output, or a parsed uulog output)
+Status (uulog)
 
 
   </body>
