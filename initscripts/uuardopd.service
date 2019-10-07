@@ -5,7 +5,6 @@ Requires=ardop.service
 
 [Service]
 Type=simple
-User=uucp
 ExecStart=/usr/bin/uuardopd -a 127.0.0.1 -p 8515 -t 30
 ExecStop=/usr/bin/killall -s QUIT uuardopd
 IgnoreSIGPIPE=no

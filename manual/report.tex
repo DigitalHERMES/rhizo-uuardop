@@ -136,6 +136,8 @@ do Debian Bullseye: \url{https://packages.debian.org/bullseye/uucp}.
 
 ps: baixar o .deb e instalar na mão.
 
+Comando para envio de arquivo, 
+
 \subsec
 
 \subsection{rhizo-uuardopd}
@@ -164,6 +166,23 @@ journalctl -f -u uuardopd
 
 \subsection{Apache + PHP}
 
+\section{Interface via UUCP em linha de comando}
+
+O diretório para arquivos recebidos ``/var/www/html/arquivos''.
+
+Adicionando a fila de envio (``-r'' não inicia a transmissão de forma
+automática):
+\begin{verbatim}
+uucp -C -r -d source.xxx AM4AAB\!/var/www/html/arquivos/${nodename}/
+\end{verbatim}
+
+Para disparar o envio de todos os jobs para o destinatário
+AM4AAA:
+\begin{verbatim}
+uucico -S AM4AAA
+\end{verbatim}
+
+
 \section{Interface com o usuário}
 
 A interface do sistema é baseada em Web, utilizando HTML+PHP e
@@ -176,6 +195,7 @@ alguns shell scripts.
 \item mozjpeg: para comprimir em jpg: https://github.com/mozilla/mozjpeg
 \item opusenc: para comprimir áudio
 \item gpg: para criptografia
+\item hostapd: para o roteador wifi (com senha ou sem senha)
 \end{itemize}
 
 \subsection{Interface Web}
