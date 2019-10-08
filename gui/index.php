@@ -6,28 +6,27 @@
     <link rel='stylesheet' href='styles.css'/>
   </head>
   <body>
+  <center>
+    <p>
     <h2>Estação: <?php include('get_name.php') ?></h2>
-
-<!--    <h2>Estado do Sistema: Parado / Pronto para Receber Chamada / Em
-    Chamada (Put here if uuardopd is running or not)</h2> -->
-
-    <p>
-    <h2><a href="arquivos/">Recebimento de arquivos</a></h2>
     </p>
     <p>
-    <h2><a href="tx.php">Envio de arquivo</a></h2>
+    <h1><a href="arquivos/">Recebimento de arquivos</a></h1>
     </p>
     <p>
-    <h2><a href="kill_job.php">Cancelar transmissão</a></h2>
+    <h1><a href="tx.php">Envio de arquivo</a></h1>
     </p>
     <p>
-    <h2><a href="list_job.php">Fila de transmissão</a></h2>
+    <h1><a href="kill_job.php">Cancelar transmissão</a></h1>
     </p>
     <p>
-    <h2><a href="view_log.php">Ver log</a></h2>
+    <h1><a href="list_job.php">Fila de transmissão</a></h1>
     </p>
-<br/>
-<br/>
-
+    <p>
+    <h1><a href="view_log.php">Ver log</a></h1>
+    </p>
+    </center>
+    <br/>
+    <br/>
   </body>
 </html>

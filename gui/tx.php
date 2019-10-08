@@ -6,23 +6,36 @@
     <link rel='stylesheet' href='styles.css'/>
   </head>
   <body>
+  <center>
+  <p>
     <h2>Estação: <?php include('get_name.php') ?></h2>
+  </p>
+  <br />
 
-    <p>
     <form action="upload.php" method="post" enctype="multipart/form-data">
-    <h2>Estação de destino: 
+    <p>
+    <h1>Estação de Destino</h1> 
+    <h1>
       <select id="prefix" name="prefix">
         <?php include('get_systems.php') ?>
       </select>
-    </h2>
-      <br /> <br />
-      <label for="file">Arquivo:</label>
-      <input type="file" name="fileToUpload" id="fileToUpload" value="Escolher Arquivo"/><br /><br />
-      <input type="submit" value="Transmitir Arquivo" name="submit" />
-   <!--   <input type="image" src="img_submit.gif" alt="submit" width="48" height="48"/> -->
-      <input type="hidden" id="myname" name="myname" value="<?php include('get_name.php')?>"/>
-    </form>
+    </h1>
     </p>
+    <p>
+      <h1>Arquivo
+      <input type="file" name="fileToUpload" id="fileToUpload" value="Escolher Arquivo"/>
+      </h1>
+    </p>
+    <p>
+    <h1>
+      <input type="submit" value="Transmitir Arquivo" name="submit" />
+    </h1>
+    </p>
+   <!--   <input type="image" src="img_submit.gif" alt="submit" width="48" height="48"/> -->
+
+     <input type="hidden" id="myname" name="myname" value="<?php include('get_name.php')?>"/>
+    </form>
+    </center>
 <br/>
 <br/>
 
