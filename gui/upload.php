@@ -44,15 +44,21 @@ if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg
 
 // Check file size and if it is picture, reduce the size...
 // limit not to reduce size is 50k!
-if (($_FILES["fileToUpload"]["size"] > 50*1024) && $uploadPic == 1 ) { // 10MB max
-    echo "Sua imagem é muito grande - convertendo para um tamanho menor.<br />";
-    $command = "compress_image.sh \"" .  $_FILES["fileToUpload"]["name"] . "\"";
-    ob_start();
-    system($command , $return_var);
-    $output = ob_get_contents();
-    ob_end_clean();
-    echo "Output: " . $output . " Return value: " . $return_var; 
-    $uploadOk = 1;
+if (($_FILES["fileToUpload"]["size"] > 50*1024) && $uploadPic == 1 ) {
+    if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+        $command = "compress_image.sh \"" .  $target_file . "\"";
+        echo "Command: " . $command . "<br />";
+        ob_start();
+        system($command , $return_var);
+//        $output = ob_get_contents();
+        ob_end_clean();
+//        echo "Output: " . $output . " Return value: " . $return_var; 
+       $uploadOk = 1;
+    } else {
+        $uploadOk = 0;
+        echo "Erro ao mover o arquivo para pasta temporária. <br />";
+    }
+
 }
 
 // Check file size of a file...
