@@ -110,11 +110,10 @@ if ($uploadOk == 0) {
         }       
     }
 
-    if (isset($_POST['encrypt'])
+    if (isset($_POST['encrypt']))
     {
         echo "Criptografia ativada<br />";
     }
-
 
     if ($file_in_place == 1) {
         echo "</br>O arquivo  ". $target . " foi adicionado à fila.</br>";
