@@ -30,7 +30,8 @@
     </p>
     <p>
     <h1>
-      <input type="checkbox" name="encrypt" value="Proteger com Senha?" />
+      <input type="checkbox" name="encrypt" value="Proteger com Senha: " />
+      <input type="text" name="password" />
     </h1>
     </p>
     <p>

@@ -42,6 +42,7 @@ install: uuardopd uuport
 	install scripts/get_nodename.sh $(PREFIX)/bin
 	install scripts/get_systems.sh $(PREFIX)/bin
 	install scripts/kill_job.sh $(PREFIX)/bin
+	install scripts/encrypt.sh $(PREFIX)/bin
 	install gui/* /var/www/html/
 doc:
 	doxygen doxyfile

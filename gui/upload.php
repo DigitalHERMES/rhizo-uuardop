@@ -113,6 +113,7 @@ if ($uploadOk == 0) {
     if (isset($_POST['encrypt']))
     {
         echo "Criptografia ativada<br />";
+        echo "password: " . $_POST['password'] . "<br />";
     }
 
     if ($file_in_place == 1) {
