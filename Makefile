@@ -43,7 +43,7 @@ install: uuardopd uuport
 	install scripts/get_systems.sh $(PREFIX)/bin
 	install scripts/kill_job.sh $(PREFIX)/bin
 	install scripts/encrypt.sh $(PREFIX)/bin
-	install gui/* /var/www/html/
+	install -o www-data -g www-data gui/* /var/www/html/
 doc:
 	doxygen doxyfile
 
