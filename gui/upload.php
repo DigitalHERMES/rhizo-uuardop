@@ -110,14 +110,21 @@ if ($uploadOk == 0) {
         }       
     }
 
-    if (isset($_POST['encrypt']))
+    if (isset($_POST['encrypt']) && $file_in_place == 1)
     {
-        echo "Criptografia ativada<br />";
-        echo "password: " . $_POST['password'] . "<br />";
+           $command = "encrypt.sh \"" . $target_file . "\" \"" . $_POST['password'] . "\"";
+           echo "encrypt command: " . $command . "<br />";
+           ob_start();
+           system($command , $return_var);
+           $output = ob_get_contents();
+           ob_end_clean();
+           unlink($target_file);
+           $new_target = $target_file . ".gpg";
+           echo "Criptografia ativada!<br />";
     }
 
     if ($file_in_place == 1) {
-        echo "</br>O arquivo  ". $target . " foi adicionado à fila.</br>";
+
         $source = substr ($_POST['myname'], 0,  6);
 // TODO: check if remote address is not equal to source....
         if ($source == $_POST['prefix'])
