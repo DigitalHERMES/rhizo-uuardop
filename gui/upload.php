@@ -17,6 +17,7 @@ $remote_dir = "/var/www/html/arquivos/";
 $uploadPic = 0;
 $uploadOk = 1;
 $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+
 // Check if image file is a actual image or fake image
 if(isset($_POST["submit"])) {
     $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
@@ -54,10 +55,16 @@ if (($_FILES["fileToUpload"]["size"] > 50*1024) && $uploadPic == 1 ) { // 10MB m
     $uploadOk = 1;
 }
 
+// Check file size of a file...
+// limit is 50k!
+if (($_FILES["fileToUpload"]["size"] > 50*1024) && $uploadPic == 0 ) { // 10MB max
+    echo "Arquivo muito grande. Máximo permitido: 51200 byte, tamanho do arquivo: " . $_FILES["fileToUpload"]["size"] . "<br />";
+    $uploadOk = 0;
+}
 
 // Check if $uploadOk is set to 0 by an error
 if ($uploadOk == 0) {
-    echo "Erro no carregamento do arquivo 1.";
+    echo "Erro no pré-processamento do arquivo.<br />";
 // if everything is ok, try to upload file
 } else {
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) { //  should I run UUCP from here?
@@ -71,7 +78,7 @@ if ($uploadOk == 0) {
         ob_end_clean();
         unlink($target_file);
     } else {
-        echo "Erro no carregamento do arquivo 2.";
+        echo "Erro ao mover o arquivo para pasta temporária. <br />";
     }
 }
 ?>
