@@ -1,27 +1,21 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta charset="UTF-8">
+    <meta charset="UTF-8"</meta>
     <h1>  <center>rhizo-uuardop</center></h1>
     <title>Serviços de Comunicação Digital</title>
-    <link rel="stylesheet" href="style.css">
-	</head>
+    <link rel="stylesheet" href="main.css">
+</head>
 
 <body>
-
-<div class="w3-container w3-teal">
-    <h2>Serviços de Comunicação Digital</h2>
-</div>
-<h2>Estação: AA2AAA</h2>
-
-    <h2>Estado do Sistema: Parado / Pronto para Receber Chamada / Em
-    Chamada (Put here if uuardopd is running or not)</h2>
-
-
-<h2>Recebimento de arquivos</h2>
-    <p>
+    <center><h4>Serviços de Comunicação Digital</h4></center>
     
-    </p>
+    <p> 
+    <h1>Estação: AA2AAA</h1>
+    <h1>Estado do Sistema:</h1> Parado / Pronto para Receber Chamada / Em
+    Chamada (Put here if uuardopd is running or not)</p>
+
+
     <h2>Envio de arquivo</h2>
     Escolher destinatario
     <select class="form" id="prefix" name="prefix">
@@ -40,27 +34,11 @@
     <form action="upload.php" method="post" enctype="multipart/form-data">
       Escolha o arquivo: 
       <input type="file" name="fileToUpload" id="fileToUpload">
-      <input type="submit" value="Colocar arquivo na fila" name="submit">
-      
-          <br/>
-    
+      <input type="submit" value="Colocar arquivo na fila" name="submit"><br/>
     </form>
-            
-    
-
-    
-
-   
 <br/>
-
-
 <br/>
-Ver fila de trabalho (put here the information of the pending jobs)
-
-
 <br/>
 Status (put here uulog output, or a parsed uulog output)
-
-
 </body>
 </html>
