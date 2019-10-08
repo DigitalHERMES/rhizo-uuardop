@@ -70,7 +70,9 @@ if ($uploadOk == 0) {
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) { //  should I run UUCP from here?
         echo "</br>O arquivo  ". $_FILES["fileToUpload"]["name"] . " foi adicionado à fila.</br>";
         $source = substr ($_POST['myname'], 0,  6);
-        $command = "uucp -C -d " .  $target_file . " " . $_POST['prefix'] . "\!" . $remote_dir . $source . "/";
+// TODO: check if remote address is not equal to source....
+
+        $command = "uucp -C -d \"" .  $target_file . "\" " . $_POST['prefix'] . "\!\"" . $remote_dir . $source . "/\"";
         echo "UUCP Command: " . $command . "<br />";
         ob_start();
         system($command , $return_var);
