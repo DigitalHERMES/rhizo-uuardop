@@ -48,7 +48,7 @@ if($imageFileType != "jpg" && $imageFileType != "JPG" && $imageFileType != "jpeg
        {
           $arr = explode("." . $imageFileType, $target_file);
           $new_target = $arr[0] . ".jpg";
-          $command = "compress_image.sh \"" .  $target_file . "\" \"" . $new_target . \"";
+          $command = "compress_image.sh \"" .  $target_file . "\" \"" . $new_target . "\"";
           echo "Command: " . $command . "<br />";
           $target = $new_target;
           ob_start();
