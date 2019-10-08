@@ -29,7 +29,7 @@
       Escolha o arquivo:
       <input type="file" name="fileToUpload" id="fileToUpload" />
       <input type="submit" value="Colocar arquivo na fila" name="submit" />
-	
+      <input type="hidden" id="myname" name="myname" value="<?php include('get_name.php')?>"/>
 
       <br />
 

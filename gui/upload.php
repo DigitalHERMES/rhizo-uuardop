@@ -62,30 +62,19 @@ if ($uploadOk == 0) {
 } else {
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) { //  should I run UUCP from here?
         echo "</br>O arquivo  ". $_FILES["fileToUpload"]["name"] . " foi adicionado à fila.</br>";
-//        echo "destino: " . $_POST['prefix'] . ""; 
-        $command = "uucp -C -d " .  $target_file . " " . $_POST['prefix'] . "\!" . $remote_dir . "";
-        echo "Command: " . $command . "";
+        $source = substr ($_POST['myname'], 0,  6);
+        $command = "uucp -C -d " .  $target_file . " " . $_POST['prefix'] . "\!" . $remote_dir . $source . "/";
+        echo "UUCP Command: " . $command . "<br />";
         ob_start();
         system($command , $return_var);
         $output = ob_get_contents();
         ob_end_clean();
-//        echo "Output: " . $output . " Return value: " . $return_var; 
         unlink($target_file);
-//        include 'list.php';
     } else {
         echo "Erro no carregamento do arquivo 2.";
     }
 }
 ?>
 
-<p>
-Carregar mais arquivos?
-
-<br />
-<input type="file" name="fileToUpload" id="fileToUpload">
-<br />
-<input type="submit" value="Colocar arquivo na fila" name="submit">
-<br /><button class="button" type="submit" value="queue"> Enviar fila</button>
-</p>
 </body>
 </html>
