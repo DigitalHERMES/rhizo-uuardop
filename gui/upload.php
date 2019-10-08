@@ -117,12 +117,13 @@ if ($uploadOk == 0) {
 
         } else 
         {
-                $command = "uucp -C -d \"" .  $target_file . "\" " . $_POST['prefix'] . "\!\"" . $remote_dir . $source . "/\"";
-                echo "UUCP Command: " . $command . "<br />";
-                ob_start();
-                system($command , $return_var);
-                $output = ob_get_contents();
-                ob_end_clean();
+           $command = "uucp -C -d \"" .  $target_file . "\" " . $_POST['prefix'] . "\!\"" . $remote_dir . $source . "/\"";
+           echo "UUCP Command: " . $command . "<br />";
+           ob_start();
+           system($command , $return_var);
+           $output = ob_get_contents();
+           ob_end_clean();
+        }
     }
 
     unlink($target_file);
