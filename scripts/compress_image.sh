@@ -7,8 +7,9 @@ QUALITY=75 # initial start quality to try...
 TEMPFILE=/tmp/temp-$$.jpg
 
 
-if [ $# -ne 1 ]; then
+if [ $# -lt 1 ]; then
   echo "Usage: $0 image_filename.jpg"
+  echo "Usage: $0 image_filename.{png,gif,...} output.jpg"
   exit 1
 fi
 
@@ -23,4 +24,10 @@ while [ "$(stat -c%s "${TEMPFILE}")" -gt "$MAX_SIZE" ] && [ "$QUALITY" -gt "5" ]
 #  echo ${QUALITY}
 done;
 
-mv ${TEMPFILE} "${1}"
+if [ $# -eq 1 ]; then
+  mv ${TEMPFILE} "${1}"
+fi
+
+if [ $# -eq 2 ]; then
+  mv ${TEMPFILE} "${2}"
+fi

@@ -39,15 +39,34 @@ if (file_exists($target_file)) {
     $uploadOk = 1;
 }
 
-if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-&& $imageFileType != "gif" && $uploadPic == 1) {
+if($imageFileType != "jpg" && $imageFileType != "JPG" && $imageFileType != "jpeg"
+&& $imageFileType != "JPEG" && $uploadPic == 1) {
 // TODO: change the extension of the file if we don't have a .jpg, .JPG, .jpeg ou .JPEG
-    echo "We have a common JPG, JPEG, PNG or GIF!";
+    echo "We have a different image file than jpg!<br />";
+    if (($_FILES["fileToUpload"]["size"] > 50*1024) && $uploadPic == 1 ) {
+       if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file))
+       {
+          $arr = explode("." . $imageFileType, $target_file);
+          $new_target = $arr[0] . ".jpg";
+          $command = "compress_image.sh \"" .  $target_file . "\" \"" . $new_target . \"";
+          echo "Command: " . $command . "<br />";
+          $target = $new_target;
+          ob_start();
+          system($command , $return_var);
+          ob_end_clean();
+          $uploadOk = 1;
+          $file_in_place = 1;
+       } else {
+          $uploadOk = 0;
+          echo "Erro ao mover o arquivo para pasta temporária. <br />";
+       }
+
+    }     
 }
 
 // Check file size and if it is picture, reduce the size...
 // limit not to reduce size is 50k!
-if (($_FILES["fileToUpload"]["size"] > 50*1024) && $uploadPic == 1 ) {
+if (($_FILES["fileToUpload"]["size"] > 50*1024) && $uploadPic == 1 && $file_in_place == 0 && $uploadOk == 1) {
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
         $command = "compress_image.sh \"" .  $target_file . "\"";
         echo "Command: " . $command . "<br />";
@@ -88,17 +107,25 @@ if ($uploadOk == 0) {
         }       
     }
     if ($file_in_place == 1) {
-        echo "</br>O arquivo  ". $_FILES["fileToUpload"]["name"] . " foi adicionado à fila.</br>";
+        echo "</br>O arquivo  ". $target . " foi adicionado à fila.</br>";
         $source = substr ($_POST['myname'], 0,  6);
 // TODO: check if remote address is not equal to source....
-        $command = "uucp -C -d \"" .  $target_file . "\" " . $_POST['prefix'] . "\!\"" . $remote_dir . $source . "/\"";
-        echo "UUCP Command: " . $command . "<br />";
-        ob_start();
-        system($command , $return_var);
-        $output = ob_get_contents();
-        ob_end_clean();
-        unlink($target_file);
+        if ($source == $_POST['prefix'])
+        {
+           echo "Estação de origem é igual estação de destino! <br />";
+           $uploadOk = 0;
+
+        } else 
+        {
+                $command = "uucp -C -d \"" .  $target_file . "\" " . $_POST['prefix'] . "\!\"" . $remote_dir . $source . "/\"";
+                echo "UUCP Command: " . $command . "<br />";
+                ob_start();
+                system($command , $return_var);
+                $output = ob_get_contents();
+                ob_end_clean();
     }
+
+    unlink($target_file);
 }
 ?>
 
