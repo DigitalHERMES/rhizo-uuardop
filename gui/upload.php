@@ -41,6 +41,7 @@ if (file_exists($target_file)) {
 
 if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
 && $imageFileType != "gif" && $uploadPic == 1) {
+// TODO: change the extension of the file if we don't have a .jpg, .JPG, .jpeg ou .JPEG
     echo "We have a common JPG, JPEG, PNG or GIF!";
 }
 
