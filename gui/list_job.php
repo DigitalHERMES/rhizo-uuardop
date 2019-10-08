@@ -10,6 +10,7 @@
 <br />
     <h2>Fila de Transmissão:</h2>
 <br />
+<textarea rows=6 cols=100 readonly>
 <?php 
     $command = "uustat -a";
     ob_start();
@@ -18,6 +19,7 @@
     ob_end_clean();
     echo $output; 
 ?>
+</textarea>
 <br/>
 <br/>
 

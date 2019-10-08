@@ -10,6 +10,7 @@
 <br />
     <h2>Log do Sistema:</h2>
 <br />
+<textarea rows=8 cols=100 readonly>
 <?php 
     $command = "uulog";
     ob_start();
@@ -18,6 +19,7 @@
     ob_end_clean();
     echo $output; 
 ?>
+</textarea>
 <br/>
 <br/>
 
