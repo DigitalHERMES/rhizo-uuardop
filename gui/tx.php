@@ -16,6 +16,8 @@
     <p>
     <h1>Estação de Destino</h1> 
     <h1>
+    <!-- Colocar rotulos para os sistemas.. -->
+    <!-- Enviar arquivo com senha checkbox -->
       <select id="prefix" name="prefix">
         <?php include('get_systems.php') ?>
       </select>
@@ -25,6 +27,11 @@
       <h1>Arquivo
       <input type="file" name="fileToUpload" id="fileToUpload" value="Escolher Arquivo"/>
       </h1>
+    </p>
+    <p>
+    <h1>
+      <input type="checkbox" name="encrypt" value="Proteger com Senha?" />
+    </h1>
     </p>
     <p>
     <h1>
