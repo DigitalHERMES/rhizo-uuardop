@@ -119,7 +119,7 @@ if ($uploadOk == 0) {
            $output = ob_get_contents();
            ob_end_clean();
            unlink($target_file);
-           $new_target = $target_file . ".gpg";
+           $target_file = $target_file . ".gpg";
            echo "Criptografia ativada!<br />";
     }
 
