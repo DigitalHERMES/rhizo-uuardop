@@ -8,41 +8,26 @@
   <body>
     <h2>Estação: <?php include('get_name.php') ?></h2>
 
-    <h2>Estado do Sistema: Parado / Pronto para Receber Chamada / Em
-    Chamada (Put here if uuardopd is running or not)</h2>
+<!--    <h2>Estado do Sistema: Parado / Pronto para Receber Chamada / Em
+    Chamada (Put here if uuardopd is running or not)</h2> -->
 
-    <h2>Recebimento de arquivos</h2>
     <p>
-    Conteúdo recebido: <br />
-    <?php include('list.php') ?>
+    <h2><a href="arquivos/">Recebimento de arquivos</a></h2>
     </p>
-    <br />
-    <h2>Envio de arquivo</h2>
     <p>
+    <h2><a href="tx.php">Envio de arquivo</a></h2>
     </p>
-    <form action="upload.php" method="post" enctype="multipart/form-data">
-      Estação de destino: 
-      <select id="prefix" name="prefix">
-        <?php include('get_systems.php') ?>
-      </select>
-      <br />
-      Escolha o arquivo:
-      <input type="file" name="fileToUpload" id="fileToUpload" />
-      <input type="submit" value="Colocar arquivo na fila" name="submit" />
-      <input type="hidden" id="myname" name="myname" value="<?php include('get_name.php')?>"/>
-
-      <br />
-
-    </form>
+    <p>
+    <h2><a href="kill_job.php">Cancelar transmissão</a></h2>
+    </p>
+    <p>
+    <h2><a href="list_job.php">Fila de transmissão</a></h2>
+    </p>
+    <p>
+    <h2><a href="view_log.php">Ver log</a></h2>
     </p>
 <br/>
 <br/>
-
-<br/>
-Ver fila de trabalho (uustat.php)
-
-Status (uulog)
-
 
   </body>
 </html>
