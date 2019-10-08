@@ -9,18 +9,19 @@
     <h2>Estação: <?php include('get_name.php') ?></h2>
 
     <p>
-    <center>
     <form action="upload.php" method="post" enctype="multipart/form-data">
-      Estação de destino: 
+    <h2>Estação de destino: 
       <select id="prefix" name="prefix">
         <?php include('get_systems.php') ?>
       </select>
+    </h2>
       <br /> <br />
-      <input type="file" name="fileToUpload" id="fileToUpload" value="Escolher Arquivo"/><br />
-      <input type="submit" value="Colocar arquivo na fila" name="submit" />
+      <input type="file" name="fileToUpload" id="fileToUpload" value="Escolher Arquivo"/><br /><br />
+      <label for="file">Arquivo:</label>
+      <input type="submit" value="Transmitir Arquivo" name="submit" />
+   <!--   <input type="image" src="img_submit.gif" alt="submit" width="48" height="48"/> -->
       <input type="hidden" id="myname" name="myname" value="<?php include('get_name.php')?>"/>
     </form>
-    </center>    
     </p>
 <br/>
 <br/>
