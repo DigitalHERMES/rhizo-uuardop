@@ -16,8 +16,8 @@
       </select>
     </h2>
       <br /> <br />
-      <input type="file" name="fileToUpload" id="fileToUpload" value="Escolher Arquivo"/><br /><br />
       <label for="file">Arquivo:</label>
+      <input type="file" name="fileToUpload" id="fileToUpload" value="Escolher Arquivo"/><br /><br />
       <input type="submit" value="Transmitir Arquivo" name="submit" />
    <!--   <input type="image" src="img_submit.gif" alt="submit" width="48" height="48"/> -->
       <input type="hidden" id="myname" name="myname" value="<?php include('get_name.php')?>"/>
