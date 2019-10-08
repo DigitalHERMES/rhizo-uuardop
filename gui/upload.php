@@ -46,7 +46,7 @@ if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg
 // limit not to reduce size is 50k!
 if (($_FILES["fileToUpload"]["size"] > 50*1024) && $uploadPic == 1 ) { // 10MB max
     echo "Sua imagem é muito grande - convertendo para um tamanho menor.<br />";
-    $command = "compress_image.sh" .  $_FILES["fileToUpload"]["name"] . "";
+    $command = "compress_image.sh \"" .  $_FILES["fileToUpload"]["name"] . "\"";
     ob_start();
     system($command , $return_var);
     $output = ob_get_contents();
