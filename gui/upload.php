@@ -11,12 +11,16 @@
 
 <br />
 <?php
+
 $target_dir = "/var/www/html/uploads/";
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 $remote_dir = "/var/www/html/arquivos/";
 $uploadPic = 0;
 $uploadOk = 1;
 $file_in_place = 0;
+
+
+// IMAGE SECTION //
 
 $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 
@@ -39,10 +43,10 @@ if (file_exists($target_file)) {
     $uploadOk = 1;
 }
 
+
+// Image but not jpg case
 if($imageFileType != "jpg" && $imageFileType != "JPG" && $imageFileType != "jpeg"
 && $imageFileType != "JPEG" && $uploadPic == 1) {
-// TODO: change the extension of the file if we don't have a .jpg, .JPG, .jpeg ou .JPEG
-    echo "We have a different image file than jpg!<br />";
     if (($_FILES["fileToUpload"]["size"] > 50*1024) && $uploadPic == 1 ) {
        if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file))
        {
@@ -50,10 +54,11 @@ if($imageFileType != "jpg" && $imageFileType != "JPG" && $imageFileType != "jpeg
           $new_target = $arr[0] . ".jpg";
           $command = "compress_image.sh \"" .  $target_file . "\" \"" . $new_target . "\"";
           echo "Command: " . $command . "<br />";
-          $target = $new_target;
           ob_start();
           system($command , $return_var);
           ob_end_clean();
+          unlink($target_file);
+          $target_file = $new_target;
           $uploadOk = 1;
           $file_in_place = 1;
        } else {
@@ -72,11 +77,9 @@ if (($_FILES["fileToUpload"]["size"] > 50*1024) && $uploadPic == 1 && $file_in_p
         echo "Command: " . $command . "<br />";
         ob_start();
         system($command , $return_var);
-//        $output = ob_get_contents();
         ob_end_clean();
-//        echo "Output: " . $output . " Return value: " . $return_var; 
-       $uploadOk = 1;
-       $file_in_place = 1;
+        $uploadOk = 1;
+        $file_in_place = 1;
     } else {
         $uploadOk = 0;
         echo "Erro ao mover o arquivo para pasta temporária. <br />";
@@ -84,7 +87,7 @@ if (($_FILES["fileToUpload"]["size"] > 50*1024) && $uploadPic == 1 && $file_in_p
 
 }
 
-// Check file size of a file...
+// Check file size of a normal file.
 // limit is 50k!
 if (($_FILES["fileToUpload"]["size"] > 50*1024) && $uploadPic == 0 ) { // 10MB max
     echo "Arquivo muito grande. Máximo permitido: 51200 byte, tamanho do arquivo: " . $_FILES["fileToUpload"]["size"] . "<br />";
@@ -98,7 +101,7 @@ if ($uploadOk == 0) {
 } else {
     if ($file_in_place == 0)
     {
-        if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) { //  should I run UUCP from here?
+        if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
            $file_in_place = 1;
         }
         else {
@@ -126,8 +129,8 @@ if ($uploadOk == 0) {
         }
     }
 
-    unlink($target_file);
 }
+unlink($target_file);
 ?>
 
 </body>
