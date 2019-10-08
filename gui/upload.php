@@ -16,6 +16,8 @@ $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 $remote_dir = "/var/www/html/arquivos/";
 $uploadPic = 0;
 $uploadOk = 1;
+$file_in_place = 0;
+
 $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 
 // Check if image file is a actual image or fake image
@@ -54,6 +56,7 @@ if (($_FILES["fileToUpload"]["size"] > 50*1024) && $uploadPic == 1 ) {
         ob_end_clean();
 //        echo "Output: " . $output . " Return value: " . $return_var; 
        $uploadOk = 1;
+       $file_in_place = 1;
     } else {
         $uploadOk = 0;
         echo "Erro ao mover o arquivo para pasta temporária. <br />";
@@ -73,11 +76,20 @@ if ($uploadOk == 0) {
     echo "Erro no pré-processamento do arquivo.<br />";
 // if everything is ok, try to upload file
 } else {
-    if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) { //  should I run UUCP from here?
+    if ($file_in_place == 0)
+    {
+        if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) { //  should I run UUCP from here?
+           $file_in_place = 1;
+        }
+        else {
+           echo "Erro ao mover o arquivo para pasta temporária. <br />";
+           $uploadOk = 0;
+        }       
+    }
+    if ($file_in_place == 1) {
         echo "</br>O arquivo  ". $_FILES["fileToUpload"]["name"] . " foi adicionado à fila.</br>";
         $source = substr ($_POST['myname'], 0,  6);
 // TODO: check if remote address is not equal to source....
-
         $command = "uucp -C -d \"" .  $target_file . "\" " . $_POST['prefix'] . "\!\"" . $remote_dir . $source . "/\"";
         echo "UUCP Command: " . $command . "<br />";
         ob_start();
@@ -85,8 +97,6 @@ if ($uploadOk == 0) {
         $output = ob_get_contents();
         ob_end_clean();
         unlink($target_file);
-    } else {
-        echo "Erro ao mover o arquivo para pasta temporária. <br />";
     }
 }
 ?>
