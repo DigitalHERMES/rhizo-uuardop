@@ -38,7 +38,11 @@ install: uuardopd uuport
 	install uuardopd $(PREFIX)/bin
 	install uuport $(PREFIX)/bin
 	install initscripts/uuardopd.service /etc/systemd/system
-
+	install scripts/compress_image.sh $(PREFIX)/bin
+	install scripts/get_nodename.sh $(PREFIX)/bin
+	install scripts/get_systems.sh $(PREFIX)/bin
+	install scripts/kill_job.sh $(PREFIX)/bin
+	install gui/* /var/www/html/
 doc:
 	doxygen doxyfile
 
