@@ -3,20 +3,24 @@
   <head>
     <meta charset='UTF-8'/>
     <title>Serviços de Comunicação Digital</title>
-    <link rel='stylesheet' href='styles.css'/>
+<!--    <link rel='stylesheet' href='styles.css'/> -->
+    <script>
+      function addbox() {
+	  if (document.getElementById('enc').checked) {
+              document.getElementById('txt').style.display = 'block';
+	  } else {
+              document.getElementById('txt').style.display = 'none';
+	  }
+      }
+    </script>
   </head>
   <body>
-  <center>
+    <center>
 
-  <div>
-￼    <h2>Estação: <?php include('get_name.php') ?></h2>
-  </div>
-  <div>
-￼    <h6>Estado do Sistema: 
-￼        <?php include 'running.php'; ?>
-     </h6>
-  </div>
-  <br />
+      <h2>Estação: <?php include('get_name.php') ?></h2>
+      <h5>Estado do Sistema: <?php include 'running.php'; ?></h5>
+      <hr />
+
   <form action="upload.php" method="post" enctype="multipart/form-data">
     <p>
     <h1>Estação de Destino
@@ -34,14 +38,9 @@
     </p>
     <p>
     <h1>
-      Proteger com Senha
-      <input type="checkbox" name="encrypt" value="Proteger com Senha: " />
-    </h1>
-    </p>
-    <p>
-    <h1>
-      Senha
-      <input type="text" name="password" />
+      Proteger com Senha?
+      <input type="checkbox" name="encrypt" onclick="addbox();" id="enc" />
+      <input type="text" name="password" id="txt" style="display: none;" />
     </h1>
     </p>
     <p>

@@ -6,17 +6,11 @@
     <link rel='stylesheet' href='styles.css'/>
   </head>
   <body>
+    
+    <h2>Estação: <?php include('get_name.php') ?></h2>
+    <h5>Estado do Sistema: <?php include 'running.php'; ?></h5>
+    <hr />
 
-
-  <div>
-￼    <h2>Estação: <?php include('get_name.php') ?></h2>
-  </div>
-  <div>
-￼    <h6>Estado do Sistema: 
-￼        <?php include 'running.php'; ?>
-     </h6>
-  </div>
-  <br />
   <p>
     <h2>Log do Sistema:</h2>
 <br />

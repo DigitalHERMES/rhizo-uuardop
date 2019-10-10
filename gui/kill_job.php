@@ -7,15 +7,10 @@
   </head>
   <body>
 
-  <div>
-￼    <h2>Estação: <?php include('get_name.php') ?></h2>
-  </div>
-  <div>
-￼    <h6>Estado do Sistema: 
-￼        <?php include 'running.php'; ?>
-     </h6>
-  </div>
-  <br />
+      <h2>Estação: <?php include('get_name.php') ?></h2>
+      <h5>Estado do Sistema: <?php include 'running.php'; ?></h5>
+      <hr />
+    
 
     <h1>Transmissão Cancelada e Fila de Envio Limpa.</h1>
 <br />

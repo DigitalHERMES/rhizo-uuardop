@@ -7,14 +7,10 @@
   </head>
   <body>
 
-  <div>
-￼    <h2>Estação: <?php include('get_name.php') ?></h2>
-  </div>
-  <div>
-￼    <h6>Estado do Sistema: 
-￼        <?php include 'running.php'; ?>
-     </h6>
-  </div>
+      <h2>Estação: <?php include('get_name.php') ?></h2>
+      <h5>Estado do Sistema: <?php include 'running.php'; ?></h5>
+      <hr />
+
   <br />
 
     <h1>Fila de Transmissão:</h1>
