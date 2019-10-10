@@ -259,7 +259,7 @@ void *ardop_control_worker_thread_rx(void *conn)
             } else
             if (!memcmp(buffer, "BUFFER", strlen("BUFFER"))){
                 sscanf( (char *) buffer, "BUFFER %u", & connector->buffer_size);
-                // fprintf(stderr, "BUFFER: %u\n", connector->buffer_size);
+                fprintf(stderr, "BUFFER: %u\n", connector->buffer_size);
 
             } else
                 if (!memcmp(buffer, "INPUTPEAKS", strlen("INPUTPEAKS"))){
@@ -362,7 +362,7 @@ void *ardop_control_worker_thread_tx(void *conn)
             sprintf(buffer,"ARQCALL %s 4\r", connector->remote_call_sign);
             ret &= tcp_write(connector->control_socket, (uint8_t *)buffer, strlen(buffer));
 
-//            fprintf(stderr, "CONNECTING... %s\n", buffer);
+            fprintf(stderr, "CONNECTING... %s\n", buffer);
             connector->waiting_for_connection = true;
         }
 
