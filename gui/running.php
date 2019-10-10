@@ -1,5 +1,9 @@
 <?php
-        exec("pgrep -x uuardopd", $pids);
-            if(empty($pids)) { echo 'UUARDOPD NÃO ESTA FUNCIONANDO';}
-            else {echo "UUARDOPD FUNCIONANDO NORMALMENTE";}
-            ?>
+    exec("pgrep -x uuardopd", $piduu);
+    exec("pgrep -x ardop", $pidar);
+    if(empty($piduu) || empty($pidar)){ 
+        echo "Sistema com Problemas!";
+    } else {
+        echo "Sistema Funcionando!";
+    }
+?>

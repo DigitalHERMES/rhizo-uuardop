@@ -3,46 +3,51 @@
   <head>
     <meta charset='UTF-8'/>
     <title>Serviços de Comunicação Digital</title>
-    <!-- <link rel='stylesheet' href='styles.css'/> -->
+    <link rel='stylesheet' href='styles.css'/>
   </head>
   <body>
   <center>
-  <p>
-    <h1>Estação: <?php include('get_name.php') ?></h1>
-  </p>
-  <br />
 
-    <form action="upload.php" method="post" enctype="multipart/form-data">
+  <div>
+￼    <h2>Estação: <?php include('get_name.php') ?></h2>
+  </div>
+  <div>
+￼    <h6>Estado do Sistema: 
+￼        <?php include 'running.php'; ?>
+     </h6>
+  </div>
+  <br />
+  <form action="upload.php" method="post" enctype="multipart/form-data">
     <p>
-    <h2>Estação de Destino
+    <h1>Estação de Destino
     <!-- Colocar rotulos para os sistemas.. -->
     <!-- Enviar arquivo com senha checkbox -->
       <select id="prefix" name="prefix">
         <?php include('get_systems.php') ?>
       </select>
-    </h2>
+    </h1>
     </p>
     <p>
-      <h2>Arquivo
+      <h1>Arquivo
       <input type="file" name="fileToUpload" id="fileToUpload" value="Escolher Arquivo"/>
-      </h2>
+      </h1>
     </p>
     <p>
-    <h2>
+    <h1>
       Proteger com Senha
       <input type="checkbox" name="encrypt" value="Proteger com Senha: " />
-    </h2>
+    </h1>
     </p>
     <p>
-    <h2>
+    <h1>
       Senha
       <input type="text" name="password" />
-    </h2>
+    </h1>
     </p>
     <p>
-    <h2>
+    <h1>
       <input type="submit" value="Transmitir Arquivo" name="submit" />
-    </h2>
+    </h1>
     </p>
    <!--   <input type="image" src="img_submit.gif" alt="submit" width="48" height="48"/> -->
 

@@ -7,26 +7,33 @@
   </head>
   <body>
   <center>
-    <p>
-    <h2>Estação: <?php include('get_name.php') ?></h2>
-    </p>
-    <p>
+
+  <div>
+￼    <h2>Estação: <?php include('get_name.php') ?></h2>
+  </div>
+  <div>
+￼    <h6>Estado do Sistema: 
+￼        <?php include 'running.php'; ?>
+     </h6>
+  </div>
+  <br />
+  <p>
     <h1><a href="arquivos/">Recebimento de arquivos</a></h1>
-    </p>
-    <p>
+  </p>
+  <p>
     <h1><a href="tx.php">Envio de arquivo</a></h1>
-    </p>
-    <p>
+  </p>
+  <p>
     <h1><a href="kill_job.php">Cancelar transmissão</a></h1>
-    </p>
-    <p>
+  </p>
+  <p>
     <h1><a href="list_job.php">Fila de transmissão</a></h1>
-    </p>
-    <p>
+  </p>
+  <p>
     <h1><a href="view_log.php">Ver log</a></h1>
-    </p>
+  </p>
     </center>
-    <br/>
-    <br/>
+  <br/>
+  <br/>
   </body>
 </html>

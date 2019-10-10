@@ -6,9 +6,18 @@
     <link rel='stylesheet' href='styles.css'/>
   </head>
   <body>
-    <h2>Estação: <?php include('get_name.php') ?></h2>
-<br />
-    <h2>Fila de Transmissão:</h2>
+
+  <div>
+￼    <h2>Estação: <?php include('get_name.php') ?></h2>
+  </div>
+  <div>
+￼    <h6>Estado do Sistema: 
+￼        <?php include 'running.php'; ?>
+     </h6>
+  </div>
+  <br />
+
+    <h1>Fila de Transmissão:</h1>
 <br />
 <textarea rows=6 cols=100 readonly>
 <?php 

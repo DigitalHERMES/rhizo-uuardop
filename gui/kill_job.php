@@ -6,9 +6,18 @@
     <link rel='stylesheet' href='styles.css'/>
   </head>
   <body>
-    <h2>Estação: <?php include('get_name.php') ?></h2>
-<br />
-    <h2>Transmissão Cancelada</h2>
+
+  <div>
+￼    <h2>Estação: <?php include('get_name.php') ?></h2>
+  </div>
+  <div>
+￼    <h6>Estado do Sistema: 
+￼        <?php include 'running.php'; ?>
+     </h6>
+  </div>
+  <br />
+
+    <h1>Transmissão Cancelada e Fila de Envio Limpa.</h1>
 <br />
 <?php 
     $command = "kill_job.sh";

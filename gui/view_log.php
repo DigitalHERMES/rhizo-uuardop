@@ -6,8 +6,18 @@
     <link rel='stylesheet' href='styles.css'/>
   </head>
   <body>
-    <h2>Estação: <?php include('get_name.php') ?></h2>
-<br />
+
+
+  <div>
+￼    <h2>Estação: <?php include('get_name.php') ?></h2>
+  </div>
+  <div>
+￼    <h6>Estado do Sistema: 
+￼        <?php include 'running.php'; ?>
+     </h6>
+  </div>
+  <br />
+  <p>
     <h2>Log do Sistema:</h2>
 <br />
 <textarea rows=8 cols=100 readonly>
@@ -20,6 +30,7 @@
     echo $output; 
 ?>
 </textarea>
+</p>
 <br/>
 <br/>
 
