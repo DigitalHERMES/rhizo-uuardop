@@ -7,9 +7,11 @@
     <script>
       function addbox() {
 	  if (document.getElementById('enc').checked) {
-              document.getElementById('txt').style.display = 'block';
+              document.getElementById('txt').style.display = 'inline';
+	      document.getElementById('label').style.display = 'inline';
 	  } else {
               document.getElementById('txt').style.display = 'none';
+	      document.getElementById('label').style.display = 'none';
 	  }
       }
     </script>
@@ -37,11 +39,16 @@
       </h1>
     </p>
     <p>
-    <h1>
-      Proteger com Senha?
-      <input type="checkbox" name="encrypt" onclick="addbox();" id="enc" />
-      <input type="text" name="password" id="txt" style="display: none;" />
-    </h1>
+      <h1>
+	Proteger com Senha?
+	<input type="checkbox" name="encrypt" onclick="addbox();" id="enc" />
+      </h1>
+    </p>
+    <p>
+      <h1>
+	<label for="txt" id="label" style="display: none;">Senha: </label>
+	<input type="text" name="password" id="txt" style="display: none;" />
+      </h1>
     </p>
     <p>
     <h1>
