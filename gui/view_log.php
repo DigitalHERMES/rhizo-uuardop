@@ -3,18 +3,18 @@
   <head>
     <meta charset='UTF-8'/>
     <title>Serviços de Comunicação Digital</title>
-    <link rel='stylesheet' href='styles.css'/>
+    <!-- <link rel='stylesheet' href='styles.css'/> -->
   </head>
   <body>
-    
-    <h2>Estação: <?php include('get_name.php') ?></h2>
-    <h5>Estado do Sistema: <?php include 'running.php'; ?></h5>
-    <hr />
+    <center>
+      <h2>Estação: <?php include('get_name.php') ?></h2>
+      <h5>Estado do Sistema: <?php include 'running.php'; ?></h5>
+      <hr />
 
-  <p>
-    <h2>Log do Sistema:</h2>
-<br />
-<textarea rows=8 cols=100 readonly>
+      <p>
+	<h1>Log do Sistema:</h1>
+	<br />
+	<textarea rows=8 cols=100 readonly>
 <?php 
     $command = "uulog";
     ob_start();
@@ -23,10 +23,11 @@
     ob_end_clean();
     echo $output; 
 ?>
-</textarea>
-</p>
-<br/>
-<br/>
+	</textarea>
+      </p>
+    </center>
+    <br/>
+    <br/>
 
-</body>
+  </body>
 </html>

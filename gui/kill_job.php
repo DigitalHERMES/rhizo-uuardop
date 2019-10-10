@@ -3,17 +3,17 @@
   <head>
     <meta charset='UTF-8'/>
     <title>Serviços de Comunicação Digital</title>
-    <link rel='stylesheet' href='styles.css'/>
+<!--    <link rel='stylesheet' href='styles.css'/> -->
   </head>
   <body>
-
+    <center>
       <h2>Estação: <?php include('get_name.php') ?></h2>
       <h5>Estado do Sistema: <?php include 'running.php'; ?></h5>
       <hr />
     
-
-    <h1>Transmissão Cancelada e Fila de Envio Limpa.</h1>
-<br />
+      <p>
+	<h1>Transmissão Cancelada e Fila de Envio Limpa.</h1>
+	<br />
 <?php 
     $command = "kill_job.sh";
     ob_start();
@@ -22,8 +22,9 @@
     ob_end_clean();
 //    echo $output; 
 ?>
-<br/>
-<br/>
-
-</body>
+      </p>
+      <br/>
+      <br/>
+      </center>
+  </body>
 </html>
