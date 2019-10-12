@@ -26,7 +26,7 @@
       <form action="uucico.php" method="post" enctype="multipart/form-data">
         <p>
           <h1>
-            Enviar Arquivos para Todas Estações?
+            Especificar Estação de Envio?
             <input type="checkbox" name="sendall" onclick="addbox();" id="sendall" />
           </h1>
         </p>

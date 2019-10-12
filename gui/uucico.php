@@ -12,20 +12,20 @@
 <br />
 <?php
 
-$source = substr ($_POST['myname'], 0,  6);
-if($source == $_POST['prefix'])
+if (isset($_POST['sendall']))
 {
-    echo "ERRO: Estação de origem é igual estação de destino! <br />";
-} else 
-{
-    if (isset($_POST['sendall']))
+    $command = "uucico  --master -f";
+    echo "UUCP Command: " . $command . "<br />";
+    ob_start();
+    system($command , $return_var);
+    $output = ob_get_contents();
+    ob_end_clean();
+} else {
+
+    $source = substr ($_POST['myname'], 0,  6);
+    if($source == $_POST['prefix'])
     {
-        $command = "uucico  --master -f";
-        echo "UUCP Command: " . $command . "<br />";
-        ob_start();
-        system($command , $return_var);
-        $output = ob_get_contents();
-        ob_end_clean();
+        echo "ERRO: Estação de origem é igual estação de destino! <br />";
     } else 
     {
         $command = "uucico -S " . $_POST['prefix'] . "";

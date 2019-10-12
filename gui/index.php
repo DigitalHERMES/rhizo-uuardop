@@ -17,16 +17,13 @@
       </p>
 
       <p>
-	<h1><a href="tx.php">Transmitir Carregados</a></h1>
+	<h1><a href="tx.php">Transmitir</a></h1>
       </p>
 
       <p>
 	<h1><a href="list_job.php">Listar Arquivos Carregados para Transmissão</a></h1>
       </p>
 
-      <p>
-	<h1><a href="tx.php">Carregar Arquivo para Transmissão</a></h1>
-      </p>
       <p>
 	<h1><a href="arquivos/">Recebimento de arquivos</a></h1>
       </p>
