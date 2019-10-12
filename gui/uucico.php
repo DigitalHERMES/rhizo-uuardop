@@ -12,7 +12,8 @@
 <br />
 <?php
 
-if (isset($_POST['sendall']))
+// fix me - inverted logic...
+if (!isset($_POST['sendall']))
 {
     $command = "uucico  --master -f";
     echo "UUCP Command: " . $command . "<br />";
