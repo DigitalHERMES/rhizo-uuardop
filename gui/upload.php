@@ -22,6 +22,13 @@ $file_in_place = 0;
 
 // IMAGE SECTION //
 
+$source = substr ($_POST['myname'], 0,  6);
+if ($source == $_POST['prefix'])
+{
+    echo "Estação de origem é igual estação de destino! <br />";
+    exit; 
+}
+
 $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 
 // Check if image file is a actual image or fake image
@@ -124,23 +131,18 @@ if ($uploadOk == 0) {
     }
 
     if ($file_in_place == 1) {
-
-        $source = substr ($_POST['myname'], 0,  6);
-// TODO: check if remote address is not equal to source....
-        if ($source == $_POST['prefix'])
-        {
-           echo "Estação de origem é igual estação de destino! <br />";
-           $uploadOk = 0;
-
-        } else 
-        {
-           $command = "uucp -C -d \"" .  $target_file . "\" " . $_POST['prefix'] . "\!\"" . $remote_dir . $source . "/\"";
+           if (isset($_POST['sendnow']))
+           {
+                $command = "uucp -C -d \"" .  $target_file . "\" " . $_POST['prefix'] . "\!\"" . $remote_dir . $source . "/\"";
+           } else
+           {
+                $command = "uucp -r -C -d \"" .  $target_file . "\" " . $_POST['prefix'] . "\!\"" . $remote_dir . $source . "/\"";
+           }
            echo "UUCP Command: " . $command . "<br />";
            ob_start();
            system($command , $return_var);
            $output = ob_get_contents();
            ob_end_clean();
-        }
     }
 
 }

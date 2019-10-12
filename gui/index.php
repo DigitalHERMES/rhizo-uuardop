@@ -13,11 +13,11 @@
       <hr />
 
       <p>
-	<h1><a href="tx.php">Carregar Arquivo para Transmissão</a></h1>
+	<h1><a href="load.php">Carregar Arquivo para Transmissão</a></h1>
       </p>
 
       <p>
-	<h1><a href="">Transmitir Carregados</a></h1>
+	<h1><a href="tx.php">Transmitir Carregados</a></h1>
       </p>
 
       <p>

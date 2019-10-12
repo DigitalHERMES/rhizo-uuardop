@@ -50,6 +50,14 @@
 	<input type="text" name="password" id="txt" style="display: none;" />
       </h1>
     </p>
+
+    <p>
+      <h1>
+	Enviar agora?
+	<input type="checkbox" name="sendnow" id="sendnow" />
+      </h1>
+    </p>
+
     <p>
     <h1>
       <input type="submit" value="Transmitir Arquivo" name="submit" />
