@@ -11,8 +11,21 @@
       <h2>Estação: <?php include('get_name.php') ?></h2>
       <h5>Estado do Sistema: <?php include 'running.php'; ?></h5>
       <hr />
+
       <p>
-	<h1><a href="tx.php">Envio de arquivo</a></h1>
+	<h1><a href="tx.php">Carregar Arquivo para Transmissão</a></h1>
+      </p>
+
+      <p>
+	<h1><a href="">Transmitir Carregados</a></h1>
+      </p>
+
+      <p>
+	<h1><a href="list_job.php">Listar Arquivos Carregados para Transmissão</a></h1>
+      </p>
+
+      <p>
+	<h1><a href="tx.php">Carregar Arquivo para Transmissão</a></h1>
       </p>
       <p>
 	<h1><a href="arquivos/">Recebimento de arquivos</a></h1>
