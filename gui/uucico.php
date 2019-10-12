@@ -15,7 +15,7 @@
 // fix me - inverted logic...
 if (!isset($_POST['sendall']))
 {
-    $command = "uucico  --master -f";
+    $command = "sudo uucico  --master -f";
     echo "UUCP Command: " . $command . "<br />";
     ob_start();
     system($command , $return_var);
@@ -29,7 +29,7 @@ if (!isset($_POST['sendall']))
         echo "ERRO: Estação de origem é igual estação de destino! <br />";
     } else 
     {
-        $command = "uucico -S " . $_POST['prefix'] . "";
+        $command = "sudo uucico -S " . $_POST['prefix'] . "";
         echo "UUCP Command: " . $command . "<br />";
         ob_start();
         system($command , $return_var);
