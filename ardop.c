@@ -354,9 +354,13 @@ void *ardop_control_worker_thread_tx(void *conn)
 
             usleep(1200000); // sleep for threads finish their jobs (more than 1s here)
 
+            fprintf(stderr, "Killing uucico.\n");
+            system("killall uucico");
+
             fprintf(stderr, "Connection closed - Cleaning internal buffers.\n");
             ring_buffer_clear (&connector->in_buffer);
             ring_buffer_clear (&connector->out_buffer);
+
         }
 
         if (connector->connected == false &&
