@@ -68,6 +68,10 @@ void finish(int s){
         }
     }
 
+    // clean buffers...
+    ring_buffer_clear (&tmp_conn->in_buffer);
+    ring_buffer_clear (&tmp_conn->out_buffer);
+
     tmp_conn->shutdown = true;
 
     // TODO: close the pipes here
@@ -174,6 +178,7 @@ int main (int argc, char *argv[])
     initialize_connector(connector);
 
     signal (SIGINT, finish);
+    signal (SIGQUIT, finish);
 
     // Catch SIGPIPE
     // signal (SIGPIPE, pipe_fucked);
@@ -260,7 +265,8 @@ int main (int argc, char *argv[])
     fprintf(stderr, "Modem connection lost.\n");
 
     connector->shutdown = true;
-    // workaround... this was supposed to be the last line of code...
+    // workaround... this was not supposed to be the last line of code...
+    finish(0);
     return EXIT_SUCCESS;
 
     // should we try to reconnect!
