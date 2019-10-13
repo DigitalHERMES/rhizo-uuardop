@@ -333,6 +333,13 @@ void *ardop_control_worker_thread_tx(void *conn)
         ret = true;
         // Logic to start a connection
 
+        // lets issue buffer commands....
+        if (connector->connected == true) {
+            memset(buffer,0,sizeof(buffer));
+            sprintf(buffer,"BUFFER\r");
+            ret &= tcp_write(connector->control_socket, (uint8_t *)buffer, strlen(buffer));
+        }
+
         if (connector->clean_buffers == true)
         {
             connector->clean_buffers = false;
