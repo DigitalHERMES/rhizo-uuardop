@@ -81,8 +81,8 @@ void *ardop_data_worker_thread_tx(void *conn)
         uint32_t tx_size = packet_size;
         while (tx_size != 0){
 
-            if(connector->buffer_size > MAX_ARDOP_BUFFER){
-                while (connector->buffer_size >  2* MAX_ARDOP_BUFFER / 3)
+            if(connector->buffer_size + packet_size > MAX_ARDOP_BUFFER){
+                while (connector->buffer_size + packet_size >  2* MAX_ARDOP_BUFFER / 3)
                     sleep(1);
             }
 
