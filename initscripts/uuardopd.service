@@ -12,6 +12,8 @@ IgnoreSIGPIPE=no
 #StandardError=null
 StandardOutput=syslog
 StandardError=syslog
+Restart=always
+TimeoutSec=30
 
 [Install]
 WantedBy=multi-user.target
