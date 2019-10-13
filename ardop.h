@@ -46,7 +46,7 @@ extern "C" {
 #define MAX_ARDOP_PACKET 1024
 
 // Maximum internal safe ardop buffer size (being safer...)
-#define MAX_ARDOP_BUFFER 7000
+#define MAX_ARDOP_BUFFER 6000
 
 #define MAX_TIMEOUT 240 // maximum timeout
 
