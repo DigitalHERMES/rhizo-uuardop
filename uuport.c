@@ -42,6 +42,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <malloc.h>
 
 #include "uuardopd.h"
 #include "uuport.h"
@@ -207,7 +208,7 @@ void finish(int s){
 
 int main (int argc, char *argv[])
 {
-    rhizo_conn *connector = NULL;
+    rhizo_conn *connector = memalign(sysconf(_SC_PAGESIZE), sizeof(sizeof(rhizo_conn)));
 
     char log_file[BUFFER_SIZE];
     log_file[0] = 0;
