@@ -18,7 +18,7 @@
 
 protocol y
 protocol-parameter y packet-size 512
-protocol-parameter y timeout 540
+protocol-parameter y timeout 1800
 chat-timeout 100
 
 
