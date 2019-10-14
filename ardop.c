@@ -349,12 +349,10 @@ void *ardop_control_worker_thread_tx(void *conn)
                     sprintf(buffer,"BREAK\r");
                     ret &= tcp_write(connector->control_socket, (uint8_t *)buffer, strlen(buffer));
                 }
-                else
-                {
-                    // if when in master mode...
-                    fprintf(stderr, "Killing uucico.\n");
-                    system("killall uucico");
-                }
+                // if when in master mode...
+                fprintf(stderr, "Killing uucico.\n");
+                system("killall uucico");
+
                 connector->send_break = false;
                 sleep(1);
                 memset(buffer,0,sizeof(buffer));
