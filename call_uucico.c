@@ -126,6 +126,7 @@ void *uucico_thread(void *conn){
             // usleep(2000000); // 2s for the system to cool down
             connector->clean_buffers = true;
 
+            connector->send_break = true;
             connector->uucico_active = false;
 
             continue;
@@ -145,6 +146,7 @@ void *uucico_thread(void *conn){
         close(connector->pipefd1[1]); // closing write pipefd1 (child reads from parent)
         close(connector->pipefd2[0]); // closing read pipefd2 (child writes to parent)
 
+#if 0 // lets run all as root
         char pwd[] = "/var/spool/uucp"; // uucp home
         if (chdir(pwd) != 0) {
             perror(pwd);
@@ -165,11 +167,11 @@ void *uucico_thread(void *conn){
             perror("setuid");
             exit(1);
         }
-
+#endif
         char shell[] = "/usr/sbin/uucico";
 
-        setenv("LOGNAME", user, 1);
-        setenv("USER", user, 1);
+//        setenv("LOGNAME", user, 1);
+//        setenv("USER", user, 1);
         setenv("SHELL", shell, 1);
         setenv("TERM", "dumb", 1);
 

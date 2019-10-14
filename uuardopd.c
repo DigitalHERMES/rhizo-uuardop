@@ -111,6 +111,7 @@ bool initialize_connector(rhizo_conn *connector){
     connector->remote_call_sign[0] = 0; // --> set default to CQ
 
     connector->uucico_active = false;
+    connector->send_break = false;
 
     return true;
 }

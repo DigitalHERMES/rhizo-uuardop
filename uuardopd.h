@@ -74,6 +74,7 @@ typedef struct{
     atomic_bool waiting_for_connection;
     atomic_bool clean_buffers;
     atomic_bool uucico_active;
+    atomic_bool send_break;
 
     atomic_int session_counter_read;
     atomic_int session_counter_write;
