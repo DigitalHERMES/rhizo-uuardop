@@ -358,7 +358,10 @@ void *ardop_control_worker_thread_tx(void *conn)
                 ret &= tcp_write(connector->control_socket, (uint8_t *)buffer, strlen(buffer));
             }
 
-            // if when in master mode...
+            fprintf(stderr, "Connection closed - Cleaning internal buffers.\n");
+            ring_buffer_clear (&connector->in_buffer);
+            ring_buffer_clear (&connector->out_buffer);
+
             fprintf(stderr, "Killing uucico.\n");
             system("killall uucico");
 
@@ -367,9 +370,10 @@ void *ardop_control_worker_thread_tx(void *conn)
 
             usleep(1200000); // sleep for threads finish their jobs (more than 1s here)
 
-            fprintf(stderr, "Connection closed - Cleaning internal buffers.\n");
+            fprintf(stderr, "Connection closed - Cleaning internal buffers 2.\n");
             ring_buffer_clear (&connector->in_buffer);
             ring_buffer_clear (&connector->out_buffer);
+
             connector->clean_buffers = false;
         }
 
