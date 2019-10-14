@@ -326,13 +326,14 @@ void *ardop_control_worker_thread_tx(void *conn)
 
 
     // 1Hz function
+    uint32_t counter = 0;
     while(connector->shutdown == false){
 
         ret = true;
         // Logic to start a connection
 
-        // lets issue buffer commands....
-        if (connector->connected == true) {
+        // lets issue buffer commands.... but not much!
+        if (connector->connected == true && counter % 2) {
             memset(buffer,0,sizeof(buffer));
             sprintf(buffer,"BUFFER\r");
             ret &= tcp_write(connector->control_socket, (uint8_t *)buffer, strlen(buffer));
@@ -394,7 +395,7 @@ void *ardop_control_worker_thread_tx(void *conn)
         }
 
         sleep(1); // 1Hz function
-
+        counter++;
     }
 
 exit_local:

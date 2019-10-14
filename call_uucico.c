@@ -129,6 +129,7 @@ void *uucico_thread(void *conn){
             connector->send_break = true;
             connector->uucico_active = false;
 
+            fprintf(stderr, "uucico_thread: session ended!\n");
             continue;
         }
 
