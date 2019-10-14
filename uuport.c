@@ -125,6 +125,11 @@ void *write_thread(void *conn)
     running_write = true;
     while(running_write && (connector->shutdown == false))
     {
+        if (connector->connector->clean_buffers == true)
+        {
+            running_write = false;
+            continue;
+        }
         // workaround to make protocol 'y' work better
         if (ring_buffer_count_bytes(&connector->in_buffer) > BUFFER_SIZE / 2)
         {
@@ -161,6 +166,7 @@ void *write_thread(void *conn)
         write_buffer(&connector->in_buffer, buffer, bytes_read);
     }
 
+    running_read = false;
 //    connector->session_counter_write++;
 
     return NULL;

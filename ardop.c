@@ -340,8 +340,6 @@ void *ardop_control_worker_thread_tx(void *conn)
 
         if (connector->clean_buffers == true)
         {
-            connector->clean_buffers = false;
-
             if (connector->connected == true)
             {
                 if (connector->send_break == true) // we might have some data from uucico
@@ -372,6 +370,7 @@ void *ardop_control_worker_thread_tx(void *conn)
             fprintf(stderr, "Connection closed - Cleaning internal buffers.\n");
             ring_buffer_clear (&connector->in_buffer);
             ring_buffer_clear (&connector->out_buffer);
+            connector->clean_buffers = false;
         }
 
         if (connector->connected == false &&
