@@ -207,7 +207,7 @@ void finish(int s){
 
 int main (int argc, char *argv[])
 {
-    rhizo_conn *connector;
+    rhizo_conn *connector = NULL;
 
     char log_file[BUFFER_SIZE];
     log_file[0] = 0;
@@ -252,7 +252,7 @@ int main (int argc, char *argv[])
         }
     }
 
-    connector = create_shm(sizeof(rhizo_conn), SYSV_SHM_KEY_STR);
+    connect_shm(sizeof(rhizo_conn), connector, SYSV_SHM_KEY_STR);
 
     if (connector->shutdown == true)
     {
