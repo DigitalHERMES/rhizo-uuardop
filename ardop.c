@@ -358,12 +358,17 @@ void *ardop_control_worker_thread_tx(void *conn)
                 ret &= tcp_write(connector->control_socket, (uint8_t *)buffer, strlen(buffer));
             }
 
-            fprintf(stderr, "Connection closed - Cleaning internal buffers.\n");
-            ring_buffer_clear (&connector->in_buffer);
-            ring_buffer_clear (&connector->out_buffer);
+            usleep(1200000); // sleep for threads finish their jobs (more than 1s here)
 
             fprintf(stderr, "Killing uucico.\n");
             system("killall uucico");
+
+            fprintf(stderr, "Killing uuport.\n");
+            system("killall uuport");
+
+            fprintf(stderr, "Connection closed - Cleaning internal buffers.\n");
+            ring_buffer_clear (&connector->in_buffer);
+            ring_buffer_clear (&connector->out_buffer);
 
             while (connector->connected == true)
                 usleep(100000);
@@ -373,6 +378,11 @@ void *ardop_control_worker_thread_tx(void *conn)
             fprintf(stderr, "Connection closed - Cleaning internal buffers 2.\n");
             ring_buffer_clear (&connector->in_buffer);
             ring_buffer_clear (&connector->out_buffer);
+
+            fprintf(stderr, "Cleaning ardop buffer.\n");
+            memset(buffer,0,sizeof(buffer));
+            sprintf(buffer,"PURGEBUFFER\r");
+            ret &= tcp_write(connector->control_socket, (uint8_t *)buffer, strlen(buffer));
 
             connector->clean_buffers = false;
         }
