@@ -125,7 +125,7 @@ void *write_thread(void *conn)
     running_write = true;
     while(running_write && (connector->shutdown == false))
     {
-        if (connector->connector->clean_buffers == true)
+        if (connector->clean_buffers == true)
         {
             running_write = false;
             continue;
