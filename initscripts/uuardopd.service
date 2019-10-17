@@ -12,8 +12,9 @@ IgnoreSIGPIPE=no
 #StandardError=null
 StandardOutput=syslog
 StandardError=syslog
-Restart=always
-TimeoutSec=30
+#Restart=always
+#TimeoutSec=30
+ExecStartPre=/bin/sleep 1
 
 [Install]
 WantedBy=multi-user.target
