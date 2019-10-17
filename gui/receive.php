@@ -1,6 +1,6 @@
 <?php
 
-  $dir = '/var/www/html/uploads/';
+  $dir = '/var/www/html/arquivos/';
 
   // Check if the directory exists
   if (file_exists($dir) && is_dir($dir) ) {
@@ -33,7 +33,7 @@
 ?>
 <select name="level">
 <?php
-    $dirname = "/var/www/html/uploads/";
+    $dirname = "/var/www/html/arquivos/";
     $dirhandle = opendir($dirname);
     while($file = readdir($dirhandle))
     {
