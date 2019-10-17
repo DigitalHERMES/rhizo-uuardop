@@ -3,7 +3,7 @@
   <head>
     <meta charset='UTF-8'/>
     <title>Serviços de Comunicação Digital</title>
-<!--    <link rel='stylesheet' href='styles.css'/> -->
+  <link rel='stylesheet' href='style.css'/> 
     <script>
       function addbox() {
 	  if (document.getElementById('enc').checked) {
@@ -18,45 +18,46 @@
   </head>
   <body>
     <center>
-
+        <div class="header">
       <h2>Estação: <?php include('get_name.php') ?></h2>
       <h5>Estado do Sistema: <?php include 'running.php'; ?></h5>
       <hr />
-
+        </div>
+        <div class="bodywt">
   <form action="upload.php" method="post" enctype="multipart/form-data">
-    <p>
-    <h1>Estação de Destino
+   Estação de Destino
     <!-- Colocar rotulos para os sistemas.. -->
     <!-- Enviar arquivo com senha checkbox -->
       <select id="prefix" name="prefix">
         <?php include('get_systems.php') ?>
       </select>
-    </h1>
-    </p>
-    <p>
-      <h1>Arquivo
+    <i class="material-icons">radio</i>
+   </div>
+    
+      <div class="body">
+      Arquivo
       <input type="file" name="fileToUpload" id="fileToUpload" value="Escolher Arquivo"/>
-      </h1>
-    </p>
-    <p>
-      <h1>
+      </div>
+    
+    
+        <div class="bodywt">
 	Proteger com Senha?
 	<input type="checkbox" name="encrypt" onclick="addbox();" id="enc" />
-      </h1>
-    </p>
+        <i class="material-icons">enhanced_encryption</i></div>
+    
     <p>
-      <h1>
+      
 	<label for="txt" id="label" style="display: none;">Senha: </label>
 	<input type="text" name="password" id="txt" style="display: none;" />
-      </h1>
+      
     </p>
 
-    <p>
-      <h1>
-	Enviar agora?
+      <div class="body">
+      
+          <h2>Enviar agora?</h2>
 	<input type="checkbox" name="sendnow" id="sendnow" />
-      </h1>
-    </p>
+    
+      </div>
 
     <p>
     <h1>

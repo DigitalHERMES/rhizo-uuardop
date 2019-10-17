@@ -3,7 +3,7 @@
   <head>
     <meta charset='UTF-8'/>
     <title>Serviços de Comunicação Digital</title>
-<!--    <link rel='stylesheet' href='styles.css'/> -->
+<link rel='stylesheet' href='style.css'/>
     <script>
       function addbox() {
       if (document.getElementById('sendall').checked) {
@@ -18,10 +18,11 @@
   </head>
   <body>
     <center>
-
+ <div class="header">
       <h2>Estação: <?php include('get_name.php') ?></h2>
       <h5>Estado do Sistema: <?php include 'running.php'; ?></h5>
       <hr />
+ </div>
 
       <form action="uucico.php" method="post" enctype="multipart/form-data">
         <p>
@@ -37,6 +38,7 @@
             <select id="prefix" name="prefix" style="display: none;">
               <?php include('get_systems.php') ?>
             </select>
+            <i class="material-icons">radio</i>
           </h1>
         </p>
 

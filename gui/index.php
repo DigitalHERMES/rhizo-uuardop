@@ -4,6 +4,8 @@
     <meta charset='UTF-8'/>
     <title>Serviços de Comunicação Digital</title>
     <link rel='stylesheet' href='style.css'/>
+    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">   -->
+    <!-- <script src="https://kit.fontawesome.com/3e1432211a.js" crossorigin="anonymous"></script>-->
   </head>
   <body>
     <center>
@@ -13,29 +15,33 @@
       <hr />
       </div>
 
-      <p>
-	<h1><a href="load.php">Carregar Arquivo para Transmissão</a></h1>
-      </p>
+        <div class="bodywt">
+            <h1><i class="material-icons">cloud_upload
+</i>	<a href="load.php">Carregar Arquivo para Transmissão</a>
+              </i></h1></div>
+      
+        
       
       <div class="body">
-      <p>
-	<h1><a href="tx.php">Transmitir</a></h1>
-      </p>
+      
+          <h1><i class="material-icons">send</i><a href="tx.php">Transmitir</a></h1>
+      
       </div>
 
-      <p>
-	<h1><a href="list_job.php">Listar Arquivos Carregados para Transmissão</a></h1>
-      </p>
+      
+        <div class="bodywt">    
+            <h2><i class="material-icons">list</i><a href="list_job.php">Listar Arquivos Carregados para Transmissão</a></h2></div>
+      
 
       <div class="body">
-      <p>
-	<h1><a href="arquivos/">Recebimento de arquivos</a></h1>
-      </p>
+      
+          <h1><i class="material-icons">get_app</i><a href="../uploads/">Recebimento de arquivos</a></h1>
+      
       </div>
 
-      <p>
-	<h1><a href="kill_job.php">Cancelar transmissão</a></h1>
-      </p>
+        <div class="bodywt">
+            <h1><i class="material-icons">cancel</i><a href="kill_job.php">Cancelar transmissão</a></h1></div>
+      
 
       <div class="body">
       <p>
@@ -43,9 +49,9 @@
       </p>
       </div>
 
-      <p>
-	<h1><a href="view_log.php">Ver log</a></h1>
-      </p>
+        <div class="bodywt">
+	<h1><i class="material-icons">info</i><a href="view_log.php">Ver log</a></h1>
+        </div>
     </center>
     <br/>
     <br/>
