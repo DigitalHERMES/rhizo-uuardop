@@ -4,23 +4,16 @@
     <meta charset='UTF-8'/>
     <title>Serviços de Comunicação Digital</title>
     <link rel='stylesheet' href='style.css'/>
-    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">   -->
-    <!-- <script src="https://kit.fontawesome.com/3e1432211a.js" crossorigin="anonymous"></script>-->
   </head>
   <body>
     <center>
-      <div class="header">
-      <h2>Estação: <?php include('get_name.php') ?></h2>
-      <h5>Estado do Sistema: <?php include 'running.php'; ?></h5>
-      <hr />
-      </div>
-
-        <div class="bodywt">
+    <?php include 'header.php' ?>
+    
+      <div class="bodywt">
             <h1><i class="material-icons">cloud_upload
 </i>	<a href="load.php">Carregar Arquivo para Transmissão</a>
               </i></h1></div>
-      
-        
+              
       
       <div class="body">
       
@@ -30,7 +23,7 @@
 
       
         <div class="bodywt">    
-            <h2><i class="material-icons">list</i><a href="list_job.php">Listar Arquivos Carregados para Transmissão</a></h2></div>
+            <h1><i class="material-icons">list</i><a href="list_job.php">Listar Arquivos Carregados para Transmissão</a></h1></div>
       
 
       <div class="body">
