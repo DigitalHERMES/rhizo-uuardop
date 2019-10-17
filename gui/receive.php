@@ -1,3 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset='UTF-8'/>
+    <title>Serviços de Comunicação Digital</title>
+    <link rel='stylesheet' href='style.css'/>
+  </head>
+  
+  <body>
+    <center>
+
+    <?php include 'header.php' ?>
+
+
+<?php
+
+$dir = '/var/www/html/arquivos/';
+$files = scandir($dir);
+
+foreach($files as $key => $value){
+    $path = realpath($dir.$value);
+    if(!is_dir($path)) {
+        echo "Arquivo: " . $path;
+        /* $results[] = $path; */
+    } else if($value != "." && $value != "..") {
+        $files_st = scandir($dir.$value);
+        foreach($files_st as $key_st => $value_st){
+            $path_st = realpath($dir.$value."/".$value_st);
+            echo "Arquivo: " . $path_st;
+        /* $results[] = $path; */
+        }
+    }
+}
+
+?>
+
 <?php
 
   $dir = '/var/www/html/arquivos/';
@@ -54,3 +90,7 @@
     }
      ?> 
 </select>
+
+</center>
+</body>
+</html>

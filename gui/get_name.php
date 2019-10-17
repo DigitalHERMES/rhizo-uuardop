@@ -1,5 +1,4 @@
 <?php
-
     $command = "get_nodename.sh";
     ob_start();
     system($command , $return_var);
