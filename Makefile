@@ -43,7 +43,7 @@ install: uuardopd uuport
 	install scripts/get_systems.sh $(PREFIX)/bin
 	install scripts/kill_job.sh $(PREFIX)/bin
 	install scripts/encrypt.sh $(PREFIX)/bin
-	install scripts/reset_system.sh $(PREFIX)/bin
+	install scripts/restart_system.sh $(PREFIX)/bin
 	install scripts/disable_monitor.sh $(PREFIX)/bin
 	install scripts/enable_monitor.sh $(PREFIX)/bin
 	install -o www-data -g www-data gui/*.php /var/www/html
