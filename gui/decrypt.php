@@ -26,21 +26,21 @@ system($command , $return_var);
 $output = ob_get_contents();
 ob_end_clean();
 
-echo $output."<br />";
-echo $return_var."<br />";
-
 if ($return_var == 0){
 
    $prefix = '/var/www/html/';
 
    if (substr($outfile, 0, strlen($prefix)) == $prefix) {
        $str = substr($outfile, strlen($prefix));
-   } 
-
-   echo "<a href=\"".$str."\">".basename($str)."</a><br />";
+   }
+   echo "<div class=\"body\">";
+   echo "Senha correta.<br />";
+   echo "<a href=\"".$str."\">".basename($str)."</a>";
+   echo "</div><br />";
 
 } else {
-  echo "Senha incorreta!<br />";
+  echo "<div class=\"body\">Senha incorreta!</div><br />";
+  echo "<br />";
 }
 ?>
 
