@@ -19,7 +19,6 @@ mkdir($dec_subdir, 0777, TRUE);
 $outfile=$dec_subdir.basename($path,".gpg");
 
 $command = "decrypt.sh ".$path." ".$outfile." ".$_POST['password'];
-echo $command."<br />";
 
 ob_start();
 system($command , $return_var);
