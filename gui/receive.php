@@ -5,7 +5,7 @@
     <title>Serviços de Comunicação Digital</title>
     <link rel='stylesheet' href='style.css'/>
   </head>
-  
+
   <body>
     <center>
 
@@ -21,21 +21,22 @@ foreach($files as $key => $value){
     $path = realpath($dir.DIRECTORY_SEPARATOR.$value);
     if(!is_dir($path)) {
         echo "Arquivo: " . $path . "<br />";
-	echo "<a href=\"arquivos/".$value."\">link</a><br />";
+        echo "<a href=\"arquivos/".$value."\">link</a><br />";
         /* $results[] = $path; */
     } else if($value != "." && $value != "..") {
+        echo "Arquivos da Estação ".$value."<br />";
         $files_st = scandir($dir.DIRECTORY_SEPARATOR.$value);
         foreach($files_st as $key_st => $value_st){
             $path_st = realpath($dir.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.$value_st);
-	    if(!is_dir($path_st)) {
+            if(!is_dir($path_st)) {
                 echo "Arquivo: " . $path_st . "<br />";
-		echo "<a href=\"arquivos/".$value."/".$value_st."\">link</a><br />";
-		$file_ext = pathinfo($path_st, PATHINFO_EXTENSION);
-		if ($file_ext=="gpg") {
-		   echo $file." é um arquivo GPG descript??<br/>";
-		}
+                echo "<a href=\"arquivos/".$value."/".$value_st."\">link</a><br />";
+                $file_ext = pathinfo($path_st, PATHINFO_EXTENSION);
+                if ($file_ext=="gpg") {
+                   echo $file." é um arquivo GPG descript??<br/>";
+                }
 
-	    }
+            }
         /* $results[] = $path; */
         }
     }
