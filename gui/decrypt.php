@@ -26,10 +26,22 @@ system($command , $return_var);
 $output = ob_get_contents();
 ob_end_clean();
 
-echo $output."<br />;
+echo $output."<br />";
+echo $return_var."<br />";
 
-echo "<a href=\"".$outfile."\">".basename($outfile)."</a><br />";
+if ($return_var == 0){
 
+   $prefix = '/var/www/html/';
+
+   if (substr($outfile, 0, strlen($prefix)) == $prefix) {
+       $str = substr($outfile, strlen($prefix));
+   } 
+
+   echo "<a href=\"".$str."\">".basename($str)."</a><br />";
+
+} else {
+  echo "Senha incorreta!<br />";
+}
 ?>
 
 
