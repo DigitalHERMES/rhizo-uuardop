@@ -7,9 +7,16 @@
 
 <body>
 
-<h2>Resultado da submissão do arquivo:</h2>
+  <center>
+    <?php include 'header.php' ?>
+
+          <div class="bodywt">
+            Resultado da Submissão do Arquivo
+          </div>
 
 <br />
+      <div class="body">
+
 <?php
 
 $target_dir = "/var/www/html/uploads/";
@@ -35,7 +42,7 @@ $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 if(isset($_POST["submit"])) {
     $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
     if($check !== false) {
-        echo "File is an image - " . $check["mime"] . ".";
+//        echo "File is an image - " . $check["mime"] . ".";
         $uploadPic = 1;
         $uploadOk = 1;
     } else {
@@ -60,7 +67,7 @@ if($imageFileType != "jpg" && $imageFileType != "JPG" && $imageFileType != "jpeg
           $arr = explode("." . $imageFileType, $target_file);
           $new_target = $arr[0] . ".jpg";
           $command = "compress_image.sh \"" .  $target_file . "\" \"" . $new_target . "\"";
-          echo "Command: " . $command . "<br />";
+//          echo "Command: " . $command . "<br />";
           ob_start();
           system($command , $return_var);
           ob_end_clean();
@@ -81,7 +88,7 @@ if($imageFileType != "jpg" && $imageFileType != "JPG" && $imageFileType != "jpeg
 if (($_FILES["fileToUpload"]["size"] > 50*1024) && $uploadPic == 1 && $file_in_place == 0 && $uploadOk == 1) {
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
         $command = "compress_image.sh \"" .  $target_file . "\"";
-        echo "Command: " . $command . "<br />";
+//        echo "Command: " . $command . "<br />";
         ob_start();
         system($command , $return_var);
         ob_end_clean();
@@ -120,25 +127,28 @@ if ($uploadOk == 0) {
     if (isset($_POST['encrypt']) && $file_in_place == 1)
     {
            $command = "encrypt.sh \"" . $target_file . "\" \"" . $_POST['password'] . "\"";
-           echo "encrypt command: " . $command . "<br />";
+//           echo "encrypt command: " . $command . "<br />";
            ob_start();
            system($command , $return_var);
            $output = ob_get_contents();
            ob_end_clean();
            unlink($target_file);
            $target_file = $target_file . ".gpg";
-           echo "Criptografia ativada!<br />";
+//           echo "Criptografia ativada!<br />";
     }
 
     if ($file_in_place == 1) {
            if (isset($_POST['sendnow']))
            {
                 $command = "uucp -C -d \"" .  $target_file . "\" " . $_POST['prefix'] . "\!\"" . $remote_dir . $source . "/\"";
+                echo "Arquivo ".basename($target_file)." enfileirado e transmissão iniciada.<br/>";
            } else
            {
                 $command = "uucp -r -C -d \"" .  $target_file . "\" " . $_POST['prefix'] . "\!\"" . $remote_dir . $source . "/\"";
+                echo "Arquivo ".basename($target_file)." enfileirado para transmissão.<br/>";
+
            }
-           echo "UUCP Command: " . $command . "<br />";
+//           echo "UUCP Command: " . $command . "<br />";
            ob_start();
            system($command , $return_var);
            $output = ob_get_contents();
@@ -149,5 +159,7 @@ if ($uploadOk == 0) {
 unlink($target_file);
 ?>
 
+      </div>
+  </center>
 </body>
 </html>
