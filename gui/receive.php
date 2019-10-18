@@ -19,23 +19,24 @@ $files = scandir($dir);
 
 foreach($files as $key => $value){
     $path = realpath($dir.DIRECTORY_SEPARATOR.$value);
-    if(!is_dir($path)) {
-        echo "Arquivo: " . $path . "<br />";
-        echo "<a href=\"arquivos/".$value."\">link</a><br />";
-        /* $results[] = $path; */
-    } else if($value != "." && $value != "..") {
+    if(is_dir($path) && $value != "." && $value != "..") {
         echo "Arquivos da Estação ".$value."<br />";
         $files_st = scandir($dir.DIRECTORY_SEPARATOR.$value);
         foreach($files_st as $key_st => $value_st){
             $path_st = realpath($dir.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.$value_st);
             if(!is_dir($path_st)) {
-                echo "Arquivo: " . $path_st . "<br />";
-                echo "<a href=\"arquivos/".$value."/".$value_st."\">link</a><br />";
+                echo "<a href=\"arquivos/".$value."/".$value_st."\">".$value_st."</a>";
                 $file_ext = pathinfo($path_st, PATHINFO_EXTENSION);
                 if ($file_ext=="gpg") {
                    echo $file." é um arquivo GPG descript??<br/>";
+                   echo "<form action=\"decrypt.php\" method=\"post\" enctype=\"multipart/form-data\">";
+                   echo "Senha: ";
+                   echo "<input type=\"text\" name=\"password\" />";
+                   echo "<input type=\"submit\" value=\"Abrir com Senha\" name=\"submit\" />";
+                   echo "<input type=\"hidden\" name=\"path\" value=\"".$path_st."\" />";
+                   echo "</form>"
                 }
-
+                echo "<br />";
             }
         /* $results[] = $path; */
         }
