@@ -104,13 +104,13 @@ if (($_FILES["fileToUpload"]["size"] > 50*1024) && $uploadPic == 1 && $file_in_p
 // Check file size of a normal file.
 // limit is 50k!
 if (($_FILES["fileToUpload"]["size"] > 50*1024) && $uploadPic == 0 ) { // 10MB max
-    echo "Arquivo muito grande. Máximo permitido: 51200 byte, tamanho do arquivo: " . $_FILES["fileToUpload"]["size"] . "<br />";
+    echo "Arquivo muito grande. Máximo permitido: 51200 bytes, tamanho do arquivo: " . $_FILES["fileToUpload"]["size"] . " bytes.<br />";
     $uploadOk = 0;
 }
 
 // Check if $uploadOk is set to 0 by an error
 if ($uploadOk == 0) {
-    echo "Erro no pré-processamento do arquivo.<br />";
+//    echo "Erro no pré-processamento do arquivo.<br />";
 // if everything is ok, try to upload file
 } else {
     if ($file_in_place == 0)
@@ -141,11 +141,11 @@ if ($uploadOk == 0) {
            if (isset($_POST['sendnow']))
            {
                 $command = "uucp -C -d \"" .  $target_file . "\" " . $_POST['prefix'] . "\!\"" . $remote_dir . $source . "/\"";
-                echo "Arquivo ".basename($target_file)." enfileirado e transmissão iniciada.<br/>";
+                echo "Arquivo <b>".basename($target_file)."</b> adicionado com sucesso e transmissão iniciada.<br/>";
            } else
            {
                 $command = "uucp -r -C -d \"" .  $target_file . "\" " . $_POST['prefix'] . "\!\"" . $remote_dir . $source . "/\"";
-                echo "Arquivo ".basename($target_file)." enfileirado para transmissão.<br/>";
+                echo "Arquivo <b>".basename($target_file)."</b> adicionado com sucesso.<br/>";
 
            }
 //           echo "UUCP Command: " . $command . "<br />";
