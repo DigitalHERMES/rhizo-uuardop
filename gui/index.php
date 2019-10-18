@@ -8,7 +8,7 @@
   <body>
     <center>
     <?php include 'header.php' ?>
-    
+
       <div class="bodywt">
             <h1><i class="material-icons">cloud_upload
 </i>	<a href="load.php">Carregar Arquivo para Transmissão</a>
@@ -34,15 +34,8 @@
 
         <div class="bodywt">
             <h1><i class="material-icons">cancel</i><a href="kill_job.php">Cancelar transmissão</a></h1></div>
-      
 
-      <div class="body">
-      <p>
-	<h1><a href="list_job.php">Fila de transmissão</a></h1>
-      </p>
-      </div>
-
-        <div class="bodywt">
+        <div class="body">
 	<h1><i class="material-icons">info</i><a href="view_log.php">Ver log</a></h1>
         </div>
     </center>
