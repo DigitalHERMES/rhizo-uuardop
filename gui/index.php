@@ -28,7 +28,7 @@
 
       <div class="body">
       
-          <h1><i class="material-icons">get_app</i><a href="arquivos/">Recebimento de arquivos</a></h1>
+          <h1><i class="material-icons">get_app</i><a href="receive.php">Recebimento de arquivos</a></h1>
       
       </div>
 
