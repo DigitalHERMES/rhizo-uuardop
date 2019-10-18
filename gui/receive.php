@@ -18,21 +18,32 @@ $dir = '/var/www/html/arquivos/';
 $files = scandir($dir);
 
 foreach($files as $key => $value){
-    $path = realpath($dir.$value);
+    $path = realpath($dir.DIRECTORY_SEPARATOR.$value);
     if(!is_dir($path)) {
-        echo "Arquivo: " . $path;
+        echo "Arquivo: " . $path . "<br />";
+	echo "<a href=\"arquivos/".$value."\">link</a><br />";
         /* $results[] = $path; */
     } else if($value != "." && $value != "..") {
-        $files_st = scandir($dir.$value);
+        $files_st = scandir($dir.DIRECTORY_SEPARATOR.$value);
         foreach($files_st as $key_st => $value_st){
-            $path_st = realpath($dir.$value."/".$value_st);
-            echo "Arquivo: " . $path_st;
+            $path_st = realpath($dir.DIRECTORY_SEPARATOR.$value.DIRECTORY_SEPARATOR.$value_st);
+	    if(!is_dir($path_st)) {
+                echo "Arquivo: " . $path_st . "<br />";
+		echo "<a href=\"arquivos/".$value."/".$value_st."\">link</a><br />";
+		$file_ext = pathinfo($path_st, PATHINFO_EXTENSION);
+		if ($file_ext=="gpg") {
+		   echo $file." é um arquivo GPG descript??<br/>";
+		}
+
+	    }
         /* $results[] = $path; */
         }
     }
 }
 
 ?>
+
+    <!--
 
 <?php
 
@@ -90,6 +101,7 @@ foreach($files as $key => $value){
     }
      ?> 
 </select>
+-->
 
 </center>
 </body>
