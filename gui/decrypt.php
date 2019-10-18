@@ -41,6 +41,7 @@ if ($return_var == 0){
 } else {
   echo "<div class=\"body\">Senha incorreta!</div><br />";
   echo "<br />";
+  unlink($outfile);
 }
 ?>
 
