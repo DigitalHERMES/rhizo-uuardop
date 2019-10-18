@@ -24,26 +24,30 @@
       <hr />
         </div>
         <div class="bodywt">
-  <form action="upload.php" method="post" enctype="multipart/form-data">
-   Estação de Destino
-    <!-- Colocar rotulos para os sistemas.. -->
-    <!-- Enviar arquivo com senha checkbox -->
-      <select id="prefix" name="prefix">
-        <?php include('get_systems.php') ?>
-      </select>
-    <i class="material-icons">radio</i>
-   </div>
+
+	  <form action="upload.php" method="post" enctype="multipart/form-data">
+	  <i class="material-icons">radio</i>
+	    Estação de Destino
+	    <!-- Colocar rotulos para os sistemas.. -->
+	    <!-- Enviar arquivo com senha checkbox -->
+	    <select id="prefix" name="prefix">
+              <?php include('get_systems.php') ?>
+	    </select>
+	    
+	  </div>
     
-      <div class="body">
-      Arquivo
-      <input type="file" name="fileToUpload" id="fileToUpload" value="Escolher Arquivo"/>
-      </div>
+  <div class="body">
+    <i class="material-icons">open_in_browser</i>
+    Arquivo
+    <input type="file" name="fileToUpload" id="fileToUpload" value="Escolher Arquivo"/>
+  </div>
     
     
         <div class="bodywt">
-	Proteger com Senha?
+        <i class="material-icons">enhanced_encryption</i>
+	  Proteger com Senha?
 	<input type="checkbox" name="encrypt" onclick="addbox();" id="enc" />
-        <i class="material-icons">enhanced_encryption</i></div>
+	</div>
     
     <p>
       
@@ -53,11 +57,11 @@
     </p>
 
       <div class="body">
-      
-          <h2>Enviar agora?</h2>
+
+       <i class="material-icons">rss_feed</i>
+         Enviar agora?
 	<input type="checkbox" name="sendnow" id="sendnow" />
-    
-      </div>
+	</div>
 
     <p>
     <h1>
