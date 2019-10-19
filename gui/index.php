@@ -62,6 +62,12 @@
         </h1>
       </div>
 
+      <div class="bodywt">
+        <h1><a href="shutdown.php"><i class="material-icons">toggle_off</i>
+        Desligar o Sistema</a>
+        </h1>
+      </div>
+
     </center>
     <br/>
     <br/>
