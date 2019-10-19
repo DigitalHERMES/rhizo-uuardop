@@ -4,6 +4,7 @@
     <meta charset='UTF-8'/>
     <title>Serviços de Comunicação Digital</title>
     <link rel='stylesheet' href='style.css'/>
+    <meta http-equiv="Refresh" content="10">
   </head>
   <body>
     <center>
