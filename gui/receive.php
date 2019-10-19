@@ -62,7 +62,7 @@ if ($class == "bodywt"){
 
 echo "<a href=\"clean_files.php\">Limpar Todos Arquivos</a>";
 
-echo "</div>;
+echo "</div>";
 ?>
 
 
