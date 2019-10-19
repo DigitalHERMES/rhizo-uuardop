@@ -63,7 +63,7 @@
       </div>
 
       <div class="bodywt">
-        <h1><a href="shutdown.php"><i class="material-icons">toggle_off</i>
+        <h1><a href="shutdown.php"><i class="material-icons">flash_off</i>
         Desligar o Sistema</a>
         </h1>
       </div>
