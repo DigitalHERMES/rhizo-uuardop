@@ -1,4 +1,4 @@
 #!/bin/bash
 
-uustat -K
-killall uucico
+sudo killall uucico
+sudo killall uuport

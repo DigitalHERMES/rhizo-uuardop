@@ -11,20 +11,20 @@
 
       <div class="body">
         <h1>
-          Transmissão Cancelada
+        Arquivos Carregados Removidos da Fila de Transmissão
         </h1>
       </div>
 
       <br />
 <?php
-    $command = "kill_job.sh";
+    $command = "sudo uustat -K";
     ob_start();
     system($command , $return_var);
     $output = ob_get_contents();
     ob_end_clean();
-//    echo $output; 
+//    echo $output;
 ?>
       <br/>
-      </center>
+    </center>
   </body>
 </html>

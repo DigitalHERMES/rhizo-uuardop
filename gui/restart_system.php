@@ -11,20 +11,20 @@
 
       <div class="body">
         <h1>
-          Transmissão Cancelada
+          Sistema Interno Reiniciado
         </h1>
       </div>
 
       <br />
 <?php
-    $command = "kill_job.sh";
+    $command = "restart_system.sh";
     ob_start();
     system($command , $return_var);
     $output = ob_get_contents();
     ob_end_clean();
-//    echo $output; 
+//    echo $output;
 ?>
       <br/>
-      </center>
+    </center>
   </body>
 </html>

@@ -9,35 +9,59 @@
     <center>
     <?php include 'header.php' ?>
 
+    <div class="bodywt">
+      <h1>
+        <a href="load.php"><i class="material-icons">cloud_upload</i> Carregar Arquivo para Transmissão</a>
+      </h1>
+    </div>
+
+      <div class="body">
+        <h1>
+          <a href="tx.php"><i class="material-icons">send</i> Transmitir</a>
+        </h1>
+      </div>
+
+      <div class="body">
+        <h1>
+          <a href="receive.php"><i class="material-icons">get_app</i>
+        Arquivos Recebidos</a>
+        </h1>
+      </div>
+
       <div class="bodywt">
-            <h1><i class="material-icons">cloud_upload
-</i>	<a href="load.php">Carregar Arquivo para Transmissão</a>
-              </i></h1></div>
-              
-      
-      <div class="body">
-      
-          <h1><i class="material-icons">send</i><a href="tx.php">Transmitir</a></h1>
-      
+        <h1>
+          <a href="kill_job.php"><i class="material-icons">cancel</i> Cancelar
+            Transmissão Atual</a>
+        </h1>
       </div>
 
-      
-        <div class="bodywt">    
-            <h1><i class="material-icons">list</i><a href="list_job.php">Listar Arquivos Carregados para Transmissão</a></h1></div>
-      
-
       <div class="body">
-      
-          <h1><i class="material-icons">get_app</i><a href="receive.php">Recebimento de arquivos</a></h1>
-      
+        <h1>
+          <a href="list_job.php"><i class="material-icons">list</i> Listar
+          Arquivos Carregados para Transmissão</a>
+      </h1>
       </div>
 
-        <div class="bodywt">
-            <h1><i class="material-icons">cancel</i><a href="kill_job.php">Cancelar transmissão</a></h1></div>
+      <div class="bodywt">
+        <h1>
+          <a href="erase_queue.php"><i class="material-icons">remove_circle_outline</i> Limpar
+            Arquivos Carregados</a>
+        </h1>
+      </div>
 
-        <div class="body">
-	<h1><i class="material-icons">info</i><a href="view_log.php">Ver log</a></h1>
-        </div>
+      <div class="body">
+        <h1>
+          <a href="restart_system.php"><i class="material-icons">replay</i> Re-início
+            interno do sistema</a>
+        </h1>
+      </div>
+
+      <div class="bodywt">
+        <h1><a href="view_log.php"><i class="material-icons">info</i> Ver
+        Histórico do Sistema</a>
+        </h1>
+      </div>
+
     </center>
     <br/>
     <br/>
