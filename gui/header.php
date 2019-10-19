@@ -6,7 +6,7 @@
         echo "<h4>Estado do Sistema: ";
 	include 'running.php';
 	echo "</h4>";
-        echo "<center><h1><a href=\"/\">Voltar para Página Principal</a></h1></center>";
+        echo "<center><h2><a href=\"/\">Voltar para Página Principal</a></h2></center>";
         echo "<hr />";
         echo "</div>";
 ?>
