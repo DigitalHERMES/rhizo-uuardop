@@ -1,13 +1,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta charset="UTF-8">
-<title>Serviços de Comunicação Digital</title>
-<link rel="stylesheet" href="style.css">
-</head>
+  <head>
+    <meta charset="UTF-8">
+    <title>Serviços de Comunicação Digital</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
 
-<body>
+  <body>
+    <center>
+    <?php include 'header.php' ?>
 
-<h2>Iniciando Transmissão:</h2>
+    <div class="bodywt">
+      <h2>Iniciando Transmissão</h2>
+    </div>
 
 <br />
 <?php
@@ -16,7 +20,7 @@
 if (!isset($_POST['sendall']))
 {
     $command = "nohup sudo uucico  --master -f > /dev/null &";
-    echo "UUCP Command: " . $command . "<br />";
+    // echo "UUCP Command: " . $command . "<br />";
     ob_start();
     system($command , $return_var);
     $output = ob_get_contents();
@@ -27,10 +31,10 @@ if (!isset($_POST['sendall']))
     if($source == $_POST['prefix'])
     {
         echo "ERRO: Estação de origem é igual estação de destino! <br />";
-    } else 
+    } else
     {
         $command = "nohup sudo uucico -S " . $_POST['prefix'] . " > /dev/null &";
-        echo "UUCP Command: " . $command . "<br />";
+        // echo "UUCP Command: " . $command . "<br />";
         ob_start();
         system($command , $return_var);
         $output = ob_get_contents();

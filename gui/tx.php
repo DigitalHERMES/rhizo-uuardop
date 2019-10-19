@@ -18,35 +18,31 @@
   </head>
   <body>
     <center>
- <div class="header">
-      <h2>Estação: <?php include('get_name.php') ?></h2>
-      <h5>Estado do Sistema: <?php include 'running.php'; ?></h5>
-      <hr />
- </div>
+    <?php include 'header.php' ?>
+
 
       <form action="uucico.php" method="post" enctype="multipart/form-data">
-        <p>
+        <div class="bodywt">
           <h1>
             Especificar Estação de Envio?
             <input type="checkbox" name="sendall" onclick="addbox();" id="sendall" />
           </h1>
-        </p>
+        </div>
 
-        <p>
+        <div class="body">
           <h1>
-            <label for="prefix" id="label" style="display: none;">Estação de Destino: </label>
+            <label for="prefix" id="label" style="display: none;"><i class="material-icons">radio</i> Estação de Destino: </label>
             <select id="prefix" name="prefix" style="display: none;">
               <?php include('get_systems.php') ?>
             </select>
-            <i class="material-icons">radio</i>
           </h1>
-        </p>
+        </div>
 
-        <p>
+        <div class="bodywt">
           <h1>
             <input type="submit" value="Iniciar Transmissão" name="submit" />
           </h1>
-        </p>
+        </div>
         <!--   <input type="image" src="img_submit.gif" alt="submit" width="48" height="48"/> -->
 
         <input type="hidden" id="myname" name="myname" value="<?php include('get_name.php')?>"/>

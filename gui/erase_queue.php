@@ -3,15 +3,14 @@
   <head>
     <meta charset='UTF-8'/>
     <title>Serviços de Comunicação Digital</title>
-<!--    <link rel='stylesheet' href='styles.css'/> -->
+    <link rel='stylesheet' href='style.css'/>
   </head>
   <body>
     <center>
     <?php include 'header.php' ?>
 
       <div class="body">
-        <h1>
-        Arquivos Carregados Removidos da Fila de Transmissão
+        <h1>Arquivos Removidos da Fila de Transmissão
         </h1>
       </div>
 

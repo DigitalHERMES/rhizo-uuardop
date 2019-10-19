@@ -3,18 +3,16 @@
   <head>
     <meta charset='UTF-8'/>
     <title>Serviços de Comunicação Digital</title>
-<!--    <link rel='stylesheet' href='styles.css'/> -->
+    <link rel='stylesheet' href='styles.css'/>
   </head>
   <body>
     <center>
-      <h2>Estação: <?php include('get_name.php') ?></h2>
-      <h5>Estado do Sistema: <?php include 'running.php'; ?></h5>
-      <hr />
+    <?php include 'header.php' ?>
 
-      <p>
-	<h1>Fila de Transmissão:</h1>
-	<br />
-	<textarea rows=6 cols=100 readonly>
+    <div class="bodywt">
+      <h1>Fila de Transmissão</h1>
+
+      <textarea rows=12 cols=100 readonly>
 <?php 
     $command = "uustat -a";
     ob_start();
@@ -23,10 +21,10 @@
     ob_end_clean();
     echo $output; 
 ?>
-	</textarea>
-      </p>
-      <br/>
-      <br/>
+      </textarea>
+    </div>
+    <br/>
+    <br/>
     </center>
   </body>
 </html>
