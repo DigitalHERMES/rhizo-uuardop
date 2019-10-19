@@ -3,7 +3,7 @@
   <head>
     <meta charset='UTF-8'/>
     <title>Serviços de Comunicação Digital</title>
-    <link rel='stylesheet' href='styles.css'/>
+    <link rel='stylesheet' href='style.css'/>
   </head>
   <body>
     <center>
@@ -11,7 +11,9 @@
 
     <div class="bodywt">
       <h1>Fila de Transmissão</h1>
+    </div>
 
+    <div class="body">
       <textarea rows=12 cols=100 readonly>
 <?php 
     $command = "uustat -a";

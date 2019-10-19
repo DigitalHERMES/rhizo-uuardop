@@ -40,7 +40,7 @@
         <i class="material-icons">enhanced_encryption</i>
         Proteger com Senha?
         <input type="checkbox" name="encrypt" onclick="addbox();" id="enc" />
-
+	<br />
         <label for="txt" id="label" style="display: none;">Senha: </label>
         <input type="text" name="password" id="txt" style="display: none;" />
 

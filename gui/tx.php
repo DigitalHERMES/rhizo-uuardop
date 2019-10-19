@@ -24,12 +24,10 @@
       <form action="uucico.php" method="post" enctype="multipart/form-data">
         <div class="bodywt">
           <h1>
-            Especificar Estação de Envio?
+            Especificar Estação de Destino?
             <input type="checkbox" name="sendall" onclick="addbox();" id="sendall" />
           </h1>
-        </div>
 
-        <div class="body">
           <h1>
             <label for="prefix" id="label" style="display: none;"><i class="material-icons">radio</i> Estação de Destino: </label>
             <select id="prefix" name="prefix" style="display: none;">
@@ -38,7 +36,7 @@
           </h1>
         </div>
 
-        <div class="bodywt">
+        <div class="body">
           <h1>
             <input type="submit" value="Iniciar Transmissão" name="submit" />
           </h1>
