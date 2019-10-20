@@ -60,7 +60,8 @@ if ($class == "bodywt"){
    echo "<div class=\"body\">";
 }
 
-echo "<a href=\"clean_files.php\">Limpar Todos Arquivos</a>";
+echo "<a href=\"clean_files.php\"><i class=\"material-icons\">cancel</i>
+Limpar Todos Arquivos</a>";
 
 echo "</div>";
 ?>
