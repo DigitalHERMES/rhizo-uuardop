@@ -17,7 +17,7 @@
 
       <br />
 <?php
-    $command = "halt";
+    $command = "sudo halt";
     ob_start();
     system($command , $return_var);
     $output = ob_get_contents();
