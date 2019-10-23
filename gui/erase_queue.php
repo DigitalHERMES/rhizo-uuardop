@@ -16,12 +16,25 @@
 
       <br />
 <?php
-    $command = "sudo uustat -K";
+    $command = "sudo uustat -u www-data -K";
     ob_start();
     system($command , $return_var);
     $output = ob_get_contents();
     ob_end_clean();
-//    echo $output;
+
+    $command = "sudo uustat -u uucp -K";
+    ob_start();
+    system($command , $return_var);
+    $output = ob_get_contents();
+    ob_end_clean();
+
+    $command = "sudo uustat -u root -K";
+    ob_start();
+    system($command , $return_var);
+    $output = ob_get_contents();
+    ob_end_clean();
+
+
 ?>
       <br/>
     </center>
