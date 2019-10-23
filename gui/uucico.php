@@ -25,7 +25,7 @@ if (!isset($_POST['sendall']))
     system($command , $return_var);
     $output = ob_get_contents();
     ob_end_clean();
-
+} else {
     $source = substr ($_POST['myname'], 0,  6);
     if($source == $_POST['prefix'])
     {
@@ -41,7 +41,7 @@ if (!isset($_POST['sendall']))
             exit; 
         }
     }
-} else {
+
     $command = "nohup sudo uucico -S " . $_POST['prefix'] . " > /dev/null &";
     // echo "UUCP Command: " . $command . "<br />";
     ob_start();
