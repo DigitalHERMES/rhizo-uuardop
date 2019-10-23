@@ -16,7 +16,7 @@
     <div class="body">
       <textarea rows=12 cols=100 readonly>
 <?php 
-    $command = "uustat -a| cut -f 2,7,8,9 -d \" \" | sed \"s/\/var\/www\/html\/uploads\///\"";
+    $command = "uustat -a| cut -f 7,8,9 -d \" \" | sed \"s/\/var\/www\/html\/uploads\///\"";
     ob_start();
     system($command , $return_var);
     $output = ob_get_contents();
