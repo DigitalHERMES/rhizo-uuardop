@@ -25,21 +25,29 @@ if (!isset($_POST['sendall']))
     system($command , $return_var);
     $output = ob_get_contents();
     ob_end_clean();
-} else {
 
     $source = substr ($_POST['myname'], 0,  6);
     if($source == $_POST['prefix'])
     {
         echo "ERRO: Estação de origem é igual estação de destino! <br />";
-    } else
-    {
-        $command = "nohup sudo uucico -S " . $_POST['prefix'] . " > /dev/null &";
-        // echo "UUCP Command: " . $command . "<br />";
-        ob_start();
-        system($command , $return_var);
-        $output = ob_get_contents();
-        ob_end_clean();
+        exit;
     }
+    else {
+        $cmd= "alias.sh ".substr ($_POST['myname'], 0,  6); 
+        $source = shell_exec($cmd);
+        if ($source == $_POST['prefix'])
+        {
+            echo "ERRO: Estação de origem é igual estação de destino! <br />";
+            exit; 
+        }
+    }
+} else {
+    $command = "nohup sudo uucico -S " . $_POST['prefix'] . " > /dev/null &";
+    // echo "UUCP Command: " . $command . "<br />";
+    ob_start();
+    system($command , $return_var);
+    $output = ob_get_contents();
+    ob_end_clean();
 }
 
 ?>

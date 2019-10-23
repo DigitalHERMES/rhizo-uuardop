@@ -32,7 +32,17 @@ $file_in_place = 0;
 $source = substr ($_POST['myname'], 0,  6);
 if ($source == $_POST['prefix'])
 {
-    echo "Estação de origem é igual estação de destino! <br />";
+    echo "ERRO: Estação de origem é igual estação de destino! <br />";
+    exit;
+}
+
+$cmd= "alias.sh ".substr ($_POST['myname'], 0,  6); 
+$source = shell_exec($cmd); 
+
+
+if ($source == $_POST['prefix'])
+{
+    echo "ERRO: Estação de origem é igual estação de destino! <br />";
     exit; 
 }
 
