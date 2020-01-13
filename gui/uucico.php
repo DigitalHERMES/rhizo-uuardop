@@ -11,7 +11,6 @@
 
     <div class="bodywt">
       <h2>Iniciando Transmissão</h2>
-    </div>
 
 <br />
 <?php
@@ -51,6 +50,11 @@ if (!isset($_POST['sendall']))
 }
 
 ?>
+</div>
+
+<div class="body">
+      <a href="view_log.php"><h3>Ver Histórico do Sistema</h3></a>
+</div>
 
 </body>
 </html>

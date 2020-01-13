@@ -36,7 +36,11 @@
 
 
 ?>
-      <br/>
+      <div class="body">
+          <a href="load.php"> Carregar arquivos</a>
+          
+      </div>
+      
     </center>
   </body>
 </html>

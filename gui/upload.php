@@ -11,7 +11,7 @@
     <?php include 'header.php' ?>
 
           <div class="bodywt">
-            Resultado da Submissão do Arquivo
+            Resultado da Submissão do Arquivo:
           </div>
 
 <br />
@@ -30,6 +30,7 @@ $file_in_place = 0;
 // IMAGE SECTION //
 
 $source = substr ($_POST['myname'], 0,  6);
+
 if ($source == $_POST['prefix'])
 {
     echo "ERRO: Estação de origem é igual estação de destino! <br />";
@@ -38,8 +39,9 @@ if ($source == $_POST['prefix'])
 
 $cmd= "alias.sh ".substr ($_POST['myname'], 0,  6); 
 $source = shell_exec($cmd); 
+// echo $cmd." <br />";
 
-
+								  
 if ($source == $_POST['prefix'])
 {
     echo "ERRO: Estação de origem é igual estação de destino! <br />";
@@ -151,11 +153,11 @@ if ($uploadOk == 0) {
            if (isset($_POST['sendnow']))
            {
                 $command = "uucp -C -d \"" .  $target_file . "\" " . $_POST['prefix'] . "\!\"" . $remote_dir . $source . "/\"";
-                echo "Arquivo <b>".basename($target_file)."</b> adicionado com sucesso e transmissão iniciada.<br/>";
+                echo "Arquivo <b>".basename($target_file)."</b> adicionado com sucesso e transmissão iniciada.<br />";
            } else
            {
                 $command = "uucp -r -C -d \"" .  $target_file . "\" " . $_POST['prefix'] . "\!\"" . $remote_dir . $source . "/\"";
-                echo "Arquivo <b>".basename($target_file)."</b> adicionado com sucesso.<br/>";
+                echo "Arquivo <b>".basename($target_file)."</b> adicionado com sucesso.<br />";
 
            }
 //           echo "UUCP Command: " . $command . "<br />";
@@ -167,9 +169,28 @@ if ($uploadOk == 0) {
 
 }
 unlink($target_file);
-?>
+?>         
 
       </div>
+
+<div class="bodywt">
+      <h1>Fila de Transmissão</h1>
+
+      <textarea rows=12 cols=100 readonly>
+<?php
+      $command = "uustat -a| cut -f 2,7,8,9 -d \" \" | sed \"s/\/var\/www\/html\/uploads\///\"";
+      ob_start();
+      system($command , $return_var);
+      $output = ob_get_contents();
+      ob_end_clean();
+      echo $output; 
+?>
+</textarea>
+</div>
+
+<div class="body">
+  <a href="tx.php">Transmitir</a>
+</div>
   </center>
 </body>
 </html>
