@@ -51,6 +51,59 @@ Um rádio com porta USB como o ICOM IC-7100 ou o ICOM IC-7300, ou opcionalmente 
 VX-1700 com a interface Signalink USB, conectado a uma Raspberry Pi 3
 rodando Linux.
 
+Para o sistema de alimentação elétrica com baterias e painel solal:
+\begin{itemize}
+\item Bateria Estacionária 150Ah. Referência: \url{https://www.neosolar.com.br/loja/bateria-estacionaria-moura-clean-12mf150-150ah.html}
+\item Um ou dois paineis solares. O ideal seria que juntos totalizem 250W ou mais de potência. 150W é o mínimo aceitável. Referência: \url{https://www.neosolar.com.br/loja/painel-solar-fotovoltaico-155wp-upsolar-up-m155p.html}
+\item Controlador de carga de no mínimo 30A. 40A recomendado. Referência: \url{https://www.neosolar.com.br/loja/controlador-carga-pwm-30a-12-24v-epever-landstar-ls3024eu.html}
+\end{itemize}
+
+Para alimentação com energia da rede 110 ou 220V AC, é necessária uma fonte de 13.8V ou 12V.
+\begin{itemize}
+\item Fonte linear de trafo 30A 13.8V. Referência: \url{https://www.radiohaus.com.br/produto/8498/fonte-maxtron-30a-estabilizada} OU
+\item Fonte chaveada 50A 12V de baixo custo. Referência:
+  \url{https://produto.mercadolivre.com.br/MLB-1240884918-fonte-chaveada-12v-50a-600w-s600-12-cftv-led-bivolt-_JM?quantity=1#position=1&type=item&tracking_id=9596443b-38ac-416f-ab5c-d1adf108e56d}
+\end{itemize}
+
+Para o rádio transceptor transmitir e receber ondas de rádio, uma antena ajustada para a frequência de transmissão é necessária.
+
+Antena a ser utilizada:
+\begin{itemize}
+\item Antena dipolo de fio com BALUN feita sob medida para a frequência escolhida, instalada como V invertida. Referências: Electril:     \url{http://www.electril.com/electril/dipolo2.htm} ML: \url{https://produto.mercadolivre.com.br/MLB-1435429491-tw713-antena-dipolo-para-40-e-20-metros-com-balun-11-_JM?quantity=1#position=1&type=item&tracking_id=771c82d5-2426-46d9-8cbb-d34b6e1ec2d1}
+\end{itemize}
+
+Rádios Tranceptores HF. Todos eles precisam ser "desbloqueados" (a exceção do IC-78 - confirmar com o vendedor!) para operar em faixas fora da banda de rádio amador - deve-se verificar antes de comprar qual procedimento deve ser feito para desbloqueador o rádio. 
+
+A seguir estão Rádio transceptores mais fáceis para se adicionar comunicação digital pois já possuem porta USB e placa de som embutida (entre parênteses as bandas suportadas - precisamos somente HF).
+
+\begin{itemize}
+\item ICOM IC-7100 (UHF + VHF + HF)
+\item ICOM IC-7300 (HF)
+\item Yaesu FT-991A (HF)
+\end{itemize}
+
+Rádios mais em conta, que necessitarão de uma interface especial para comunicação digital (ex: Tigertronics Signalink USB):
+\begin{itemize}
+\item ICOM IC-78 (HF) (Preferido para fixo, pode ser usado como móvel também)
+\item ICOM IC-718 (HF)
+\item Vertex VX-1700 (HF)
+\item Alinco DX-SR8T (HF)
+\item Yaesu FT-857D (UHF + VHF + HF)
+\item Yaesu FT-891 (HF) (Preferido para móvel)  *Verificando se pode ser feito digital sem interface conversora
+\end{itemize}
+
+Cabo coaxial com 50ohm de impedância, podendo ser o RG-58, para curta distância ou RG-213, para mais longa distância.
+
+Os cabos de energia deve ter bitola grande, suficiente para passar picos de mais de 20A em 12V.
+
+Equipamentos essenciais para teste:
+\begin{itemize}
+\item Wattimetro com medição de potência direta e refletida para HF. Referência: \url{https://radiohaus.com.br/produto/4064/mfj-822-wattimetro-hf-vhf-18-200-mhz-300-w-movel}
+\item Multímetro. Referência: \url{https://produto.mercadolivre.com.br/MLB-681832769-multimetro-digital-portatil-et-1002-minipa-_JM?quantity=1#position=1&type=item&tracking_id=5bd7e5cd-d473-442f-9203-57b77e67a56b}
+\item Carga fantasta (dummy load). Referências: \url{https://www.radiohaus.com.br/produto/2969/mfj-262b-carga-fantasma-200w-0-a-1ghz} ou \url{https://produto.mercadolivre.com.br/MLB-912917571-carga-rf-100w-50r-carga-fantasma-preciso-50-ohms-2ghz-_JM#position=15&type=item&tracking_id=cfa216de-0679-46b0-9f31-480e35dd0981}
+\end{itemize}
+
+
 \section{Configuração}
 
 O ARDOP é um modem SDR feito por rádio amadores que utiliza modernas
@@ -74,12 +127,19 @@ zerado.
 No caso dos ICOM IC-7100, deixar o filtro maior que 2.8kHz para o mode
 SSB/Data em uso com o sistema digital.
 
+\subsection{Alsa}
+
+Add to ``/etc/asound.conf'':
+\begin{verbatim}
+pcm.ARDOP {type rate slave {pcm "hw:1,0" rate 48000}}
+\end{verbatim}
+
 \subsection{ARDOP}
 
 Link para download: \url{http://www.cantab.net/users/john.wiseman/Downloads/Test/TeensyProjects.zip}
 
 O binário utilizado do ardop deve ficar em /usr/bin/ardop, que pode ser um
-link simbólico para /usr/bin/{ardop1ofdm, ardop2, ardopofdm}, pro exemplo.
+link simbólico para /usr/bin/{ardop1ofdm, ardop2, ardopofdm}, por exemplo.
 
 Configuração do ardop para uso com o ICOM IC-7100 (via porta USB, com PTT
 via porta serial):
@@ -142,8 +202,8 @@ ps: baixar o .deb e instalar na mão.
 
 \subsection{rhizo-uuardopd}
 
-TODO: It seems everything uucico wrote in the end of a reception, don't get
-to the other side - connection closes and buffer get clean fast!
+%TODO: It seems everything uucico wrote in the end of a reception, don't get
+%to the other side - connection closes and buffer get clean fast!
 
 Dois binários, uuport (para ser usado pelo uucp) e uuardopd que é o software
 que conecta com o modem Ardop através do uucico ou uuport.
@@ -163,11 +223,11 @@ Ver log:
 journalctl -f -u uuardopd
 \end{verbatim}
 
-\subsection{DHCP}
+%\subsection{DHCP}
 
-\subsection{DNS}
+%\subsection{DNS}
 
-\subsection{Apache + PHP}
+%\subsection{Apache + PHP}
 
 \section{Interface via UUCP em linha de comando}
 
@@ -221,6 +281,8 @@ alguns shell scripts.
 Acessível digitando qualquer endereço no navegador, ou 192.168.1.1.
 
 \subsection{WebPhone}
+
+WIP!
 
 \url{https://gitlab.tic-ac.org/keith/webphone/wikis/hermes}
 
