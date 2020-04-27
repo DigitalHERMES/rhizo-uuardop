@@ -1,0 +1,213 @@
+\documentclass[11pt,a4paper]{article}
+% \usepackage[brazil]{babel} % carrega portugues brasileiro
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry} %margens menores!
+\usepackage{graphicx} % incluir figuras .eps
+\usepackage{tabularx}
+\usepackage{color} % colorir texto
+\usepackage{indentfirst}
+\usepackage{textcomp}
+\usepackage[colorlinks=true]{hyperref}
+\usepackage{amssymb,amsmath}
+\usepackage{float}
+% \usepackage{siunitx}
+% \usepackage[ampersand]{easylist}
+
+\title{HERMES Equipment List and Recommendations}
+
+\author{
+       \large
+        \textsc{Rafael Diniz}
+        \mbox{}\\ %
+        rafael@rhizomatica.org\\
+        \mbox{Rhizomatica} \\ %
+        \normalsize
+        \texttt{Brasília - Brasil}\\
+}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This document lists the equipment needed to set up a HF station capable
+of sending and receiving digital data. This document is based on field
+experience acquired through HF systems deployed in the south of Mexico
+and in the Amazon region in South America. The software stack for digital
+telecommunications system is described in another document.
+\end{abstract}
+
+\newpage
+
+\tableofcontents
+
+\section{Digital HF station}
+
+An HF station capable of transmitting digital data is composed by the
+following main set of components:
+
+\begin{itemize}
+\item HF Radio Transceiver
+\item Antenna
+\item Mini-Computer
+\item Power source
+\end{itemize}
+
+Each part has its own dedicated subsection, and also a section with
+important tools to have in order to properly adjust the HF station is
+present.
+
+\subsection{HF Radio Transceiver}
+
+We consider best options for HF radio transceiver the 100W (or more)
+transceivers which have a USB (Universal Serial Bus) port and internal
+analog/digital converters, which provide seamless and error-free
+connection between the HF transceiver and a computer. Taking in
+consideration the cost of the transceivers, usually the most affordable ones
+are made for the amateur (ham) radio market. Ham radio transceivers are
+usually blocked to transmit only in the ham radio allocated bands, and need
+to be modified to transmit in all the HF bands (See example here:
+\url{https://radioaficion.com/cms/ic-7100-marscap-modification/}).
+
+In order to improve transmitting data rate a passband of at least 2.8kHz is
+recommended in SSB mode (the mode typically used for data and voice
+transmissions in HF).
+
+Among this category we list as examples (supported frequency bands between parenthesis):
+
+\begin{itemize}
+\item ICOM IC-7100 (UHF + VHF + HF)
+\item ICOM IC-7300 (HF)
+\item Yaesu FT-991A (HF)
+\end{itemize}
+
+Other HF transceivers can also be used for digital telecommunications, but
+need an external interface to connect the radio to a computer. Examples
+of transceivers in the category are:
+
+\begin{itemize}
+\item ICOM IC-78 (HF)
+\item ICOM IC-718 (HF)
+\item Vertex VX-1700 (HF)
+\item Alinco DX-SR8T (HF)
+\item Yaesu FT-857D (UHF + VHF + HF)
+\item Yaesu FT-891 (HF)
+\end{itemize}
+
+If an external interface is needed to connect a transceiver to computer, be
+aware that an adjust procedure to identify the correct audio levels to
+correctly drive the transceiver and to optimally receive the audio needs to
+be done. With some transceivers like the ICOM IC-78 and IC-718 there is a
+need to set the MIC gain level to 0 when transmitting using its ACC
+connector. Different transceivers have different quirks and issues, so be
+aware to always carry tests before taking any equipment to the field.
+
+Examples of external interfaces which support all transceiver
+models (PC connection between parenthesis):
+\begin{itemize}
+\item Tigertronics Signalink USB (USB)
+\item DigiMaster MiniProSC (USB)
+\item West Mountain Radio RIGblaster (USB and Bluetooth)
+\end{itemize}
+
+\subsection{Antenna}
+
+The antenna is a very special part of the system. If not well tuned or well
+installed, nothing works. We recommend the use of the appropriate antenna
+for the desired coverage. For Near Vertical Incidence Skywave (NVIS), which
+exceeds 600km radius of coverage, we recommend a simple quarter wavelength
+antenna with a balun for impedance matching. If a portable antenna is
+needed, the Buddipole antenna is a good option, but with worse performance
+then a simple 1/4 wavelength dipole (See
+\url{https://www.buddipole.com/}). Frequency bands below 7MHz are
+recommended for NVIS operation.
+
+
+\subsection{Mini-computer}
+
+The mini-computer will host the HF modem application, the network
+stack and services. In the a minimal setup, the computer will run the HF
+modem application and a Web server which provides access to the HF
+telecommunication system services over a WiFi network. A Raspberry Pi 4 has
+enough processing power and memory for this use case.
+
+In more complex setup, in which the computer will run the HF modem and also
+control GSM or LTE networks connected to the HF telecommunication
+facilities, a more capable Intel-based mini-pc is recommended.
+
+\subsection{Power source}
+
+A common HF transceiver uses a 12V voltage input and at least 1A current in
+receiving mode, and peaks up to 25A when transmitting. So it is important
+to have a charge controller which can provide at least 30A, in order to
+allow some headroom for fluctuations of consumption.
+
+As a example scenario, take a transceiver using 20A when transmitting full
+power, 1A while listening. Lets assume we want to transmit for 5 minutes
+every 24 hours and listen all the time when we're not transmitting.
+
+The daily power budget of the system (@12V) is:\\
+HF rx: $1A * 24h = 24Ah$ \\
+HF tx: $20A * 5/60h = 100/60 = 1.7Ah$\\
+mini-pc: $0.5A (~ 1.2A@5V) * 24h = 12Ah$\\
+
+So total daily battery consumption would be $24+1.7+12 = 37.7Ah$
+
+Let's say we want to discharge our batteries 15\% on a normal day, so
+this load would represent a battery capacity of 100/15 * 37.7 = 251.3Ah.
+
+We'd probably also want some spare capacity, say, an extra day of using the 
+system when there's no sun. (solar panels are really bad at producing output
+on cloudy days: expect 8\%-20\% of normal output). So we'll either have to
+add more batteries or stop listening all day (nearly all our power
+consumption is for listening, not talking). for the solar panels recharging
+the battery, it is a good practice to size things at somewhere around 2
+times the normal load every day, so that the system recharges in about 1 day
+after 1 day of operating without sun, plus add around 15\%-20\% for
+inefficiencies.
+
+The solar maps for the Amazon region show a yearly average insolation
+of about $4.0 kWh/m^2/d$. Based on this,\\
+$4h * Cpanel(W) = 37.7Ah*12.5V*2.2$\\
+$Cpanel(W) = 2.2*(37.7Ah*12.5V)/(4h)$\\
+$= 259.2W$
+
+So there is a need for around 250W to 300W of solar panels.
+
+Another good practice would be to double the battery capacity for this
+scenario to make the system workable for more than 1 sunless day without
+discharging the batteries too deeply.
+
+Recommended power related parts:
+\begin{itemize}
+\item 250Ah stationary battery
+\item One 250W or 300W solar panel, or two 250W panels
+\item Charge controller which can output at least 30A of current. 40A
+  recommended.
+\end{itemize}
+
+In the case of using the HF transceiver connected to power grid, a AC/DC
+power supply is needed, with 12V or 13.8V output. A couple of options for
+the AC/DC power supply:
+
+
+\begin{itemize}
+\item At least 30A transformer-based power supply at 12V or 13.8V.
+\item Low cost switched power supply at 12V or 13.8V marked as 50A or more.
+\end{itemize}
+
+\subsection{Essential tools}
+
+Essential tools to have for basic radio and antenna testing:
+\begin{itemize}
+\item Wattmeter with reflected and forward power readings for HF, which
+  supports at least 100W
+\item Multimeter
+\item 50ohm dummy load for at least 100W
+\end{itemize}
+
+
+\end{document}
