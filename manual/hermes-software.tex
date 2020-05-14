@@ -1,0 +1,276 @@
+\documentclass[11pt,a4paper]{article}
+% \usepackage[brazil]{babel} % carrega portugues brasileiro
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry} %margens menores!
+\usepackage{graphicx} % incluir figuras .eps
+\usepackage{tabularx}
+\usepackage{color} % colorir texto
+\usepackage{indentfirst}
+\usepackage{textcomp}
+\usepackage[colorlinks=true]{hyperref}
+\usepackage{amssymb,amsmath}
+\usepackage{float}
+% \usepackage{siunitx}
+% \usepackage[ampersand]{easylist}
+
+\title{HERMES - High-frequency Emergency and Rural Multimedia Exchange System}
+
+\author{
+       \large
+        \textsc{Rafael Diniz}
+        \mbox{}\\ %
+        rafael@rhizomatica.org\\
+        \mbox{Rhizomatica} \\ %
+        \normalsize
+        \texttt{Brasília - Brasil}\\
+}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+
+This document contains the description of the software stack of the HERMES
+system - a digital communication system for the HF band which uses ARDOP
+(Amateur Radio Digital Open Protocol) modem and UUCP networking (Unix to Unix
+Communication Protocol). This document also contain a description of the
+user interface and the minimum hardware needed.
+
+\end{abstract}
+
+\newpage
+
+\tableofcontents
+
+\section{Reference system}
+
+\begin{itemize}
+\item HF transceiver connected to a computer with audio I/O and ptt control
+\item Mini computer running Linux (and the software stack described by this
+  document) and connected to the transceiver and other networks
+\end{itemize}
+
+\section{What HERMES can do}
+
+HERMES is as a system to be used with HF transceivers for digital
+communication. HERMES is meant to work with HF NVIS (near vertical incidence
+skywave) and provide hundreds of kilometers of reach for each station.
+
+The modem we currently use (ARDOP) supports both point-to-point mode (ARQ
+mode - Automatic repeat request) and broadcast mode (FEC mode - Forward
+Error Correction). We only use the ARQ mode, which guarantees the error-free
+reception of the data. Broadcast mode could be used, but using a protocol
+different than UUCP.
+
+We adopted UUCP as networking solution to be carried over the ARDOP modem in
+ARQ mode. UUCP can carry files and execute remote commands. Specific support
+for email exists and can be used out-of-the-box to provide email service over
+HF (UUCP was created in the late 70's and one of the main uses was email).
+
+In the more basic configuration, HERMES is used for file exchange, with the
+option for secure (through cryptography) exchange of files.
+
+\section{HERMES software configuration}
+
+HERMES uses ARDOP (Amateur Radio Digital Open Protocol) for modem. ARDOP is
+a SDR (software defined radio) modem made by amateur radio operators which
+use modern modulation techniques (OFDM) and have support for standard and
+homebrew transceivers.
+
+For the network layer, UUCP is used. UUCP is a system for assynchronous
+store-and-forward communication first released in the Bell Labs Unix V7 in
+late 70's, and still used today in niches, like communication in HF.
+
+To integrate the UUCP system with the ARDOP modem, the RHIZO-UUARDOPD
+project was developed to provide tools that integrate UUCP to ARDOP.
+
+A mini-computer running Linux is needed. We use Debian Buster (10) arm64
+(multilib with armhf in case you want to use the `` piardopc '' by John
+Wiseman) as Linux reference system, running on a Raspberry Pi with
+Wifi configured in AP (Access Point) mode, for serving the system web
+interface.
+
+We split this section in the following topics:
+\begin{itemize}
+\item Radio / Interface
+\item ARDOP
+\item UUCP
+\end{itemize}
+
+\subsection{Radio and/or interface}
+
+Different setups require different configuration. In the case of using a USB
+(Universal Serial Bus) interface (eg. Signalink), the delay setting must be
+set to 0. In the case of ICOM IC-7100, for example, leave the bandpass filter wider
+than 2.8kHz for the digital mode  (SSB/Data).
+
+\subsection{Alsa}
+
+Add to ``/etc/asound.conf'':
+\begin{verbatim}
+pcm.ARDOP {type rate slave {pcm "hw:1,0" rate 48000}}
+\end{verbatim}
+
+\subsection{ARDOP}
+
+Dowload link: \url{https://github.com/DigitalHERMES/ardopc}
+
+The ardop binary used should be in /usr/bin/ardop, which can be a
+symbolic link to /usr/bin/{ardop1ofdm, ardop2, ardopofdm}.
+
+ARDOP service file for the ICOM IC-7100 (USB connection, PTT done over serial):
+\begin{verbatim}
+[Unit]
+Description=ARDOP daemon
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ardop 8515 -c /dev/ttyUSB0 ARDOP ARDOP -k FEFE88E01C0001FD -u FEFE88E01C0000FD
+ExecStop=/usr/bin/killall -s QUIT ardop
+IgnoreSIGPIPE=no
+#StandardOutput=null
+#StandardError=null
+StandardOutput=syslog
+StandardError=syslog
+
+[Install]
+WantedBy=multi-user.target
+\end{verbatim}
+
+Service file when using a VOX based setup (eg. when using an interface like
+the Signalink):
+\begin{verbatim}
+[Unit]
+Description=ARDOP daemon
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ardop 8515 ARDOP ARDOP
+ExecStop=/usr/bin/killall -s QUIT ardop
+IgnoreSIGPIPE=no
+#StandardOutput=null
+#StandardError=null
+StandardOutput=syslog
+StandardError=syslog
+
+[Install]
+WantedBy=multi-user.target
+\end{verbatim}
+
+
+Start/stop ARDOP service:
+\begin{verbatim}
+systemctl start ardop.service
+systemctl stop ardop.service
+\end{verbatim}
+
+
+See the log:
+\begin{verbatim}
+journalctl -f -u ardop
+\end{verbatim}
+
+\subsection{UUCP}
+
+Use debian package version 1.07-27 or higher, for example, the version
+from Debian Bullseye: \url{https://packages.debian.org/bullseye/uucp}
+(eg. download and install .deb).
+
+\subsection{rhizo-uuardopd}
+
+%TODO: It seems everything uucico wrote in the end of a reception, don't get
+%to the other side - connection closes and buffer get clean fast!
+
+Two binaries should be installed: uuport (to be called by uucp) and uuardopd
+which is the software that connects to the Ardop modem through uucico or uuport.
+
+Download link: \url{http://github.com/DigitalHERMES/rhizo-uuardop}
+
+Start/stop UUARDOPD service:
+\begin{verbatim}
+systemctl start uuardopd.service
+systemctl stop uuardopd.service
+\end{verbatim}
+
+
+See the log:
+\begin{verbatim}
+journalctl -f -u uuardopd
+\end{verbatim}
+
+%\subsection{DHCP}
+
+%\subsection{DNS}
+
+%\subsection{Apache + PHP}
+
+\section{UUCP command line examples}
+
+We use ``/var/www/html/arquivos'' as default for received
+files in the web interface, so the examples here use this path.
+
+For copying file to a remote host. This adds a copy job to the uucp queue (``-r'' for not starting transmission
+automatically):
+\begin{verbatim}
+uucp -C -r -d source.xxx AM4AAB\!/var/www/html/arquivos/${nodename}/
+\end{verbatim}
+
+To trigger the transmission of all queued jobs for host
+AM4AAA:
+\begin{verbatim}
+uucico -S AM4AAA
+\end{verbatim}
+
+To list the jobs:
+\begin{verbatim}
+uustat -a
+\end{verbatim}
+
+To kill a job:
+\begin{verbatim}
+uustat -k job
+uustat -K
+\end{verbatim}
+
+See the log:
+\begin{verbatim}
+uulog
+\end{verbatim}
+
+\section{User interface}
+
+The system interface is web-based, using HTML + PHP and
+some shell scripts.
+
+Requirements of the user interface:
+
+\begin{itemize}
+\item ImageMagic: for image manipulation
+\item mozjpeg: To compress for JPEG: https://github.com/mozilla/mozjpeg
+% \item opusenc: para comprimir áudio
+\item gpg: For cryptography
+\item hostapd: Wifi AP mode software
+\end{itemize}
+
+The Web interface can be accessed by typing any address in a browser
+connected to the wifi (set the DNS accordingly) or simply 192.168.1.1.
+
+\subsection{Email}
+
+Email server can either run locally or only in a central host with
+Internet. Stations can either opt to connect to a central station on demand,
+have some pre-defined schedule, or the central station connects to the
+community stations doing a pooling, delivering and downloading emails and
+files.
+
+\subsection{WebPhone}
+
+WIP!
+
+\url{https://gitlab.tic-ac.org/keith/webphone/wikis/hermes}
+
+\end{document}
