@@ -16,7 +16,7 @@ initiating a call (uucico master mode). Communication between uuport and uuardop
 | Option | Description |
 | --- | --- |
 | -c callsign | Station Callsign (Eg: PU2HFF) |
-| -d remote_callsign | Remote Station Callsign |
+| -d remote_callsign | Remote Station Callsign (optional) |
 | -a tnc_ip_address | IP address of the TNC |
 | -p tcp_base_port | TCP base port of the TNC. ARDOP uses ports tcp_base_port and tcp_base_port+1 |
 | -t timeout | Time to wait before disconnect when idling |
