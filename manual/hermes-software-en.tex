@@ -35,11 +35,11 @@
 
 \begin{abstract}
 
-This document contains the description of the software stack of the HERMES
-system - a digital communication system for the HF band which uses ARDOP
+This document describes the software stack of the HERMES
+system - a digital communication system for the HF band which uses the ARDOP
 (Amateur Radio Digital Open Protocol) modem and UUCP networking (Unix to Unix
-Communication Protocol). Apart of ARDOP and UUCP, HERMES is composed by a
-Web Interface for access to the services it provides and it can be run
+Communication Protocol). Apart from ARDOP and UUCP, HERMES is composed of a
+Web Interface for access to the services it provides, which can be run
 on almost any mini-computer.
 
 \end{abstract}
@@ -51,7 +51,7 @@ on almost any mini-computer.
 \section{Reference system}
 
 \begin{itemize}
-\item HF transceiver connected to a computer with audio I/O and ptt control
+\item HF transceiver connected to a computer with audio I/O and PTT control
   (see Equipment list document)
 \item Mini computer running Linux (and the software stack described by this
   document) connected to the HF transceiver and other networks (eg. WiFi,
@@ -66,39 +66,39 @@ skywave) and provide hundreds of kilometers of reach for each station.
 
 The modem we currently use (ARDOP) supports both point-to-point mode (ARQ
 mode - Automatic repeat request) and broadcast mode (FEC mode - Forward
-Error Correction). We only use the ARQ mode, which guarantees the error-free
-reception of the data. Broadcast mode could be used, but using a protocol
+Error Correction). We only use ARQ mode, which guarantees error-free
+reception of the data. Using broadcast mode would require a protocol
 different than UUCP.
 
-We adopted UUCP as networking solution to be carried over the ARDOP modem in
+We adopted UUCP as the networking solution to be carried over the ARDOP modem in
 ARQ mode. UUCP can carry files and execute remote commands. Specific support
 for email exists and can be used out-of-the-box to provide email service over
-HF (UUCP was created in the late 70's and one of the main uses was email).
+HF (UUCP was created in the late 1970s and one of the main uses was email).
 
 In the more basic configuration, HERMES is used for file exchange, with the
 option for secure (through cryptography) exchange of files.
 
 \section{HERMES software configuration}
 
-HERMES uses ARDOP (Amateur Radio Digital Open Protocol) for modem. ARDOP is
-a SDR (software defined radio) modem made by amateur radio operators which
-use modern modulation techniques (OFDM) and have support for standard and
+HERMES uses ARDOP (Amateur Radio Digital Open Protocol) for a modem. ARDOP is
+an SDR (software defined radio) modem made by amateur radio operators which
+uses modern modulation techniques (OFDM) and supports standard and
 homebrew HF transceivers.
 
 For the network layer, UUCP is used. UUCP is a system for asynchronous
-store-and-forward communication first released in the Bell Labs Unix V7 in
-the late 70's, and still used today in niches, like communication over HF.
+store-and-forward communication first released in Bell Labs Unix V7 in
+the late 1970s, and still used today in niches, like communication over HF.
 
-To integrate the UUCP system with the ARDOP modem, the RHIZO-UUArdopD
-project was developed to provide tools that integrate UUCP to ARDOP.
+The RHIZO-UUArdopD project was developed to provide tools that integrate
+the UUCP system with the ARDOP modem.
 
-A mini-computer running Linux is needed. We recommend Debian Buster (10)
-arm64 (multilib with armhf in case you want to use the pre-compiled ``
-piardopc '' by John Wiseman) as Linux reference system, running on a Raspberry Pi with
+A mini computer running Linux is needed. We recommend Debian Buster (10)
+arm64 (multilib with armhf if you want to use the pre-compiled ``piardopc ''
+by John Wiseman) as the Linux reference system, running on a Raspberry Pi with
 Wifi configured in AP (Access Point) mode, for serving the system web
 interface.
 
-We split HERMES network stack in the following items:
+The HERMES network stack is made of:
 \begin{itemize}
 \item Computer to Radio connection
 \item ALSA (Audio configuration)
@@ -111,10 +111,10 @@ We split HERMES network stack in the following items:
 \subsection{Computer to Radio connection}
 
 Different setups require different configuration. In the case of using a USB
-(Universal Serial Bus) interface (eg. Signalink), the delay setting must be
-set to 0. In the case of radios with USB connection exposed an embedded sound
-card and transmit/receive control (eg. ICOM IC-7100) leave the bandpass
-filter at least 2.8kHz (or wider) for the digital operation (SSB/Data).
+(Universal Serial Bus) interface (e.g. Signalink), the delay must be set to
+0. In the case of radios with USB connection exposed an embedded sound
+card and transmit/receive control (eg. ICOM IC-7100) set the bandpass
+filter to at least 2.8kHz (or wider) for digital operation (SSB/Data).
 
 \subsection{ALSA (Audio configuration)}
 
@@ -127,7 +127,7 @@ Where ``hw:1,0'' is the HF transceiver's audio device.
 
 \subsection{ARDOP (Modem configuration)}
 
-Dowload link: \url{https://github.com/DigitalHERMES/ardopc}
+Download link: \url{https://github.com/DigitalHERMES/ardopc}
 
 The ardop binary should be in /usr/bin/ardop, which can be a
 symbolic link to /usr/bin/{ardop1ofdm, ardop2, ardopofdm}.
@@ -186,28 +186,28 @@ journalctl -f -u ardop
 
 \subsection{UUCP (Network configuration)}
 
-UUCP debian package version 1.07-27 or higher should be used, for example,
+UUCP Debian package version 1.07-27 or higher should be used, for example,
 the version from Debian Bullseye (11): \url{https://packages.debian.org/bullseye/uucp}.
 
-UUCP command line examples follow. In order to copy a file to a remote host,
-the following command adds a copy job to the uucp queue (``-r'' is used for
+UUCP command line examples follow. To copy a file to a remote host,
+the following command adds a copy job to the uucp queue (``-r'' is used to
 not start transmission after queuing):
 \begin{verbatim}
 uucp -C -r -d source.xxx AM4AAB\!/var/www/html/arquivos/${nodename}/
 \end{verbatim}
 
-To trigger the transmission of all queued jobs for host
+Trigger the transmission of all queued jobs for host
 AM4AAA:
 \begin{verbatim}
 uucico -S AM4AAA
 \end{verbatim}
 
-To list the jobs:
+List the jobs:
 \begin{verbatim}
 uustat -a
 \end{verbatim}
 
-To kill a job:
+Kill a job:
 \begin{verbatim}
 uustat -k job
 uustat -K
@@ -225,9 +225,9 @@ uulog
 %to the other side - connection closes and buffer get clean fast!
 
 Two binaries should be installed: uuport (to be called by uucp) and uuardopd
-which is the daemon software which connects to the ARDOP modem for starting
-/ stopping connection. Rhizo-uuardopd and manages
-the connection with UUCP through uucico or uuport.
+which is the daemon software that connects to the ARDOP modem to start
+or stop a connection. Rhizo-uuardopd manages the connection with UUCP
+through uucico or uuport.
 
 Download link: \url{http://github.com/DigitalHERMES/rhizo-uuardop}
 
@@ -252,13 +252,13 @@ journalctl -f -u uuardopd
 
 \subsection{User Web Interface}
 
-HERMES provides an interface for file exchange is web-based, using HTML + PHP and
-some shell scripts located in ``gui'' directory of Rhizo-Uuardopd source
+HERMES provides a web-based interface for file exchange, using HTML + PHP and
+some shell scripts located in the ``gui'' directory of the Rhizo-Uuardopd source
 code
 (\url{https://github.com/DigitalHERMES/rhizo-uuardop/tree/master/gui}). Current
 implementation supports symmetric cryptography and image compression.
 
-We use ``/var/www/html/arquivos'' as default UUCP path to send
+We use ``/var/www/html/arquivos'' as the default UUCP path to send
 files through the web interface.
 
 Requirements of the user interface:
@@ -268,11 +268,11 @@ Requirements of the user interface:
 \item mozjpeg: Best public JPEG encoder: \url{https://github.com/mozilla/mozjpeg}
 % \item opusenc: para comprimir áudio
 \item GnuPG: For cryptography
-\item hostapd: Wifi AP mode software
+\item hostapd: WiFi AP mode software
 \end{itemize}
 
 The Web interface can be accessed by typing any address in a browser
-connected to the wifi (set the DNS accordingly) or simply 192.168.1.1.
+connected to the WiFi (set the DNS accordingly) or simply 192.168.1.1.
 
 %\subsection{Email}
 
