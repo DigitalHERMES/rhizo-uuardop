@@ -89,3 +89,13 @@ Sys configuration example of remote system at "/etc/uucp/sys" (without login pro
 Example of uuardopd invocation:
 
     $ uuardopd -l -c BB2UIT -d PP2UIT -a 127.0.0.1 -p 8515 -t 60
+
+### UUCP with "improved-pipe.patch" for Raspberry OS (32 bits)
+
+While UUCP package for Debian 11 (Bullseye) and onwards already have the patch included and the package works fine in Debian 10 (Buster), in the case of the Raspberry Pi Zero and 1, there is a need for a UUCP armhf package compiled for armv6l (Debian's armhf port is compiled for armv7l then incompatible with the Pi Zero and 1). We made available UUCP for Raspberry OS, and to get it installed do:
+
+    $ wget http://www.telemidia.puc-rio.br/~rafaeldiniz/public_files/hermes-repo/rafaeldiniz.gpg.key
+    $ apt-key add rafaeldiniz.gpg.key
+    $ apt-get update
+    $ apt-get install uucp
+
