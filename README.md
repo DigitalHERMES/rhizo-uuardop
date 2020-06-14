@@ -96,6 +96,7 @@ While UUCP package for Debian 11 (Bullseye) and onwards already have the patch i
 
     $ wget http://www.telemidia.puc-rio.br/~rafaeldiniz/public_files/hermes-repo/rafaeldiniz.gpg.key
     $ apt-key add rafaeldiniz.gpg.key
+    $ echo deb http://www.telemidia.puc-rio.br/~rafaeldiniz/public_files/hermes-repo/ buster main >> /etc/apt/sources.list
     $ apt-get update
     $ apt-get install uucp
 
