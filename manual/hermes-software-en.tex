@@ -187,7 +187,20 @@ journalctl -f -u ardop
 \subsection{UUCP (Network configuration)}
 
 UUCP Debian package version 1.07-27 or higher should be used, for example,
-the version from Debian Bullseye (11): \url{https://packages.debian.org/bullseye/uucp}.
+the version from Debian Bullseye (11):
+\url{https://packages.debian.org/bullseye/uucp}. Packages for Raspberry OS
+Buster can be installed using our repository. Example for installation in a
+Raspberry Zero or 1 (32bit armv6l Raspberry devices) root terminal:
+
+\begin{verbatim}
+echo deb http://www.telemidia.puc-rio.br/~rafaeldiniz/public_files/hermes-repo/ buster main \
+     >> /etc/apt/sources.list
+wget http://www.telemidia.puc-rio.br/~rafaeldiniz/public_files/hermes-repo/rafaeldiniz.gpg.key
+apt-key add rafaeldiniz.gpg.key
+apt-get update
+apt-get install uucp
+\end{verbatim}
+
 
 UUCP command line examples follow. To copy a file to a remote host,
 the following command adds a copy job to the uucp queue (``-r'' is used to
