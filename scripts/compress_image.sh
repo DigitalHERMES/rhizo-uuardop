@@ -19,7 +19,7 @@ cp -f "${1}" ${TEMPFILE}
 
 while [ "$(stat -c%s "${TEMPFILE}")" -gt "$MAX_SIZE" ] && [ "$QUALITY" -gt "5" ]; do
 #  echo $(stat -c%s "${TEMPFILE}")
-  convert -resize "840x840>" "${1}" pnm:- | /opt/mozjpeg/bin/cjpeg -tune-ms-ssim -quality ${QUALITY} > ${TEMPFILE}
+  convert -resize "840x840>" "${1}" pnm:- | /opt/mozjpeg/bin/cjpeg -quality ${QUALITY} > ${TEMPFILE}
   QUALITY=$((QUALITY-10))
 #  echo ${QUALITY}
 done;
