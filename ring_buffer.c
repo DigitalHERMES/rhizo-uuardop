@@ -113,7 +113,7 @@ void ring_create_shm (struct ring_buffer *buffer, unsigned long order, key_t key
     void *address;
     int shmid;
 
-    address = memalign(sysconf(_SC_PAGESIZE), buffer->ctr->count_bytes << 1);
+    address = memalign(4*sysconf(_SC_PAGESIZE), buffer->ctr->count_bytes << 1);
 
     /*  create the segment */
     if ((shmid = shmget(key, buffer->ctr->count_bytes, 0666 | IPC_CREAT | IPC_EXCL)) == -1)
