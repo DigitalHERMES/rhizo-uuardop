@@ -208,7 +208,7 @@ void finish(int s){
 
 int main (int argc, char *argv[])
 {
-    rhizo_conn *connector = memalign(sysconf(_SC_PAGESIZE), sizeof(sizeof(rhizo_conn)));
+    rhizo_conn *connector = memalign(4*sysconf(_SC_PAGESIZE), sizeof(sizeof(rhizo_conn)));
 
     char log_file[BUFFER_SIZE];
     log_file[0] = 0;
