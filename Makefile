@@ -50,6 +50,8 @@ install: uuardopd uuport
 	install scripts/enable_monitor.sh $(PREFIX)/bin
 	install scripts/clean_files.sh $(PREFIX)/bin
 	install scripts/alias.sh $(PREFIX)/bin
+	install -o www-data -g www-data -d /var/www/html/arquivos
+	install -o www-data -g www-data -d /var/www/html/uploads
 	install -o www-data -g www-data gui/*.php /var/www/html
 	install -o www-data -g www-data gui/*.css /var/www/html
 	install -o www-data -g www-data -d /var/www/html/iconfont
