@@ -100,3 +100,10 @@ While UUCP package for Debian 11 (Bullseye) and onwards already have the patch i
     $ apt-get update
     $ apt-get install uucp
 
+## Web interface
+
+   The interface is not yet very mature and needs the following added to "/etc/sudoers":
+
+    $ debian  ALL=(ALL) NOPASSWD: ALL
+    $ www-data ALL=(ALL) NOPASSWD: ALL
+    $ uucp ALL=(ALL) NOPASSWD: ALL
