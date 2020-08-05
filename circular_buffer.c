@@ -20,8 +20,6 @@ static void advance_pointer_n(cbuf_handle_t cbuf, size_t len)
 {
     assert(cbuf);
 
-    fprintf(stderr, "head = %ld\n", cbuf->internal->head);
-
     if(cbuf->internal->full)
     {
         cbuf->internal->tail = (cbuf->internal->tail + len) % cbuf->internal->max;
