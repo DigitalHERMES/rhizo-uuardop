@@ -6,7 +6,7 @@ if (is_dir($dir)){
     while (($file = readdir($dh)) !== false){
         if ($file == '.' || $file == '..') {
         continue;}
-      echo "Arquivo:" . $file . "<br />";
+      echo "Archivo: " . $file . "<br />";
     }
     closedir($dh);
   }

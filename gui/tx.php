@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset='UTF-8'/>
-    <title>Serviços de Comunicação Digital</title>
+    <title>Servicios de comunicación digital</title>
 <link rel='stylesheet' href='style.css'/>
     <script>
       function addbox() {
@@ -24,12 +24,12 @@
       <form action="uucico.php" method="post" enctype="multipart/form-data">
         <div class="bodywt">
           <h1>
-            Especificar Estação de Destino?
+            ¿Especificar la estación de destino?
             <input type="checkbox" name="sendall" onclick="addbox();" id="sendall" />
           </h1>
 
           <h1>
-            <label for="prefix" id="label" style="display: none;"><i class="material-icons">radio</i> Estação de Destino: </label>
+            <label for="prefix" id="label" style="display: none;"><i class="material-icons">radio</i> Estación de destino: </label>
             <select id="prefix" name="prefix" style="display: none;">
               <?php include('get_systems.php') ?>
             </select>
@@ -38,7 +38,7 @@
 
         <div class="body">
           <h1>
-            <input type="submit" value="Iniciar Transmissão" name="submit" />
+            <input type="submit" value="Iniciar la transmisión" name="submit" />
           </h1>
         </div>
         <!--   <input type="image" src="img_submit.gif" alt="submit" width="48" height="48"/> -->
@@ -47,7 +47,7 @@
       </form>
 
 <div class="bodywt">
-      <h1>Fila de Transmissão</h1>
+      <h1>Cola de transmisión</h1>
 
       <textarea rows=12 cols=100 readonly>
 <?php

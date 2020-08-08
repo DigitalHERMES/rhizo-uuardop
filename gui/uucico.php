@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="UTF-8">
-    <title>Serviços de Comunicação Digital</title>
+    <title>Servicios de comunicación digital</title>
     <link rel="stylesheet" href="style.css">
   </head>
 
@@ -10,7 +10,7 @@
     <?php include 'header.php' ?>
 
     <div class="bodywt">
-      <h2>Iniciando Transmissão</h2>
+      <h2>Iniciando la transmisión</h2>
 
 <br />
 <?php
@@ -28,7 +28,7 @@ if (!isset($_POST['sendall']))
     $source = substr ($_POST['myname'], 0,  6);
     if($source == $_POST['prefix'])
     {
-        echo "ERRO: Estação de origem é igual estação de destino! <br />";
+        echo "ERROR: ¡La estación de origen es la misma que la estación de destino! <br />";
         exit;
     }
     else {
@@ -36,7 +36,7 @@ if (!isset($_POST['sendall']))
         $source = shell_exec($cmd);
         if ($source == $_POST['prefix'])
         {
-            echo "ERRO: Estação de origem é igual estação de destino! <br />";
+            echo "ERROR: ¡La estación de origen es la misma que la estación de destino! <br />";
             exit; 
         }
     }
@@ -53,7 +53,7 @@ if (!isset($_POST['sendall']))
 </div>
 
 <div class="body">
-      <a href="view_log.php"><h3>Ver Histórico do Sistema</h3></a>
+      <a href="view_log.php"><h3>Ver el historial del sistema</h3></a>
 </div>
 
 </body>

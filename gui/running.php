@@ -2,8 +2,8 @@
     exec("pgrep -x uuardopd", $piduu);
     exec("pgrep -x ardop", $pidar);
     if(empty($piduu) || empty($pidar)){ 
-        echo "Sistema com Problemas!";
+        echo "¡El sistema está con problemas!";
     } else {
-        echo "Sistema Funcionando!";
+        echo "¡El sistema funciona!";
     }
 ?>

@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="UTF-8">
-<title>Serviços de Comunicação Digital</title>
+<title>Servicios de comunicación digital</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -11,7 +11,7 @@
     <?php include 'header.php' ?>
 
           <div class="bodywt">
-            Resultado da Submissão do Arquivo:
+            Resultado de la carga de archivos:
           </div>
 
 <br />
@@ -33,7 +33,7 @@ $source = substr ($_POST['myname'], 0,  6);
 
 if ($source == $_POST['prefix'])
 {
-    echo "ERRO: Estação de origem é igual estação de destino! <br />";
+    echo "ERROR: ¡La estación de origen es la misma que la estación de destino! <br />";
     exit;
 }
 
@@ -44,7 +44,7 @@ $source = shell_exec($cmd);
 								  
 if ($source == $_POST['prefix'])
 {
-    echo "ERRO: Estação de origem é igual estação de destino! <br />";
+    echo "ERROR: ¡La estación de origen es la misma que la estación de destino! <br />";
     exit; 
 }
 
@@ -89,7 +89,7 @@ if($imageFileType != "jpg" && $imageFileType != "JPG" && $imageFileType != "jpeg
           $file_in_place = 1;
        } else {
           $uploadOk = 0;
-          echo "Erro ao mover o arquivo para pasta temporária. <br />";
+          echo "Error al mover el archivo a la carpeta temporal. <br />";
        }
 
     }     
@@ -108,7 +108,7 @@ if (($_FILES["fileToUpload"]["size"] > 50*1024) && $uploadPic == 1 && $file_in_p
         $file_in_place = 1;
     } else {
         $uploadOk = 0;
-        echo "Erro ao mover o arquivo para pasta temporária. <br />";
+        echo "Error al mover el archivo a la carpeta temporal. <br />";
     }
 
 }
@@ -116,13 +116,13 @@ if (($_FILES["fileToUpload"]["size"] > 50*1024) && $uploadPic == 1 && $file_in_p
 // Check file size of a normal file.
 // limit is 50k!
 if (($_FILES["fileToUpload"]["size"] > 50*1024) && $uploadPic == 0 ) { // 10MB max
-    echo "Arquivo muito grande. Máximo permitido: 51200 bytes, tamanho do arquivo: " . $_FILES["fileToUpload"]["size"] . " bytes.<br />";
+    echo "El archivo es demasiado grande. Máximo permitido: 50 kB, tamaño de archivo: " . $_FILES["fileToUpload"]["size"] . " bytes.<br />";
     $uploadOk = 0;
 }
 
 // Check if $uploadOk is set to 0 by an error
 if ($uploadOk == 0) {
-//    echo "Erro no pré-processamento do arquivo.<br />";
+//    echo "Error al pre-procesar el archivo.<br />";
 // if everything is ok, try to upload file
 } else {
     if ($file_in_place == 0)
@@ -131,7 +131,7 @@ if ($uploadOk == 0) {
            $file_in_place = 1;
         }
         else {
-           echo "Erro ao mover o arquivo para pasta temporária. <br />";
+           echo "Error al mover el archivo a la carpeta temporal. <br />";
            $uploadOk = 0;
         }       
     }
@@ -146,18 +146,18 @@ if ($uploadOk == 0) {
            ob_end_clean();
            unlink($target_file);
            $target_file = $target_file . ".gpg";
-//           echo "Criptografia ativada!<br />";
+//           echo "¡Encriptación activada!<br />";
     }
 
     if ($file_in_place == 1) {
            if (isset($_POST['sendnow']))
            {
                 $command = "uucp -C -d \"" .  $target_file . "\" " . $_POST['prefix'] . "\!\"" . $remote_dir . $source . "/\"";
-                echo "Arquivo <b>".basename($target_file)."</b> adicionado com sucesso e transmissão iniciada.<br />";
+                echo "Archivo <b>".basename($target_file)."</b> añadido con éxito y transmisión iniciada.<br />";
            } else
            {
                 $command = "uucp -r -C -d \"" .  $target_file . "\" " . $_POST['prefix'] . "\!\"" . $remote_dir . $source . "/\"";
-                echo "Arquivo <b>".basename($target_file)."</b> adicionado com sucesso.<br />";
+                echo "Archivo <b>".basename($target_file)."</b> añadido con éxito.<br />";
 
            }
 //           echo "UUCP Command: " . $command . "<br />";
@@ -174,7 +174,7 @@ unlink($target_file);
       </div>
 
 <div class="bodywt">
-      <h1>Fila de Transmissão</h1>
+      <h1>Cola de transmisión</h1>
 
       <textarea rows=12 cols=100 readonly>
 <?php
@@ -189,7 +189,7 @@ unlink($target_file);
 </div>
 
 <div class="body">
-  <a href="tx.php">Transmitir</a>
+  <a href="tx.php">Transmite</a>
 </div>
   </center>
 </body>

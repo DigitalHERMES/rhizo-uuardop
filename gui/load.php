@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset='UTF-8'/>
-    <title>Serviços de Comunicação Digital</title>
+    <title>Servicios de comunicación digital</title>
   <link rel='stylesheet' href='style.css'/> 
     <script>
       function addbox() {
@@ -23,7 +23,7 @@
     <form action="upload.php" method="post" enctype="multipart/form-data">
       <div class="bodywt">
         <i class="material-icons">radio</i>
-        Estação de Destino
+        Estación de destino
         <!-- Colocar rotulos para os sistemas.. -->
         <select id="prefix" name="prefix">
           <?php include('get_systems.php') ?>
@@ -33,20 +33,20 @@
       <div class="body">
         <i class="material-icons">open_in_browser</i>
         Arquivo
-        <input type="file" name="fileToUpload" id="fileToUpload" value="Escolher Arquivo"/>
+        <input type="file" name="fileToUpload" id="fileToUpload" value="Seleccionar el archivo"/>
       </div>
 
       <div class="bodywt">
         <i class="material-icons">enhanced_encryption</i>
-        Proteger com Senha?
+        ¿Proteger con contraseña?
         <input type="checkbox" name="encrypt" onclick="addbox();" id="enc" />
 	<br />
-        <label for="txt" id="label" style="display: none;">Senha: </label>
+        <label for="txt" id="label" style="display: none;">Contraseña: </label>
         <input type="text" name="password" id="txt" style="display: none;" />
 
       </div>
         <div class="body">
-<input type="submit" value="colocar arquivo na fila" name="submit" />
+<input type="submit" value="colocar el archivo en la cola" name="submit" />
         <input type="hidden" id="myname" name="myname" value="<?php include('get_name.php')?>"/>
     </form>
         
@@ -54,7 +54,7 @@
       
 
           <div class="bodywt">
-	    <h3>Fila de Transmissão</h3>
+	    <h3>Cola de transmisión</h3>
             <textarea rows=12 cols=100 readonly>
 <?php
       $command = "uustat -a| cut -f 2,7,8,9 -d \" \" | sed \"s/\/var\/www\/html\/uploads\///\"";
@@ -68,7 +68,8 @@
 	  </div>
 
 	  <div class="bodywt">
-		Os arquivos acima estão na fila para transmissão antes do seu. Deseja cancelar a transmissão desses arquivos?<br />
+		Los archivos anteriores están en la cola para ser transmitidos antes que los suyos. ¿Desea cancelar la transmisión de estos archivos?
+                <br />
 		<form action="erase_queue.php" method="post" enctype="multipart/form-data">
 		  <input type="submit" value="Cancelar" name="cancel" />
 		</form>

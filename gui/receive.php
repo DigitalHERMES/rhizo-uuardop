@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset='UTF-8'/>
-    <title>Serviços de Comunicação Digital</title>
+    <title>Servicios de comunicación digital</title>
     <link rel='stylesheet' href='style.css'/>
   </head>
 
@@ -20,7 +20,7 @@ $files = scandir($dir);
 foreach($files as $key => $value){
     $path = realpath($dir.DIRECTORY_SEPARATOR.$value);
     if(is_dir($path) && $value != "." && $value != "..") {
-        echo "<div class=\"body\">Arquivos de Origem da Estação ".$value."</div><br />";
+        echo "<div class=\"body\">Archivos provenientes de la estación de origen ".$value."</div><br />";
         $files_st = scandir($dir.DIRECTORY_SEPARATOR.$value);
         $class="bodywt";
         foreach($files_st as $key_st => $value_st){
@@ -37,9 +37,9 @@ foreach($files as $key => $value){
                 if ($file_ext=="gpg") {
 		   echo $value_st;
                    echo "<form action=\"decrypt.php\" method=\"post\" enctype=\"multipart/form-data\" style=\"display: inline;\">";
-                   echo "<br />Senha: ";
+                   echo "<br />Contraseña: ";
                    echo "<input type=\"text\" name=\"password\" />";
-                   echo "<input type=\"submit\" value=\"Abrir com Senha\" name=\"submit\" />";
+                   echo "<input type=\"submit\" value=\"Abrir con contraseña\" name=\"submit\" />";
                    echo "<input type=\"hidden\" name=\"path\" value=\"".$path_st."\" />";
                    echo "</form>";
                 }
@@ -61,7 +61,7 @@ if ($class == "bodywt"){
 }
 
 echo "<a href=\"clean_files.php\"><i class=\"material-icons\">cancel</i>
-Limpar Todos Arquivos</a>";
+Borrar todos los archivos</a>";
 
 echo "</div>";
 ?>

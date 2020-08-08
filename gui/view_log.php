@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="UTF-8"/>
-    <title>Serviços de Comunicação Digital</title>
+    <title>Servicios de comunicación digital</title>
     <link rel='stylesheet' href='style.css' />
     <meta http-equiv="Refresh" content="100" />
   </head>
@@ -11,7 +11,7 @@
     <?php include 'header.php' ?>
 
     <div class="bodywt">
-      <h1>Histórico do Sistema</h1>
+      <h1>Historial del sistema</h1>
     </div>
 
     <div class="body">

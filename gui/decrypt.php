@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset='UTF-8'/>
-    <title>Serviços de Comunicação Digital</title>
+    <title>Servicios de comunicación digital</title>
     <link rel='stylesheet' href='style.css'/>
   </head>
   <body>
@@ -33,12 +33,12 @@ if ($return_var == 0){
        $str = substr($outfile, strlen($prefix));
    }
    echo "<div class=\"body\">";
-   echo "Senha correta.<br />";
+   echo "Contraseña correcta.<br />";
    echo "<a href=\"".$str."\">".basename($str)."</a>";
    echo "</div><br />";
 
 } else {
-  echo "<div class=\"body\">Senha incorreta!</div><br />";
+  echo "<div class=\"body\">¡Contraseña incorrecta!</div><br />";
   echo "<br />";
   unlink($outfile);
 }

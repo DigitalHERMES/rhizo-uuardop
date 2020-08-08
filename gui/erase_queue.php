@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset='UTF-8'/>
-    <title>Serviços de Comunicação Digital</title>
+    <title>Servicios de comunicación digital</title>
     <link rel='stylesheet' href='style.css'/>
   </head>
   <body>
@@ -10,7 +10,7 @@
     <?php include 'header.php' ?>
 
       <div class="body">
-        <h1>Arquivos Removidos da Fila de Transmissão
+        <h1>Archivos eliminados de la cola de transmisión
         </h1>
       </div>
 
@@ -37,7 +37,7 @@
 
 ?>
       <div class="body">
-          <a href="load.php"> Carregar arquivos</a>
+          <a href="load.php"> Subir archivos</a>
           
       </div>
       

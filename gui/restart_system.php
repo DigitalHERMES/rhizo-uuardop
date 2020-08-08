@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset='UTF-8'/>
-    <title>Serviços de Comunicação Digital</title>
+    <title>Servicios de comunicación digital</title>
     <link rel='stylesheet' href='style.css'/>
   </head>
   <body>
@@ -11,7 +11,7 @@
 
       <div class="body">
         <h1>
-          Sistema Interno Reiniciado
+          El sistema interno se reinició
         </h1>
       </div>
 

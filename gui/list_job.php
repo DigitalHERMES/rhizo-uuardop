@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset='UTF-8'/>
-    <title>Serviços de Comunicação Digital</title>
+    <title>Servicios de comunicación digital</title>
     <link rel='stylesheet' href='style.css'/>
   </head>
   <body>
@@ -10,7 +10,7 @@
     <?php include 'header.php' ?>
 
     <div class="bodywt">
-      <h1>Fila de Transmissão</h1>
+      <h1>Cola de transmisión</h1>
     </div>
 
     <div class="body">
