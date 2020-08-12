@@ -44,9 +44,9 @@ To compile and install, type:
 
 Port configuration example at "/etc/uucp/port":
 
-    $ port HFP
-    $ type pipe
-    $ command /usr/bin/uuport
+    port HFP
+    type pipe
+    command /usr/bin/uuport
 
 An alternative Port configuration if you use a patched uucp ( for "\Z"
 support, available in "improved-pipe.patch" which was added to uucp debian 
@@ -55,34 +55,34 @@ the callsign of the station to be called to uuardopd with the uucp remote
 station name (allowing a single uuardopd instance to be used for different
 remote station callsigns):
 
-    $ port HFP
-    $ type pipe
-    $ command /usr/bin/uuport -c \Z
+    port HFP
+    type pipe
+    command /usr/bin/uuport -c \Z
 
 Sys protocol example (tested and works fine) at "/etc/uucp/sys":
 
-    $ protocol y
-    $ protocol-parameter y packet-size 512
-    $ protocol-parameter y timeout 540
-    $ chat-timeout 100
+    protocol y
+    protocol-parameter y packet-size 512
+    protocol-parameter y timeout 540
+    chat-timeout 100
 
 Sys configuration example of remote system at "/etc/uucp/sys" (without login prompt):
 
-    $ system remote
-    $ call-login *
-    $ call-password *
-    $ time any
-    $ port HFP
-    $ chat "" \r
+    system remote
+    call-login *
+    call-password *
+    time any
+    port HFP
+    chat "" \r
 
  Sys configuration example of remote system at "/etc/uucp/sys" (with login prompt - should call uuardopd with "-l"):
 
-    $ system remote
-    $ call-login *
-    $ call-password *
-    $ time any
-    $ port HFP
-    $ chat "" \r\c ogin: \L word: \P
+    system remote
+    call-login *
+    call-password *
+    time any
+    port HFP
+    chat "" \r\c ogin: \L word: \P
 
 ### Running uuardopd
 
@@ -104,6 +104,6 @@ While UUCP package for Debian 11 (Bullseye) and onwards already have the patch i
 
    The interface is not yet very mature and needs the following added to "/etc/sudoers":
 
-    $ debian  ALL=(ALL) NOPASSWD: ALL
-    $ www-data ALL=(ALL) NOPASSWD: ALL
-    $ uucp ALL=(ALL) NOPASSWD: ALL
+    debian  ALL=(ALL) NOPASSWD: ALL
+    www-data ALL=(ALL) NOPASSWD: ALL
+    uucp ALL=(ALL) NOPASSWD: ALL
