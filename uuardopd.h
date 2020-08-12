@@ -37,7 +37,7 @@
 #include <stdbool.h>
 #include <pthread.h>
 
-#include "ring_buffer.h"
+#include "circular_buffer.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,6 +47,8 @@ extern "C" {
 
 // 30s
 #define TIMEOUT_DEFAULT 30
+
+#define INTERNAL_BUFFER_SIZE 1048576  // (2 ^ 20)
 
 #define BUFFER_SIZE 4096
 
@@ -83,8 +85,11 @@ typedef struct{
     atomic_int buffer_size;
 
 // uuardopd private buffers
-    struct ring_buffer in_buffer;
-    struct ring_buffer out_buffer;
+    cbuf_handle_t in_buffer;
+    cbuf_handle_t out_buffer;
+//uuport private buffers
+    cbuf_handle_t in_buffer_p;
+    cbuf_handle_t out_buffer_p;
 } rhizo_conn;
 
 #ifdef __cplusplus

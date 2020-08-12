@@ -48,7 +48,7 @@
 #include "uuardopd.h"
 #include "ardop.h"
 #include "shm.h"
-#include "ring_buffer.h"
+#include "circular_buffer.h"
 
 // temporary global variable to enable sockets closure
 rhizo_conn *tmp_conn = NULL;
@@ -69,8 +69,8 @@ void finish(int s){
     }
 
     // clean buffers...
-    ring_buffer_clear (&tmp_conn->in_buffer);
-    ring_buffer_clear (&tmp_conn->out_buffer);
+    circular_buf_reset(tmp_conn->in_buffer);
+    circular_buf_reset(tmp_conn->out_buffer);
 
     tmp_conn->shutdown = true;
 
@@ -91,8 +91,8 @@ void *modem_thread(void *conn)
 
 bool initialize_connector(rhizo_conn *connector){
 
-    ring_buffer_create (&connector->in_buffer, 20, SYSV_SHM_KEY_IB);
-    ring_buffer_create (&connector->out_buffer, 20, SYSV_SHM_KEY_OB);
+    connector->in_buffer = circular_buf_init_shm(INTERNAL_BUFFER_SIZE,  SYSV_SHM_KEY_IB);
+    connector->out_buffer = circular_buf_init_shm(INTERNAL_BUFFER_SIZE, SYSV_SHM_KEY_OB);
 
     connector->connected = false;
     connector->waiting_for_connection = false;
@@ -173,7 +173,14 @@ int main (int argc, char *argv[])
 {
     rhizo_conn *connector;
 
-    connector = create_shm(sizeof(rhizo_conn), SYSV_SHM_KEY_STR);
+    if (shm_is_created(SYSV_SHM_KEY_STR, sizeof(rhizo_conn)))
+    {
+        fprintf(stderr, "Connector SHM is already created!\nDestroying it and creating again.\n");
+        shm_destroy(SYSV_SHM_KEY_STR, sizeof(rhizo_conn));
+    }
+    shm_create(SYSV_SHM_KEY_STR, sizeof(rhizo_conn));
+
+    connector = shm_attach(SYSV_SHM_KEY_STR, sizeof(rhizo_conn));
     tmp_conn = connector;
 
     initialize_connector(connector);

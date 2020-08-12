@@ -47,7 +47,7 @@
 #include "uuardopd.h"
 #include "uuport.h"
 #include "shm.h"
-#include "ring_buffer.h"
+#include "circular_buffer.h"
 
 FILE *log_fd;
 atomic_bool running_read;
@@ -79,7 +79,7 @@ void *read_thread(void *conn)
             timeout_counter = TIMEOUT;
         }
 
-        bytes_to_read = ring_buffer_count_bytes(&connector->out_buffer);
+        bytes_to_read = circular_buf_size(connector->out_buffer_p);
 
         if (bytes_to_read == 0)
         { // we spinlock here
@@ -90,7 +90,7 @@ void *read_thread(void *conn)
         if (bytes_to_read > BUFFER_SIZE)
             bytes_to_read = BUFFER_SIZE;
 
-        read_buffer(&connector->out_buffer, buffer, bytes_to_read);
+        circular_buf_get_range(connector->out_buffer_p, buffer, bytes_to_read);
 
         bytes_written = write(1, buffer, bytes_to_read);
 
@@ -132,7 +132,7 @@ void *write_thread(void *conn)
             continue;
         }
         // workaround to make protocol 'y' work better
-        if (ring_buffer_count_bytes(&connector->in_buffer) > BUFFER_SIZE / 2)
+        if (circular_buf_size(connector->in_buffer_p) > BUFFER_SIZE / 2)
         {
             usleep(100000); // 0.1s
             bytes_to_read = 1; // slow down...
@@ -144,7 +144,7 @@ void *write_thread(void *conn)
 
         bytes_read = read(0, buffer, bytes_to_read);
 
-        fprintf(log_fd, "uuport: %d bytes read from uucico\n", bytes_read);
+        // fprintf(log_fd, "uuport: %d bytes read from uucico\n", bytes_read);
 
         if (bytes_read == -1)
         {
@@ -159,12 +159,12 @@ void *write_thread(void *conn)
             continue;
         }
 
-        while (ring_buffer_count_free_bytes(&connector->in_buffer) < bytes_read)
+        while (circular_buf_free_size(connector->in_buffer_p) < bytes_read)
         {
             fprintf(log_fd, "Buffer full!\n");
             usleep(100000);
         }
-        write_buffer(&connector->in_buffer, buffer, bytes_read);
+        circular_buf_put_range(connector->in_buffer_p, buffer, bytes_read);
     }
 
     running_read = false;
@@ -208,7 +208,7 @@ void finish(int s){
 
 int main (int argc, char *argv[])
 {
-    rhizo_conn *connector = memalign(SHMLBA, sizeof(sizeof(rhizo_conn)));
+    rhizo_conn *connector = NULL;
 
     char log_file[BUFFER_SIZE];
     log_file[0] = 0;
@@ -253,7 +253,12 @@ int main (int argc, char *argv[])
         }
     }
 
-    connect_shm(sizeof(rhizo_conn), connector, SYSV_SHM_KEY_STR);
+    if (shm_is_created(SYSV_SHM_KEY_STR, sizeof(rhizo_conn)) == false)
+    {
+        fprintf(stderr, "Connector SHM not created. Is uuardopd running?\n");
+        return EXIT_FAILURE;
+    }
+    connector = shm_attach(SYSV_SHM_KEY_STR, sizeof(rhizo_conn));
 
     if (connector->shutdown == true)
     {
@@ -261,8 +266,8 @@ int main (int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
-    ring_buffer_connect (&connector->in_buffer, 20, SYSV_SHM_KEY_IB);
-    ring_buffer_connect (&connector->out_buffer, 20, SYSV_SHM_KEY_OB);
+    connector->in_buffer_p = circular_buf_connect_shm(INTERNAL_BUFFER_SIZE, SYSV_SHM_KEY_IB);
+    connector->out_buffer_p = circular_buf_connect_shm(INTERNAL_BUFFER_SIZE, SYSV_SHM_KEY_OB);
 
     if (log_file[0])
     {
