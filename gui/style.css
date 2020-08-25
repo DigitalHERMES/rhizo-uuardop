@@ -1,7 +1,7 @@
 .header {
   padding: 20px;
   text-align: left;
-  background: #1abc9c;
+  background: #f90;
   color: white;
   font-size: 14px;
 }
@@ -9,6 +9,29 @@
 .header h1 {
   font-size: 40px;
  
+}
+
+body {
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: Arial, Helvetica, sans-serif;
+
+
+}
+
+h1 {
+  font-size: 25px;
+  text-align: left;
+}
+
+h2 {
+  font-size: 20px;
+  text-align: left;
+}
+
+h2 a {
+text-decoration: none;
+color: #000;
 }
 
 .results {
@@ -23,7 +46,14 @@
   padding: 20px;
   margin: 0;
   font-size: 20px;
-  background: #ddd;
+  background: #fff;
+  border-top: 3px solid #f60;
+
+}
+
+.body:hover {
+   background: #eee;
+
 }
 
 .bodywt {
@@ -31,7 +61,12 @@
   padding: 20px;
   margin: 0;
   font-size: 20px;
-  background: #ffffff;
+  border-top: 3px solid #f60;
+}
+
+.bodywt:hover {
+  background: #eee;
+
 }
 
 .navbar {
@@ -41,6 +76,17 @@
   position: -webkit-sticky;
   top: 0;
 }
+
+h1 a {
+  text-decoration: none;
+  color: #000;
+}
+
+h1:hover a {
+  color: #f60;
+}
+
+
 
 /* Style the navigation bar links */
 .navbar a {
@@ -125,10 +171,10 @@
 }
 
 .form {
-		margin: 0 0 2em 0;
+    margin: 0 0 2em 0;
                 background-color: #aaa;
                 display: list-item;
-	}
+  }
         
 @font-face {
   font-family: 'Material Icons';
