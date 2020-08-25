@@ -208,7 +208,7 @@ void *uucico_read_thread(void *conn)
             bytes_pipe = 1; // so we block in read() in case of no data to read
 
         // workaround to make protocol 'y' work better
-        while (ring_buffer_count_bytes(&connector->in_buffer) > BUFFER_SIZE/2)
+        while (circular_buf_size(connector->in_buffer) > BUFFER_SIZE/2)
         {
             bytes_pipe = 1; // slow down...
             usleep(100000); // 0.1s
@@ -218,7 +218,9 @@ void *uucico_read_thread(void *conn)
 
         if (num_read > 0)
         {
-            write_buffer(&connector->in_buffer, buffer, num_read);
+            while (circular_buf_free_size(connector->in_buffer) < num_read)
+                usleep(20000);
+            circular_buf_put_range(connector->in_buffer, buffer, num_read);
         }
         if (num_read == 0)
         {
@@ -247,7 +249,7 @@ void *uucico_write_thread(void *conn) {
 
     while (running)
     {
-        bytes_to_read = ring_buffer_count_bytes(&connector->out_buffer);
+        bytes_to_read = circular_buf_size(connector->out_buffer);
         if (bytes_to_read == 0)
         { // we spinlock here
             usleep(100000); // 0.1s
@@ -259,7 +261,7 @@ void *uucico_write_thread(void *conn) {
         if (bytes_to_read > BUFFER_SIZE)
             bytes_to_read = BUFFER_SIZE;
 
-        read_buffer(&connector->out_buffer, buffer, bytes_to_read);
+        circular_buf_get_range(connector->out_buffer, buffer, bytes_to_read);
 
         num_written = write(connector->pipefd1[1], buffer, bytes_to_read);
         if (num_written == 0)

@@ -23,12 +23,25 @@
 #ifndef HAVE_SHM_H__
 #define HAVE_SHM_H__
 
+#include <stdio.h>
+#include <inttypes.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <stdbool.h>
+
 #define SYSV_SHM_KEY_STR 66664 // key for the rhizo_conn struct
 #define SYSV_SHM_KEY_IB 66666 //  in buffer key (key+1 is also used)
 #define SYSV_SHM_KEY_OB 66668 // out buffer key (key+1 is also used)
 
-void *create_shm(size_t size, key_t key);
-void *connect_shm(size_t size, void *address, key_t key);
-bool disconnect_shm(void *address);
+bool shm_is_created(key_t key, size_t size);
+
+// only creates if already not created!
+bool shm_create(key_t key, size_t size);
+
+bool shm_destroy(key_t key, size_t size);
+
+void *shm_attach(key_t key, size_t size);
+
+bool shm_dettach(key_t key, size_t size, void *ptr);
 
 #endif // HAVE_SHM_H__

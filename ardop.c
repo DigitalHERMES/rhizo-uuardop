@@ -58,22 +58,26 @@ void *ardop_data_worker_thread_tx(void *conn)
     while(connector->shutdown == false){
 
         // check if we are connected, otherwise, wait
-        while (connector->connected == false || ring_buffer_count_bytes(&connector->in_buffer) == 0){
+        while (connector->connected == false || circular_buf_size(connector->in_buffer) == 0){
             if (connector->shutdown == true){
                 goto exit_local;
             }
             sleep(1);
         }
 
-        bytes_to_read = ring_buffer_count_bytes(&connector->in_buffer);
+    check_data_again:
+        bytes_to_read = circular_buf_size(connector->in_buffer);
         if (bytes_to_read > BUFFER_SIZE)
             bytes_to_read = BUFFER_SIZE;
-        if (bytes_to_read <= 0)
-            bytes_to_read = 1;
+        if (bytes_to_read == 0)
+        {
+            usleep(50000); // 50ms
+            goto check_data_again;
+        }
 
-        read_buffer(&connector->in_buffer, buffer, bytes_to_read);
+        circular_buf_get_range(connector->in_buffer, buffer, bytes_to_read);
 
-        // fprintf(stderr, "ardop_data_worker_thread_tx: After read buffer\n");
+        fprintf(stderr, "ardop_data_worker_thread_tx: After read buffer\n");
 
         packet_size = bytes_to_read;
 
@@ -180,7 +184,11 @@ void *ardop_data_worker_thread_rx(void *conn)
 
         if (buf_size > 3 && !memcmp("ARQ", buffer,  3)){
             buf_size -= 3;
-            write_buffer(&connector->out_buffer, buffer + 3, buf_size);
+            while (circular_buf_free_size(connector->out_buffer) < buf_size)
+            {
+                usleep(10000); // 10ms
+            }
+            circular_buf_put_range(connector->out_buffer, buffer + 3, buf_size);
             // fprintf(stderr,"Buffer write: %u received.\n", buf_size);
             // fwrite(buffer+3, buf_size, 1, stdout);
         }
@@ -256,8 +264,8 @@ void *ardop_control_worker_thread_rx(void *conn)
                 // fprintf(stderr, "%s -- CMD NOT CONSIDERED!!\n", buffer);
             } else
             if (!memcmp(buffer, "BUFFER", strlen("BUFFER"))){
-                sscanf( (char *) buffer, "BUFFER %u", & connector->buffer_size);
-                fprintf(stderr, "BUFFER: %u\n", connector->buffer_size);
+                sscanf( (char *) buffer, "BUFFER %d", & connector->buffer_size);
+                fprintf(stderr, "BUFFER: %d\n", connector->buffer_size);
 
             } else
                 if (!memcmp(buffer, "INPUTPEAKS", strlen("INPUTPEAKS"))){
@@ -367,8 +375,8 @@ void *ardop_control_worker_thread_tx(void *conn)
             system("killall uuport");
 
             fprintf(stderr, "Connection closed - Cleaning internal buffers.\n");
-            ring_buffer_clear (&connector->in_buffer);
-            ring_buffer_clear (&connector->out_buffer);
+            circular_buf_reset(connector->in_buffer);
+            circular_buf_reset(connector->out_buffer);
 
             while (connector->connected == true)
                 usleep(100000);
@@ -376,8 +384,8 @@ void *ardop_control_worker_thread_tx(void *conn)
             usleep(1200000); // sleep for threads finish their jobs (more than 1s here)
 
             fprintf(stderr, "Connection closed - Cleaning internal buffers 2.\n");
-            ring_buffer_clear (&connector->in_buffer);
-            ring_buffer_clear (&connector->out_buffer);
+            circular_buf_reset(connector->in_buffer);
+            circular_buf_reset(connector->out_buffer);
 
             fprintf(stderr, "Cleaning ardop buffer.\n");
             memset(buffer,0,sizeof(buffer));
@@ -388,7 +396,7 @@ void *ardop_control_worker_thread_tx(void *conn)
         }
 
         if (connector->connected == false &&
-            ring_buffer_count_bytes(&connector->in_buffer) > 0 &&
+            circular_buf_size(connector->in_buffer) > 0 &&
             !connector->waiting_for_connection){
 
             memset(buffer,0,sizeof(buffer));

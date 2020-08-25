@@ -54,96 +54,67 @@
 
 #include "shm.h"
 
-
-void *create_shm(size_t size, key_t key)
+bool shm_is_created(key_t key, size_t size)
 {
-    int shmid;
-    void *address;
+    int shmid = shmget(key, size, 0);
 
-    /*  create the segment 1: */
-    if ((shmid = shmget(key, size, 0666 | IPC_CREAT | IPC_EXCL)) == -1)
+    if (shmid == -1)
     {
-        if (errno != EEXIST)
-        {
-            // fprintf(stderr, "Error creating Shm memory segment.\n");
-            return NULL;
-        }
-
-        // fprintf(stderr, "Shm memory segment already created, attaching.\n");
-
-        if ((shmid = shmget(key, size, 0)) == -1)
-        {
-            // fprintf(stderr, "Error creating attaching to shm memory segment.\n");
-            return NULL;
-        }
-    }
-
-    /* attach to the segment to get a pointer to it: */
-    address = shmat(shmid, (void *)0, 0);
-    if (address == (void *) -1) {
-        // fprintf(stderr, "Error in shmat with shm.\n");
-        return NULL;
-    }
-
-    return address;
-}
-
-void *connect_shm(size_t size, void *address, key_t key)
-{
-    int shmid;
-    void *ret_address;
-
-
-    ret_address = mmap(address, size, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE |  MAP_FIXED,
-                       -1, 0);
-
-    if (ret_address != address){
-        // fprintf(stderr, "Error creating in mmap.\n");
-        return NULL;
-    }
-
-    /*  create the segment 1: */
-    if ((shmid = shmget(key, size, 0666 | IPC_CREAT | IPC_EXCL)) == -1)
-    {
-        if (errno != EEXIST)
-        {
-            // fprintf(stderr, "Error creating Shm memory segment.\n");
-            return NULL;
-        }
-
-        // fprintf(stderr, "Shm memory segment already created, attaching.\n");
-
-        if ((shmid = shmget(key, size, 0)) == -1)
-        {
-            // fprintf(stderr, "Error creating attaching to shm memory segment.\n");
-            return NULL;
-        }
-    }
-
-    /* attach to the segment to get a pointer to it: */
-    ret_address = shmat(shmid, address, SHM_REMAP);
-    if (ret_address == (void *) -1) {
-        // fprintf(stderr, "Error in shmat with shm.\n");
-        return NULL;
-    }
-
-    if (ret_address != address) {
-        // fprintf(stderr, "Error in shmat with shm.\n");
-        return NULL;
-    }
-
-    return address;
-}
-
-
-bool disconnect_shm(void *address)
-{
-
-    /* detach from the segment*/
-    if (shmdt(address) == -1) {
-        // fprintf(stderr, "Error in shmdt shm.\n");
         return false;
     }
+
+    return true;
+}
+
+// check of key is already not created before calling this!
+bool shm_create(key_t key, size_t size)
+{
+    int shmid = shmget(key, size, 0666 | IPC_CREAT | IPC_EXCL);
+
+    if (shmid == -1)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool shm_destroy(key_t key, size_t size)
+{
+    int shmid = shmget(1, size, 0);
+
+    if (shmid == -1)
+    {
+        return false;
+    }
+
+    shmctl(shmid,IPC_RMID,NULL);
+
+    return true;
+}
+
+void *shm_attach(key_t key, size_t size)
+{
+    int shmid = shmget(key, size, 0);
+
+    if (shmid == -1)
+    {
+        return NULL;
+    }
+
+    return shmat(shmid, NULL, 0);
+}
+
+bool shm_dettach(key_t key, size_t size, void *ptr)
+{
+    int shmid = shmget(key, size, 0);
+
+    if (shmid == -1)
+    {
+        return false;
+    }
+
+    shmdt(ptr);
 
     return true;
 }

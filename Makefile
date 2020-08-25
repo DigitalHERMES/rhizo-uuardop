@@ -21,17 +21,16 @@
 
 PREFIX=/usr
 CC=gcc
-CFLAGS=-g -Wall -std=gnu11 -pthread
-
+CFLAGS=-g -Wall -pedantic -std=gnu11 -pthread -fstack-protector
 all: uuardopd uuport
 
 %.o : %.c %.h
 	gcc -c $(CFLAGS) $< -o $@
 
-uuardopd: ardop.o shm.o common.o net.o ring_buffer.o uuardopd.o call_uucico.o
+uuardopd: ardop.o shm.o common.o net.o circular_buffer.o uuardopd.o call_uucico.o
 	$(CC) $(CFLAGS) -o $@ $^
 
-uuport: uuport.o shm.o ring_buffer.o
+uuport: uuport.o shm.o circular_buffer.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 install: uuardopd uuport
