@@ -3,7 +3,6 @@
 
 #include <stdbool.h>
 
-// The definition of our circular buffer structure is hidden from the user
 struct circular_buf_t_aux {
     size_t head;
     size_t tail;

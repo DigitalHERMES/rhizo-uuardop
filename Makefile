@@ -27,7 +27,7 @@ all: uuardopd uuport
 %.o : %.c %.h
 	gcc -c $(CFLAGS) $< -o $@
 
-uuardopd: ardop.o shm.o common.o net.o circular_buffer.o uuardopd.o call_uucico.o
+uuardopd: ardop.o shm.o common.o net.o circular_buffer.o uuardopd.o call_uucico.o serial.o vara.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 uuport: uuport.o shm.o circular_buffer.o
