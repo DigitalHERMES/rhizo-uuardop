@@ -47,6 +47,7 @@
 #include "call_uucico.h"
 #include "uuardopd.h"
 #include "ardop.h"
+#include "vara.h"
 #include "shm.h"
 #include "circular_buffer.h"
 
@@ -84,7 +85,13 @@ void *modem_thread(void *conn)
 {
     rhizo_conn *connector = (rhizo_conn *) conn;
 
-    initialize_modem_ardop(connector);
+    if (!strcmp("vara", connector->modem_type)){
+        initialize_modem_vara(connector);
+    }
+
+    if (!strcmp("ardop", connector->modem_type)){
+        initialize_modem_ardop(connector);
+    }
 
     return NULL;
 }
@@ -96,6 +103,8 @@ bool initialize_connector(rhizo_conn *connector){
 
     connector->connected = false;
     connector->waiting_for_connection = false;
+    connector->serial_keying = false;
+    connector->serial_fd = -1;
     connector->ask_login = false;
     connector->clean_buffers = false; // <-  this also means -> ask for disconnection!
 
@@ -202,19 +211,21 @@ int main (int argc, char *argv[])
         fprintf(stderr, "Usage modes: \n%s -i input_pipe.uucp -o output_pipe.uucp -c callsign -d remote_callsign -a tnc_ip_address -p tcp_base_port [-l]\n", argv[0]);
         fprintf(stderr, "%s -h\n", argv[0]);
         fprintf(stderr, "\nOptions:\n");
+        fprintf(stderr, " -r [ardop,vara]           Choose modem/radio type.\n");
         fprintf(stderr, " -c callsign                        Station Callsign (Eg: PU2HFF).\n");
         fprintf(stderr, " -d remote_callsign           Remote Station Callsign.\n");
         fprintf(stderr, " -a tnc_ip_address            IP address of the TNC,\n");
         fprintf(stderr, " -p tnc_tcp_base_port         TNC's TCP base port of the TNC. ARDOP uses ports tcp_base_port and tcp_base_port+1.\n");
         fprintf(stderr, " -t timeout                 Time to wait before disconnect when idling.\n");
         fprintf(stderr, " -f features                Enable/Disable features. Supported features: ofdm, noofdm (default: ofdm).\n");
+        fprintf(stderr, " -s serial_device           Set the serial device file path for keying the radio (VARA ONLY).\n");
         fprintf(stderr, " -l                         Tell UUCICO to ask login prompt (default: disabled).\n");
         fprintf(stderr, " -h                          Prints this help.\n");
         exit(EXIT_FAILURE);
     }
 
     int opt;
-    while ((opt = getopt(argc, argv, "hlc:d:p:a:t:f:")) != -1)
+    while ((opt = getopt(argc, argv, "hlc:d:p:a:t:f:r:s:")) != -1)
     {
         switch (opt)
         {
@@ -223,6 +234,9 @@ int main (int argc, char *argv[])
             break;
         case 'l':
             connector->ask_login = true;
+            break;
+        case 'r':
+            strcpy(connector->modem_type, optarg);
             break;
         case 'c':
             strcpy(connector->call_sign, optarg);
@@ -238,6 +252,10 @@ int main (int argc, char *argv[])
             break;
         case 'a':
             strcpy(connector->ip_address, optarg);
+            break;
+        case 's':
+            connector->serial_keying = true;
+            strcpy(connector->serial_path, optarg);
             break;
         case 'f':
             if(strstr(optarg, "noofdm"))
