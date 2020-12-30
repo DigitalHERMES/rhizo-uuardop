@@ -1,10 +1,10 @@
 # rhizo-uuardop
-RHIZO-UUARDOP is a set of tools which allow UUCP to use ARDOP as modem. With
-this integration, UUCP is fully functional over HF links using Ardop modem.
+RHIZO-UUARDOP is a set of tools which allow UUCP to use ARDOP or VARA as modem. With
+this integration, UUCP is fully functional over HF links.
 
 Rhizo-uuardop comes with two tools: uuardopd and uuport.
 
-UUARDOPD is the daemon which keeps connected to ARDOP modem and properly
+UUARDOPD is the daemon which keeps connected to ARDOP or VARA modem and properly
  receive calls (calling uucico) and initiate calls (uucico calls thought
  UUPORT connection).
 
@@ -90,7 +90,7 @@ Sys configuration example of remote system at "/etc/uucp/sys" (without login pro
 
 Example of uuardopd invocation:
 
-    $ uuardopd -l -c BB2UIT -d PP2UIT -a 127.0.0.1 -p 8515 -t 60
+    $ uuardopd -l -c BB2UIT -d PP2UIT -a 127.0.0.1 -p 8515 -t 60 -r ardop
 
 ### UUCP with "improved-pipe.patch" for Raspberry OS (32 bits)
 
