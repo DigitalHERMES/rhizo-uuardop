@@ -5,7 +5,7 @@ Requires=ardop.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/uuardopd -a 127.0.0.1 -p 8515 -t 60
+ExecStart=/usr/bin/uuardopd -a 127.0.0.1 -p 8515 -t 60 -r vara -s /dev/ttyUSB0
 ExecStop=/usr/bin/killall -s QUIT uuardopd
 IgnoreSIGPIPE=no
 #StandardOutput=null

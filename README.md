@@ -17,10 +17,12 @@ initiating a call (uucico master mode). Communication between uuport and uuardop
 | --- | --- |
 | -c callsign | Station Callsign (Eg: PU2HFF) |
 | -d remote_callsign | Remote Station Callsign (optional) |
+| -r [ardop,vara] | Choose modem/radio type |
 | -a tnc_ip_address | IP address of the TNC |
 | -p tcp_base_port | TCP base port of the TNC. ARDOP uses ports tcp_base_port and tcp_base_port+1 |
 | -t timeout | Time to wait before disconnect when idling |
-| -f features | Enable/Disable features. Supported features: ofdm, noofdm (default: ofdm).|
+| -f features | Enable/Disable features. Supported features: ofdm, noofdm (default: ofdm) (ARDOP ONLY) |
+| -s serial_device | Set the serial device file path for keying the radio (VARA ONLY) |
 | -l | Tell UUCICO to ask login prompt (default: disabled). |
 | -h | Prints this help |
 
