@@ -77,7 +77,7 @@ void *vara_data_worker_thread_tx(void *conn)
 
         circular_buf_get_range(connector->in_buffer, buffer, bytes_to_read);
 
-        fprintf(stderr, "vara_data_worker_thread_tx: After read buffer, bytes %d\n", bytes_to_read);
+        fprintf(stderr, "vara_data_worker_thread_tx: Read %d for sending to VARA\n", bytes_to_read);
 
         while (connector->buffer_size + bytes_to_read >  MAX_VARA_BUFFER)
             sleep(1);
@@ -89,7 +89,6 @@ void *vara_data_worker_thread_tx(void *conn)
             goto exit_local;
         }
 
-        fprintf(stderr, "vara_data_worker_thread_tx: here 2\n");
         // buffer management hack
         sleep(1);
     }
@@ -118,8 +117,6 @@ void *vara_data_worker_thread_rx(void *conn)
             connector->shutdown = true;
             goto exit_local;
         }
-
-        fprintf(stderr,"Message of size: 1 received.\n");
 
         while (circular_buf_free_size(connector->out_buffer) < 1)
         {
@@ -228,6 +225,8 @@ void *vara_control_worker_thread_tx(void *conn)
 
     memset(buffer,0,sizeof(buffer));
     strcpy(buffer,"BW2300\r");
+    //    strcpy(buffer,"BW500\r");
+    //    strcpy(buffer,"BW2750\r");
     ret &= tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
 
     // check lost tcp connection

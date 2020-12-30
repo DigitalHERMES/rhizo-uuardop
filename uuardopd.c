@@ -201,7 +201,7 @@ int main (int argc, char *argv[])
     // signal (SIGPIPE, pipe_fucked);
     signal(SIGPIPE, SIG_IGN); // ignores SIGPIPE...
 
-    fprintf(stderr, "Rhizomatica's uuardopd version 0.1 by Rafael Diniz -  rafael (AT) rhizomatica (DOT) org\n");
+    fprintf(stderr, "Rhizomatica's uuardopd version 0.2 by Rafael Diniz -  rafael (AT) rhizomatica (DOT) org\n");
     fprintf(stderr, "License: GNU AGPL version 3+\n\n");
 
 
