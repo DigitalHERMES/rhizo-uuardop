@@ -61,6 +61,7 @@ void *vara_data_worker_thread_tx(void *conn)
             if (connector->shutdown == true){
                 goto exit_local;
             }
+            // fprintf(stderr, "vara_data_worker_thread_tx: sleeping\n");
             sleep(1);
         }
 
@@ -76,7 +77,7 @@ void *vara_data_worker_thread_tx(void *conn)
 
         circular_buf_get_range(connector->in_buffer, buffer, bytes_to_read);
 
-        fprintf(stderr, "vara_data_worker_thread_tx: After read buffer\n");
+        fprintf(stderr, "vara_data_worker_thread_tx: After read buffer, bytes %d\n", bytes_to_read);
 
         while (connector->buffer_size + bytes_to_read >  MAX_VARA_BUFFER)
             sleep(1);
@@ -87,6 +88,8 @@ void *vara_data_worker_thread_tx(void *conn)
             connector->shutdown = true;
             goto exit_local;
         }
+
+        fprintf(stderr, "vara_data_worker_thread_tx: here 2\n");
         // buffer management hack
         sleep(1);
     }
@@ -100,7 +103,6 @@ void *vara_data_worker_thread_rx(void *conn)
 {
     rhizo_conn *connector = (rhizo_conn *) conn;
     uint8_t buffer[MAX_VARA_PACKET_SAFE];
-    uint32_t buf_size;
 
     while(connector->shutdown == false){
 
@@ -111,26 +113,19 @@ void *vara_data_worker_thread_rx(void *conn)
             sleep(1);
         }
 
-        buf_size = 0;
-        if (tcp_read(connector->data_socket, (uint8_t *) &buf_size, sizeof(buf_size)) == false)
+        if (tcp_read(connector->data_socket, buffer, 1) == false)
         {
             connector->shutdown = true;
             goto exit_local;
         }
 
-        if (tcp_read(connector->data_socket, buffer, buf_size) == false)
-        {
-            connector->shutdown = true;
-            goto exit_local;
-        }
+        fprintf(stderr,"Message of size: 1 received.\n");
 
-        fprintf(stderr,"Message of size: %u received.\n", buf_size);
-
-        while (circular_buf_free_size(connector->out_buffer) < buf_size)
+        while (circular_buf_free_size(connector->out_buffer) < 1)
         {
-            usleep(10000); // 10ms
+            usleep(100000); // 100ms
         }
-        circular_buf_put_range(connector->out_buffer, buffer, buf_size);
+        circular_buf_put_range(connector->out_buffer, buffer, 1);
 
     }
 
