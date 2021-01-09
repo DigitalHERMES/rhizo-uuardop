@@ -1,5 +1,5 @@
-/* Rhizo-uuardop: Tools to integrate Ardop to UUCP
- * Copyright (C) 2019 Rhizomatica
+/* Rhizo-uuhf: Tools to integrate HF TNCs to UUCP
+ * Copyright (C) 2019-2021 Rhizomatica
  * Author: Rafael Diniz <rafael@riseup.net>
  *
  * This is free software; you can redistribute it and/or modify
@@ -44,6 +44,7 @@
 #include <pthread.h>
 #include <ctype.h>
 
+#include "serial.h"
 #include "call_uucico.h"
 #include "uuardopd.h"
 #include "ardop.h"
@@ -110,6 +111,7 @@ bool initialize_connector(rhizo_conn *connector){
 
     connector->shutdown = false;
 
+    connector->radio_type = RADIO_TYPE_ICOM;
     connector->timeout = TIMEOUT_DEFAULT;
     connector->ofdm_mode = true;
     connector->buffer_size = 0;
@@ -220,12 +222,13 @@ int main (int argc, char *argv[])
         fprintf(stderr, " -f features                Enable/Disable features. Supported features: ofdm, noofdm (default: ofdm).\n");
         fprintf(stderr, " -s serial_device           Set the serial device file path for keying the radio (VARA ONLY).\n");
         fprintf(stderr, " -l                         Tell UUCICO to ask login prompt (default: disabled).\n");
+        fprintf(stderr, " -o [icom,ubitx]             Sets radio type (supported: icom or ubitx)\n");
         fprintf(stderr, " -h                          Prints this help.\n");
         exit(EXIT_FAILURE);
     }
 
     int opt;
-    while ((opt = getopt(argc, argv, "hlc:d:p:a:t:f:r:s:")) != -1)
+    while ((opt = getopt(argc, argv, "hlc:d:p:a:t:f:o:r:s:")) != -1)
     {
         switch (opt)
         {
@@ -237,6 +240,11 @@ int main (int argc, char *argv[])
             break;
         case 'r':
             strcpy(connector->modem_type, optarg);
+            break;
+        case 'o':
+            // icom is the default...
+            if (!strcmp(optarg,"ubitx"))
+                connector->radio_type = RADIO_TYPE_UBITX;
             break;
         case 'c':
             strcpy(connector->call_sign, optarg);

@@ -120,34 +120,67 @@ void set_fixed_baudrate(char *baudname, int target_fd)
     set_serial_baudrate(br, target_fd);
 }
 
-void key_on(int serial_fd)
+void key_on(int serial_fd, int radio_type)
 {
-    int key_on_size = 8;
-    uint8_t key_on[64];
-    key_on[0] = 0xFE;
-    key_on[1] = 0xFE;
-    key_on[2] = 0x88;
-    key_on[3] = 0xE0;
-    key_on[4] = 0x1C;
-    key_on[5] = 0x00;
-    key_on[6] = 0x01;
-    key_on[7] = 0xFD;
 
-    write(serial_fd, key_on, key_on_size);
+    if (radio_type == RADIO_TYPE_ICOM)
+    {
+        int key_on_size = 8;
+        uint8_t key_on[8];
+        key_on[0] = 0xFE;
+        key_on[1] = 0xFE;
+        key_on[2] = 0x88;
+        key_on[3] = 0xE0;
+        key_on[4] = 0x1C;
+        key_on[5] = 0x00;
+        key_on[6] = 0x01;
+        key_on[7] = 0xFD;
+
+        write(serial_fd, key_on, key_on_size);
+    }
+
+    if (radio_type == RADIO_TYPE_UBITX)
+    {
+        int key_on_size = 5;
+        uint8_t key_on[5];
+        key_on[0] = 0x00;
+        key_on[1] = 0x00;
+        key_on[2] = 0x00;
+        key_on[3] = 0x00;
+        key_on[4] = 0x08;
+        write(serial_fd, key_on, key_on_size);
+    }
+
 }
 
-void key_off(int serial_fd)
+void key_off(int serial_fd, int radio_type)
 {
-    int key_off_size = 8;
-    uint8_t key_off[64];
-    key_off[0] = 0xFE;
-    key_off[1] = 0xFE;
-    key_off[2] = 0x88;
-    key_off[3] = 0xE0;
-    key_off[4] = 0x1C;
-    key_off[5] = 0x00;
-    key_off[6] = 0x00;
-    key_off[7] = 0xFD;
+    if (radio_type == RADIO_TYPE_ICOM)
+    {
+        int key_off_size = 8;
+        uint8_t key_off[8];
+        key_off[0] = 0xFE;
+        key_off[1] = 0xFE;
+        key_off[2] = 0x88;
+        key_off[3] = 0xE0;
+        key_off[4] = 0x1C;
+        key_off[5] = 0x00;
+        key_off[6] = 0x00;
+        key_off[7] = 0xFD;
 
-    write(serial_fd, key_off, key_off_size);
+        write(serial_fd, key_off, key_off_size);
+    }
+
+    if (radio_type == RADIO_TYPE_UBITX)
+    {
+        int key_on_size = 5;
+        uint8_t key_on[5];
+        key_on[0] = 0x00;
+        key_on[1] = 0x00;
+        key_on[2] = 0x00;
+        key_on[3] = 0x00;
+        key_on[4] = 0x88;
+        write(serial_fd, key_on, key_on_size);
+    }
+
 }

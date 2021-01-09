@@ -1,5 +1,5 @@
-/* Rhizo-uuardop: Tools to integrate Ardop to UUCP
- * Copyright (C) 2019 Rhizomatica
+/* Rhizo-uuhf: Tools to integrate HF TNCs to UUCP
+ * Copyright (C) 2019-2021 Rhizomatica
  * Author: Rafael Diniz <rafael@riseup.net>
  *
  * This is free software; you can redistribute it and/or modify
@@ -59,6 +59,7 @@ typedef struct{
     int tcp_base_port;
     char ip_address[32];
     char modem_type[32];
+    int radio_type;
     bool serial_keying;
     int serial_fd;
     char serial_path[1024];

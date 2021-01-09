@@ -188,10 +188,10 @@ void *vara_control_worker_thread_rx(void *conn)
                 {
                     if (!memcmp(buffer, "PTT ON", strlen("PTT ON")))
                     {
-                        key_on(connector->serial_fd);
+                        key_on(connector->serial_fd, connector->radio_type);
                     }
                     if (!memcmp(buffer, "PTT OFF", strlen("PTT OFF"))){
-                        key_off(connector->serial_fd);
+                        key_off(connector->serial_fd, connector->radio_type);
                     }
                 }
                 fprintf(stderr, "%s\n", buffer);
@@ -225,8 +225,8 @@ void *vara_control_worker_thread_tx(void *conn)
 
     memset(buffer,0,sizeof(buffer));
     strcpy(buffer,"BW2300\r");
-    //    strcpy(buffer,"BW500\r");
-    //    strcpy(buffer,"BW2750\r");
+    // strcpy(buffer,"BW500\r");
+    // strcpy(buffer,"BW2750\r");
     ret &= tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
 
     // check lost tcp connection
@@ -332,7 +332,11 @@ bool initialize_modem_vara(rhizo_conn *connector)
             return false;
         }
 
-        set_fixed_baudrate("19200", connector->serial_fd);
+        if (connector->radio_type == RADIO_TYPE_ICOM)
+            set_fixed_baudrate("19200", connector->serial_fd);
+
+        if (connector->radio_type == RADIO_TYPE_UBITX)
+            set_fixed_baudrate("38400", connector->serial_fd);
     }
 
     // we start our control thread
