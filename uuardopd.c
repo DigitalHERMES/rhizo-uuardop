@@ -114,6 +114,7 @@ bool initialize_connector(rhizo_conn *connector){
     connector->radio_type = RADIO_TYPE_ICOM;
     connector->timeout = TIMEOUT_DEFAULT;
     connector->ofdm_mode = true;
+    connector->vara_mode = 2300;
     connector->buffer_size = 0;
     connector->session_counter_read = 0;
     connector->session_counter_write = 0;
@@ -210,20 +211,21 @@ int main (int argc, char *argv[])
     if (argc < 7)
     {
     manual:
-        fprintf(stderr, "Usage modes: \n%s -i input_pipe.uucp -o output_pipe.uucp -c callsign -d remote_callsign -a tnc_ip_address -p tcp_base_port [-l]\n", argv[0]);
+        fprintf(stderr, "Usage modes: \n%s -r vara -a tnc_ip_address -p tcp_base_port -s /dev/ttyUSB0 [-l]\n", argv[0]);
         fprintf(stderr, "%s -h\n", argv[0]);
         fprintf(stderr, "\nOptions:\n");
         fprintf(stderr, " -r [ardop,vara]           Choose modem/radio type.\n");
-        fprintf(stderr, " -c callsign                        Station Callsign (Eg: PU2HFF).\n");
-        fprintf(stderr, " -d remote_callsign           Remote Station Callsign.\n");
-        fprintf(stderr, " -a tnc_ip_address            IP address of the TNC,\n");
-        fprintf(stderr, " -p tnc_tcp_base_port         TNC's TCP base port of the TNC. ARDOP uses ports tcp_base_port and tcp_base_port+1.\n");
-        fprintf(stderr, " -t timeout                 Time to wait before disconnect when idling.\n");
-        fprintf(stderr, " -f features                Enable/Disable features. Supported features: ofdm, noofdm (default: ofdm).\n");
-        fprintf(stderr, " -s serial_device           Set the serial device file path for keying the radio (VARA ONLY).\n");
-        fprintf(stderr, " -l                         Tell UUCICO to ask login prompt (default: disabled).\n");
-        fprintf(stderr, " -o [icom,ubitx]             Sets radio type (supported: icom or ubitx)\n");
-        fprintf(stderr, " -h                          Prints this help.\n");
+        fprintf(stderr, " -c callsign               Station Callsign (Eg: PU2HFF).\n");
+        fprintf(stderr, " -d remote_callsign        Remote Station Callsign.\n");
+        fprintf(stderr, " -a tnc_ip_address         IP address of the TNC,\n");
+        fprintf(stderr, " -p tnc_tcp_base_port      TNC's TCP base port of the TNC. ARDOP uses ports tcp_base_port and tcp_base_port+1.\n");
+        fprintf(stderr, " -t timeout                Time to wait before disconnect when idling.\n");
+        fprintf(stderr, " -f features               Supported features ARDOP: ofdm, noofdm (default: ofdm).\n");
+        fprintf(stderr, " -f features               Supported features VARA, BW mode: 500, 2300 or 2750 (default: 2300).\n");
+        fprintf(stderr, " -s serial_device          Set the serial device file path for keying the radio (VARA ONLY).\n");
+        fprintf(stderr, " -l                        Tell UUCICO to ask login prompt (default: disabled).\n");
+        fprintf(stderr, " -o [icom,ubitx]           Sets radio type (supported: icom or ubitx)\n");
+        fprintf(stderr, " -h                        Prints this help.\n");
         exit(EXIT_FAILURE);
     }
 
@@ -268,8 +270,10 @@ int main (int argc, char *argv[])
         case 'f':
             if(strstr(optarg, "noofdm"))
                 connector->ofdm_mode = false;
-            else
+            else if(strstr(optarg, "ofdm"))
                 connector->ofdm_mode = true;
+            else
+                connector->vara_mode = atoi(optarg);
             break;
         default:
             goto manual;
@@ -286,13 +290,20 @@ int main (int argc, char *argv[])
     if (connector->remote_call_sign[0] == 0)
     {
         strcpy(connector->remote_call_sign, "CQ");
-        fprintf(stderr, "Destination call-sign not set. Using CQ.\n");
+//        fprintf(stderr, "Destination call-sign not set. Using CQ.\n");
     }
 
-    // test if ardop is connected to a functioning serial device...
+    if (!strcmp("vara", connector->modem_type) &&
+        (connector->vara_mode != 500)  &&
+        (connector->vara_mode != 2300) &&
+        (connector->vara_mode != 2750) )
+    {
+        fprintf(stderr, "Wrong Vara Mode BW %u.\n", connector->vara_mode);
+        goto manual;
+    }
+
 
     pthread_t tid;
-
     pthread_create(&tid, NULL, uucico_thread, (void *) connector);
 
     modem_thread((void *) connector);

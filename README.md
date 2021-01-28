@@ -22,8 +22,11 @@ initiating a call (uucico master mode). Communication between uuport and uuardop
 | -p tcp_base_port | TCP base port of the TNC. ARDOP uses ports tcp_base_port and tcp_base_port+1 |
 | -t timeout | Time to wait before disconnect when idling |
 | -f features | Enable/Disable features. Supported features: ofdm, noofdm (default: ofdm) (ARDOP ONLY) |
+| -f features | Supported features ARDOP: ofdm, noofdm (default: ofdm) |
+| -f features | Supported features VARA, BW mode: 500, 2300 or 2750 (default: 2300) |
 | -s serial_device | Set the serial device file path for keying the radio (VARA ONLY) |
-| -l | Tell UUCICO to ask login prompt (default: disabled). |
+| -l | Tell UUCICO to ask login prompt (default: disabled) |
+| -o [icom,ubitx] | Sets radio type (supported: icom or ubitx) |
 | -h | Prints this help |
 
 
@@ -66,7 +69,7 @@ Sys protocol example (tested and works fine) at "/etc/uucp/sys":
     protocol y
     protocol-parameter y packet-size 512
     protocol-parameter y timeout 540
-    chat-timeout 100
+    chat-timeout 200
 
 Sys configuration example of remote system at "/etc/uucp/sys" (without login prompt):
 
@@ -88,9 +91,10 @@ Sys configuration example of remote system at "/etc/uucp/sys" (without login pro
 
 ### Running uuardopd
 
-Example of uuardopd invocation:
+Examples of uuardopd invocation:
 
-    $ uuardopd -l -c BB2UIT -d PP2UIT -a 127.0.0.1 -p 8515 -t 60 -r ardop
+    $ uuardopd -a 127.0.0.1 -c PU2BBB -p 8515 -t 60 -r ardop
+    $ uuardopd -a 127.0.0.1 -p 8300 -r vara -o icom -s /dev/ttyUSB0 -f 2750
 
 ### UUCP with "improved-pipe.patch" for Raspberry OS (32 bits)
 
@@ -104,7 +108,8 @@ While UUCP package for Debian 11 (Bullseye) and onwards already have the patch i
 
 ## Web interface
 
-   The interface is not yet very mature and needs the following added to "/etc/sudoers":
+   The current interface is a prototype, a new version is on its way. This
+   one needs the following added to "/etc/sudoers":
 
     debian  ALL=(ALL) NOPASSWD: ALL
     www-data ALL=(ALL) NOPASSWD: ALL

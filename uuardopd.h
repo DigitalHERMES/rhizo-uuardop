@@ -64,6 +64,7 @@ typedef struct{
     int serial_fd;
     char serial_path[1024];
     bool ofdm_mode;
+    uint16_t vara_mode;
     bool ask_login;
     int timeout;
     int data_socket;

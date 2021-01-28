@@ -36,25 +36,25 @@ uuport: uuport.o shm.o circular_buffer.o
 install: uuardopd uuport
 	install uuardopd $(PREFIX)/bin
 	install uuport $(PREFIX)/bin
-	install initscripts/uuardopd.service /etc/systemd/system
-	install scripts/compress_image.sh $(PREFIX)/bin
-	install scripts/get_nodename.sh $(PREFIX)/bin
-	install scripts/get_systems.sh $(PREFIX)/bin
-	install scripts/kill_job.sh $(PREFIX)/bin
-	install scripts/encrypt.sh $(PREFIX)/bin
-	install scripts/decrypt.sh $(PREFIX)/bin
-	install scripts/restart_system.sh $(PREFIX)/bin
-	install scripts/disable_monitor.sh $(PREFIX)/bin
-	install scripts/enable_monitor.sh $(PREFIX)/bin
-	install scripts/enable_monitor.sh $(PREFIX)/bin
-	install scripts/clean_files.sh $(PREFIX)/bin
-	install scripts/alias.sh $(PREFIX)/bin
-	install -m 777 -o www-data -g www-data -d /var/www/html/arquivos
-	install -m 777 -o www-data -g www-data -d /var/www/html/uploads
-	install -o www-data -g www-data gui/*.php /var/www/html
-	install -o www-data -g www-data gui/*.css /var/www/html
-	install -o www-data -g www-data -d /var/www/html/iconfont
-	install -o www-data -g www-data gui/iconfont/* /var/www/html/iconfont
+#	install initscripts/uuardopd.service /etc/systemd/system
+#	install scripts/compress_image.sh $(PREFIX)/bin
+#	install scripts/get_nodename.sh $(PREFIX)/bin
+#	install scripts/get_systems.sh $(PREFIX)/bin
+#	install scripts/kill_job.sh $(PREFIX)/bin
+#	install scripts/encrypt.sh $(PREFIX)/bin
+#	install scripts/decrypt.sh $(PREFIX)/bin
+#	install scripts/restart_system.sh $(PREFIX)/bin
+#	install scripts/disable_monitor.sh $(PREFIX)/bin
+#	install scripts/enable_monitor.sh $(PREFIX)/bin
+#	install scripts/enable_monitor.sh $(PREFIX)/bin
+#	install scripts/clean_files.sh $(PREFIX)/bin
+#	install scripts/alias.sh $(PREFIX)/bin
+#	install -m 777 -o www-data -g www-data -d /var/www/html/arquivos
+#	install -m 777 -o www-data -g www-data -d /var/www/html/uploads
+#	install -o www-data -g www-data gui/*.php /var/www/html
+#	install -o www-data -g www-data gui/*.css /var/www/html
+#	install -o www-data -g www-data -d /var/www/html/iconfont
+#	install -o www-data -g www-data gui/iconfont/* /var/www/html/iconfont
 
 doc:
 	doxygen doxyfile

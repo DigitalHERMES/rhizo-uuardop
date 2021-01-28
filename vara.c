@@ -224,7 +224,8 @@ void *vara_control_worker_thread_tx(void *conn)
     ret &= tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
 
     memset(buffer,0,sizeof(buffer));
-    strcpy(buffer,"BW2300\r");
+    sprintf(buffer,"BW%u\r", connector->vara_mode);
+    // strcpy(buffer,"BW2300\r");
     // strcpy(buffer,"BW500\r");
     // strcpy(buffer,"BW2750\r");
     ret &= tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));

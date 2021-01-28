@@ -173,14 +173,14 @@ void key_off(int serial_fd, int radio_type)
 
     if (radio_type == RADIO_TYPE_UBITX)
     {
-        int key_on_size = 5;
-        uint8_t key_on[5];
-        key_on[0] = 0x00;
-        key_on[1] = 0x00;
-        key_on[2] = 0x00;
-        key_on[3] = 0x00;
-        key_on[4] = 0x88;
-        write(serial_fd, key_on, key_on_size);
+        int key_off_size = 5;
+        uint8_t key_off[5];
+        key_off[0] = 0x00;
+        key_off[1] = 0x00;
+        key_off[2] = 0x00;
+        key_off[3] = 0x00;
+        key_off[4] = 0x88;
+        write(serial_fd, key_off, key_off_size);
     }
 
 }
