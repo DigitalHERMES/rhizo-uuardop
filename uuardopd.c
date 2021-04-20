@@ -55,6 +55,9 @@
 // temporary global variable to enable sockets closure
 rhizo_conn *tmp_conn = NULL;
 
+// radio shm connector made easy...
+controller_conn *radio_conn = NULL;
+
 void finish(int s){
     fprintf(stderr, "\nExiting...\n");
 
@@ -111,7 +114,7 @@ bool initialize_connector(rhizo_conn *connector){
 
     connector->shutdown = false;
 
-    connector->radio_type = RADIO_TYPE_ICOM;
+    connector->radio_type = RADIO_TYPE_SHM;
     connector->timeout = TIMEOUT_DEFAULT;
     connector->ofdm_mode = true;
     connector->vara_mode = 2300;
@@ -183,7 +186,7 @@ got_callsign:
 
 int main (int argc, char *argv[])
 {
-    rhizo_conn *connector;
+    rhizo_conn *connector = NULL;
 
     if (shm_is_created(SYSV_SHM_KEY_STR, sizeof(rhizo_conn)))
     {
@@ -224,7 +227,7 @@ int main (int argc, char *argv[])
         fprintf(stderr, " -f features               Supported features VARA, BW mode: 500, 2300 or 2750 (default: 2300).\n");
         fprintf(stderr, " -s serial_device          Set the serial device file path for keying the radio (VARA ONLY).\n");
         fprintf(stderr, " -l                        Tell UUCICO to ask login prompt (default: disabled).\n");
-        fprintf(stderr, " -o [icom,ubitx]           Sets radio type (supported: icom or ubitx)\n");
+        fprintf(stderr, " -o [icom,ubitx,shm]           Sets radio type (supported: icom, ubitx or shm)\n");
         fprintf(stderr, " -h                        Prints this help.\n");
         exit(EXIT_FAILURE);
     }
@@ -244,9 +247,12 @@ int main (int argc, char *argv[])
             strcpy(connector->modem_type, optarg);
             break;
         case 'o':
-            // icom is the default...
+            if (!strcmp(optarg,"icom"))
+                connector->radio_type = RADIO_TYPE_ICOM;
             if (!strcmp(optarg,"ubitx"))
                 connector->radio_type = RADIO_TYPE_UBITX;
+            if (!strcmp(optarg,"shm"))
+                connector->radio_type = RADIO_TYPE_SHM;
             break;
         case 'c':
             strcpy(connector->call_sign, optarg);
@@ -302,6 +308,17 @@ int main (int argc, char *argv[])
         goto manual;
     }
 
+    controller_conn *shm_radio_connector = NULL;
+    if (connector->radio_type == RADIO_TYPE_SHM)
+    {
+        if (shm_is_created(SYSV_SHM_CONTROLLER_KEY_STR, sizeof(controller_conn)) == false)
+        {
+            fprintf(stderr, "SHM Radio Connector SHM not created. Is ubitx_controller running?\n");
+            return EXIT_FAILURE;
+        }
+        shm_radio_connector = shm_attach(SYSV_SHM_CONTROLLER_KEY_STR, sizeof(controller_conn));
+        radio_conn = shm_radio_connector;
+    }
 
     pthread_t tid;
     pthread_create(&tid, NULL, uucico_thread, (void *) connector);

@@ -33,8 +33,12 @@
 #include <errno.h>
 #include <threads.h>
 #include <stdint.h>
+#include <pthread.h>
 
+#include "uuardopd.h"
 #include "serial.h"
+
+extern controller_conn *radio_conn;
 
 struct baudrate {
     char       *name;
@@ -151,6 +155,15 @@ void key_on(int serial_fd, int radio_type)
         write(serial_fd, key_on, key_on_size);
     }
 
+    if (radio_type == RADIO_TYPE_SHM)
+    {
+        pthread_mutex_lock(&radio_conn->ptt_mutex);
+        radio_conn->service_command[0] = radio_conn->service_command[1] = radio_conn->service_command[2] = radio_conn->service_command[3] = 0x00;
+        radio_conn->service_command[4] = 0x08;
+        pthread_cond_signal(&radio_conn->ptt_condition);
+        pthread_mutex_unlock(&radio_conn->ptt_mutex);
+    }
+
 }
 
 void key_off(int serial_fd, int radio_type)
@@ -181,6 +194,15 @@ void key_off(int serial_fd, int radio_type)
         key_off[3] = 0x00;
         key_off[4] = 0x88;
         write(serial_fd, key_off, key_off_size);
+    }
+
+    if (radio_type == RADIO_TYPE_SHM)
+    {
+        pthread_mutex_lock(&radio_conn->ptt_mutex);
+        radio_conn->service_command[0] = radio_conn->service_command[1] = radio_conn->service_command[2] = radio_conn->service_command[3] = 0x00;
+        radio_conn->service_command[4] = 0x88;
+        pthread_cond_signal(&radio_conn->ptt_condition);
+        pthread_mutex_unlock(&radio_conn->ptt_mutex);
     }
 
 }
