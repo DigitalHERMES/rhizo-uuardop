@@ -184,7 +184,7 @@ void *vara_control_worker_thread_rx(void *conn)
                 fprintf(stderr, "BUFFER: %d\n", connector->buffer_size);
             } else
             {
-                if (connector->serial_keying == true)
+                if (connector->serial_keying == true || connector->radio_type == RADIO_TYPE_SHM)
                 {
                     if (!memcmp(buffer, "PTT ON", strlen("PTT ON")))
                     {
