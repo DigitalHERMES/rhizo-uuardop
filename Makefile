@@ -36,7 +36,7 @@ uuport: uuport.o shm.o circular_buffer.o
 install: uuardopd uuport
 	install uuardopd $(PREFIX)/bin
 	install uuport $(PREFIX)/bin
-#	install initscripts/uuardopd.service /etc/systemd/system
+	install initscripts/uuardopd.service /etc/systemd/system
 #	install scripts/compress_image.sh $(PREFIX)/bin
 #	install scripts/get_nodename.sh $(PREFIX)/bin
 #	install scripts/get_systems.sh $(PREFIX)/bin
