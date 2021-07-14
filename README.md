@@ -20,13 +20,13 @@ initiating a call (uucico master mode). Communication between uuport and uuardop
 | -r [ardop,vara] | Choose modem/radio type |
 | -a tnc_ip_address | IP address of the TNC |
 | -p tcp_base_port | TCP base port of the TNC. ARDOP uses ports tcp_base_port and tcp_base_port+1 |
-| -t timeout | Time to wait before disconnect when idling |
-| -f features | Enable/Disable features. Supported features: ofdm, noofdm (default: ofdm) (ARDOP ONLY) |
-| -f features | Supported features ARDOP: ofdm, noofdm (default: ofdm) |
-| -f features | Supported features VARA, BW mode: 500, 2300 or 2750 (default: 2300) |
+| -t timeout | Time to wait before disconnect when idling (ARDOP ONLY) |
+| -f features | Enable/Disable features. |
+|  | Supported features ARDOP: ofdm, noofdm (default: ofdm) |
+|  | Supported features VARA, BW mode: 500, 2300 or 2750 (default: 2300) |
 | -s serial_device | Set the serial device file path for keying the radio (VARA ONLY) |
 | -l | Tell UUCICO to ask login prompt (default: disabled) |
-| -o [icom,ubitx] | Sets radio type (supported: icom or ubitx) |
+| -o [icom,ubitx,shm] | Sets radio type (supported: icom, ubitx or shm). |
 | -h | Prints this help |
 
 
