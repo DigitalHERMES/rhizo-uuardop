@@ -5,7 +5,7 @@ Requires=vnc.service ubitx.service
 
 [Service]
 Type=exec
-ExecStart=/usr/bin/uuardopd -a 127.0.0.1 -p 8515 -r vara -o shm
+ExecStart=/usr/bin/uuardopd -a 127.0.0.1 -p 8300 -r vara -o shm
 KillSignal=SIGTERM
 IgnoreSIGPIPE=no
 StandardOutput=syslog
