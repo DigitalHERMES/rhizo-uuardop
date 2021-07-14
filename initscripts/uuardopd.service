@@ -1,19 +1,17 @@
 [Unit]
 Description=UUARDOPD daemon
-After=ardop.service
-Requires=ardop.service
+After=vara.service
+Requires=vara.service
 
 [Service]
-Type=simple
-ExecStart=/usr/bin/uuardopd -a 127.0.0.1 -p 8515 -t 60 -r vara -s /dev/ttyUSB0
-ExecStop=/usr/bin/killall -s QUIT uuardopd
+Type=exec
+ExecStart=/usr/bin/uuardopd -a 127.0.0.1 -p 8515 -r vara -o shm
+ExecStop=/usr/bin/killall -s SIGTERM uuardopd
 IgnoreSIGPIPE=no
-#StandardOutput=null
-#StandardError=null
 StandardOutput=syslog
 StandardError=syslog
-#Restart=always
-#TimeoutSec=30
+Restart=always
+TimeoutSec=3
 ExecStartPre=/bin/sleep 1
 
 [Install]
