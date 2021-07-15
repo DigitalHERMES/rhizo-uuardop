@@ -19,7 +19,7 @@
 #
 
 
-PREFIX=/usr
+prefix=/usr
 CC=gcc
 CFLAGS=-g -Wall -pedantic -std=gnu11 -pthread -fstack-protector
 all: uuardopd uuport
@@ -34,21 +34,21 @@ uuport: uuport.o shm.o circular_buffer.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 install: uuardopd uuport
-	install uuardopd $(PREFIX)/bin
-	install uuport $(PREFIX)/bin
-	install initscripts/uuardopd.service /etc/systemd/system
-#	install scripts/compress_image.sh $(PREFIX)/bin
-#	install scripts/get_nodename.sh $(PREFIX)/bin
-#	install scripts/get_systems.sh $(PREFIX)/bin
-#	install scripts/kill_job.sh $(PREFIX)/bin
-#	install scripts/encrypt.sh $(PREFIX)/bin
-#	install scripts/decrypt.sh $(PREFIX)/bin
-#	install scripts/restart_system.sh $(PREFIX)/bin
-#	install scripts/disable_monitor.sh $(PREFIX)/bin
-#	install scripts/enable_monitor.sh $(PREFIX)/bin
-#	install scripts/enable_monitor.sh $(PREFIX)/bin
-#	install scripts/clean_files.sh $(PREFIX)/bin
-#	install scripts/alias.sh $(PREFIX)/bin
+	install -D uuardopd $(DESTDIR)$(prefix)/bin/uuardopd
+	install -D uuport $(DESTDIR)$(prefix)/bin/uuport
+	install -m 644 -D initscripts/uuardopd.service $(DESTDIR)/etc/systemd/system/uuardopd.service
+#	install scripts/compress_image.sh $(prefix)/bin
+#	install scripts/get_nodename.sh $(prefix)/bin
+#	install scripts/get_systems.sh $(prefix)/bin
+#	install scripts/kill_job.sh $(prefix)/bin
+#	install scripts/encrypt.sh $(prefix)/bin
+#	install scripts/decrypt.sh $(prefix)/bin
+#	install scripts/restart_system.sh $(prefix)/bin
+#	install scripts/disable_monitor.sh $(prefix)/bin
+#	install scripts/enable_monitor.sh $(prefix)/bin
+#	install scripts/enable_monitor.sh $(prefix)/bin
+#	install scripts/clean_files.sh $(prefix)/bin
+#	install scripts/alias.sh $(prefix)/bin
 #	install -m 777 -o www-data -g www-data -d /var/www/html/arquivos
 #	install -m 777 -o www-data -g www-data -d /var/www/html/uploads
 #	install -o www-data -g www-data gui/*.php /var/www/html
