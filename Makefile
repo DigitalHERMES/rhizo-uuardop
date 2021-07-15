@@ -1,5 +1,5 @@
-# Rhizo-uuardop: UUCP <-> Ardop tools
-# Copyright (C) 2019 Rhizomatica
+# Rhizo-uuardop: UUCP <-> HF tools
+# Copyright (C) 2019-2021 Rhizomatica
 # Author: Rafael Diniz <rafael@riseup.net>
 #
 # This is free software; you can redistribute it and/or modify
@@ -33,6 +33,8 @@ uuardopd: ardop.o shm.o common.o net.o circular_buffer.o uuardopd.o call_uucico.
 uuport: uuport.o shm.o circular_buffer.o
 	$(CC) $(CFLAGS) -o $@ $^
 
+
+.PHONY: clean install doc
 install: uuardopd uuport
 	install -D uuardopd $(DESTDIR)$(prefix)/bin/uuardopd
 	install -D uuport $(DESTDIR)$(prefix)/bin/uuport
