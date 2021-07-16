@@ -4,30 +4,66 @@
 MAX_SIZE=${MAX_SIZE:=51200} # 50kB file size limit
 QUALITY=75 # initial start quality to try...
 
-TEMPFILE=/tmp/temp-$$.jpg
+# IMAGE_FORMAT=${IMAGE_FORMAT:=heic} # avif, heic, jpg or vvc
 
-
-if [ $# -lt 1 ]; then
-  echo "Usage: $0 image_filename.jpg"
-  echo "Usage: $0 image_filename.{png,gif,...} output.jpg"
+if [ $# -lt 2 ]; then
+#  echo "Usage: $0 image_filename.jpg"
+  echo "Usage: $0 image_filename.{png,gif,...} output.{jpg,avif,heic,vvc}"
   exit 1
 fi
 
-# while [[ stat -c ${1} ]]
-# echo $(stat -c%s "${1}")
-cp -f "${1}" ${TEMPFILE}
+input_file=${1}
+output_file=${2}
 
-while [ "$(stat -c%s "${TEMPFILE}")" -gt "$MAX_SIZE" ] && [ "$QUALITY" -gt "5" ]; do
-#  echo $(stat -c%s "${TEMPFILE}")
-  convert -resize "840x840>" "${1}" pnm:- | /opt/mozjpeg/bin/cjpeg -quality ${QUALITY} > ${TEMPFILE}
-  QUALITY=$((QUALITY-10))
-#  echo ${QUALITY}
-done;
+IMAGE_FORMAT="${output_file##*.}"
 
-if [ $# -eq 1 ]; then
-  mv ${TEMPFILE} "${1}"
+
+
+TEMPFILE=/tmp/temp-$$.${IMAGE_FORMAT}
+
+echo "Original file size = $(stat -c%s "${input_file}")"
+
+# while [[ stat -c ${input_file} ]]
+# echo $(stat -c%s "${input_file}")
+cp -f "${input_file}" ${TEMPFILE}
+
+
+if [ ${IMAGE_FORMAT} = "avif" ]; then
+
+  while [ "$(stat -c%s "${TEMPFILE}")" -gt "$MAX_SIZE" ] && [ "$QUALITY" -gt "5" ]; do
+    convert -resize "840x840>"  "${input_file}" -quality ${QUALITY} ${TEMPFILE}
+    QUALITY=$((QUALITY-10))
+  done;
+
+elif [ ${IMAGE_FORMAT} = "jpg" ]; then
+
+  while [ "$(stat -c%s "${TEMPFILE}")" -gt "$MAX_SIZE" ] && [ "$QUALITY" -gt "5" ]; do
+    convert -resize "840x840>" "${input_file}" pnm:- | /opt/mozjpeg/bin/cjpeg -quality ${QUALITY} > ${TEMPFILE}
+    QUALITY=$((QUALITY-10))
+  done;
+
+elif [ ${IMAGE_FORMAT} = "heic" ]; then
+
+  while [ "$(stat -c%s "${TEMPFILE}")" -gt "$MAX_SIZE" ] && [ "$QUALITY" -gt "5" ]; do
+    convert -resize "840x840>"  "${input_file}" -quality ${QUALITY} ${TEMPFILE}
+    QUALITY=$((QUALITY-10))
+  done;
+
+else
+  echo "Unsupported extension: ${output_file##*.}"
+  exit
 fi
 
+# in place
+#if [ $# -eq 1 ]; then
+#  mv ${TEMPFILE} "${input_file}"
+#fi
+
+echo "Final file size: $(stat -c%s "${TEMPFILE}")"
+echo "Quality level: ${QUALITY}"
+
+
+# with output file specified
 if [ $# -eq 2 ]; then
-  mv ${TEMPFILE} "${2}"
+  mv ${TEMPFILE} "${output_file}"
 fi
