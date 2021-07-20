@@ -4,7 +4,10 @@
 MAX_SIZE=${MAX_SIZE:=51200} # 50kB file size limit
 QUALITY=75 # initial start quality to try...
 
-# IMAGE_FORMAT=${IMAGE_FORMAT:=heic} # avif, heic, jpg or vvc
+# vvc and evc  are the state of the art, no integration to userlad
+# avif and heic are already implemented and integrated to userland
+# jpg is the legacy format
+# IMAGE_FORMAT=${IMAGE_FORMAT:=heic} 
 
 if [ $# -lt 2 ]; then
 #  echo "Usage: $0 image_filename.jpg"
@@ -27,8 +30,25 @@ echo "Original file size = $(stat -c%s "${input_file}")"
 # echo $(stat -c%s "${input_file}")
 cp -f "${input_file}" ${TEMPFILE}
 
+if [ ${IMAGE_FORMAT} = "evc" ]; then
 
-if [ ${IMAGE_FORMAT} = "avif" ]; then
+  while [ "$(stat -c%s "${TEMPFILE}")" -gt "$MAX_SIZE" ] && [ "$QUALITY" -gt "5" ]; do
+    # convert -resize "840x840>" "${input_file}" pnm:- | /opt/mozjpeg/bin/cjpeg -quality ${QUALITY} > ${TEMPFILE}
+    echo "TODO: EVC - convert to yuv then encode"
+    QUALITY=$((QUALITY-10))
+  done;
+
+elif
+
+if [ ${IMAGE_FORMAT} = "vvc" ]; then
+
+  while [ "$(stat -c%s "${TEMPFILE}")" -gt "$MAX_SIZE" ] && [ "$QUALITY" -gt "5" ]; do
+    # convert -resize "840x840>" "${input_file}" pnm:- | /opt/mozjpeg/bin/cjpeg -quality ${QUALITY} > ${TEMPFILE}
+    echo "TODO: VVC - convert to yuv then encode"
+    QUALITY=$((QUALITY-10))
+  done;
+
+elif [ ${IMAGE_FORMAT} = "avif" ]; then
 
   while [ "$(stat -c%s "${TEMPFILE}")" -gt "$MAX_SIZE" ] && [ "$QUALITY" -gt "5" ]; do
     convert -resize "840x840>"  "${input_file}" -quality ${QUALITY} ${TEMPFILE}
