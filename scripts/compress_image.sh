@@ -48,12 +48,9 @@ elif [ ${IMAGE_FORMAT} = "vvc" ]; then
     # use -debug all to get the size!
     resolution=$(convert-im6 -debug all -resize "840x840>" ${input_file} -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV} 2>&1 | grep -i Heap|  sed -n 2p |  rev | cut -f2 -d " " | rev)
     echo $resolution
-    $(VVCENC) -i ${TEMPFILEYUV} -s $resolution -c yuv420 -b 10000 -r 1 -o  ${TEMPFILE}
-    exit 0
+    $(VVCENC) -i ${TEMPFILEYUV} -qpa 1 -t 2 -r 1 -b 80000 -s $resolution --preset slow -c yuv420 -o  ${TEMPFILE}
     #
     #    ffmpeg -i DRONE_DJI_0008.JPG -c:v rawvideo -pixel_format yuv420p -vf scale=-1:840  output_720x480p.yuv
-    
-    echo "TODO: VVC - convert to yuv then encode"
     QUALITY=$((QUALITY-10))
  # done;
 
