@@ -4,7 +4,10 @@
 MAX_SIZE=${MAX_SIZE:=51200} # 50kB file size limit
 QUALITY=75 # initial start quality to try...
 
-VVCENC=/usr/bin/vvcencapp
+VVC_ENC=${VVC_ENC:=/root/vvenc/install/bin/vvencapp}
+TARGET_SIZE=${TARGET_SIZE:=80000} # 10kB == 80000 bits
+
+echo ${VVC_ENC}
 
 # vvc and evc  are the state of the art, no integration to userlad
 # avif and heic are already implemented and integrated to userland
@@ -34,25 +37,19 @@ echo "Original file size = $(stat -c%s "${input_file}")"
 cp -f "${input_file}" ${TEMPFILE}
 
 if [ ${IMAGE_FORMAT} = "evc" ]; then
- 
-  while [ "$(stat -c%s "${TEMPFILE}")" -gt "$MAX_SIZE" ] && [ "$QUALITY" -gt "5" ]; do
-    # convert -resize "840x840>" "${input_file}" pnm:- | /opt/mozjpeg/bin/cjpeg -quality ${QUALITY} > ${TEMPFILE}
-    echo "TODO: EVC - convert to yuv then encode"
-    QUALITY=$((QUALITY-10))
-  done;
+
+    echo NOT IMPLEMENTED
   
 elif [ ${IMAGE_FORMAT} = "vvc" ]; then
 
-#  while [ "$(stat -c%s "${TEMPFILE}")" -gt "$MAX_SIZE" ] && [ "$QUALITY" -gt "5" ]; do
-    # convert -resize "840x840>" "${input_file}" pnm:- | /opt/mozjpeg/bin/cjpeg -quality ${QUALITY} > ${TEMPFILE}
-    # use -debug all to get the size!
     resolution=$(convert-im6 -debug all -resize "840x840>" ${input_file} -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV} 2>&1 | grep -i Heap|  sed -n 2p |  rev | cut -f2 -d " " | rev)
     echo $resolution
-    $(VVCENC) -i ${TEMPFILEYUV} -qpa 1 -t 2 -r 1 -b 80000 -s $resolution --preset slow -c yuv420 -o  ${TEMPFILE}
+    #    ${VVC_ENC} -i ${TEMPFILEYUV} --qpa 1 -t 2 -r 1 -b 80000 -s $resolution --preset slow -c yuv420 -o  ${TEMPFILE}
+    ${VVC_ENC} -i ${TEMPFILEYUV} --qpa 1 -t 2 -r 1 -b ${TARGET_SIZE} -s ${resolution} --preset medium -c yuv420 -o  ${TEMPFILE}
+    rm -f ${TEMPFILEYUV}
     #
     #    ffmpeg -i DRONE_DJI_0008.JPG -c:v rawvideo -pixel_format yuv420p -vf scale=-1:840  output_720x480p.yuv
-    QUALITY=$((QUALITY-10))
- # done;
+    
 
 elif [ ${IMAGE_FORMAT} = "avif" ]; then
 
