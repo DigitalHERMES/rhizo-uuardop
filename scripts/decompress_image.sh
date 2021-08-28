@@ -8,6 +8,7 @@ if [ $# -lt 2 ]; then
 fi
 
 VVC_DEC=${VVC_DEC:=/root/vvdec/install/bin/vvdecapp}
+CJPEG=/opt/mozjpeg/bin/cjpeg
 
 input_file=${1}
 output_file=${2}
@@ -24,7 +25,10 @@ if [ ${IMAGE_FORMAT} = "vvc" ]; then
     echo ${resolution}
     ffmpeg -pix_fmt yuv420p10le -s ${resolution} -y -i ${TEMPFILEYUV} -pix_fmt yuv420p ${TEMPFILEYUV2}
 
-    convert-im6 -size ${resolution} -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV2} -quality 89 ${output_file}
+#    ${CJPEG} 
+#    convert-im6 -size ${resolution} -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV2} -quality 89 ${output_file}
+    convert-im6 -size ${resolution} -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV2} TGA:- |  ${CJPEG} -quality 95 -outfile ${output_file} -targa
+
 
     rm -f ${TEMPFILEYUV}
     rm -f ${TEMPFILEYUV2}

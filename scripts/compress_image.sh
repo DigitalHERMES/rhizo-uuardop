@@ -2,9 +2,10 @@
 # uso:
 # compress_image.sh arquivo_para_comprimir.jpg
 MAX_SIZE=${MAX_SIZE:=51200} # 50kB file size limit
-QUALITY=75 # initial start quality to try...
+QUALITY=75 # initial start quality to try for jpeg
 
 VVC_ENC=${VVC_ENC:=/root/vvenc/install/bin/vvencapp}
+# reduce...
 TARGET_SIZE=${TARGET_SIZE:=80000} # 10kB == 80000 bits
 
 echo ${VVC_ENC}
@@ -45,7 +46,8 @@ elif [ ${IMAGE_FORMAT} = "vvc" ]; then
     resolution=$(convert-im6 -debug all -resize "840x840>" ${input_file} -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV} 2>&1 | grep -i Heap|  sed -n 2p |  rev | cut -f2 -d " " | rev)
     echo $resolution
     #    ${VVC_ENC} -i ${TEMPFILEYUV} --qpa 1 -t 2 -r 1 -b 80000 -s $resolution --preset slow -c yuv420 -o  ${TEMPFILE}
-    ${VVC_ENC} -i ${TEMPFILEYUV} --qpa 1 -t 2 -r 1 -b ${TARGET_SIZE} -s ${resolution} --preset medium -c yuv420 -o  ${TEMPFILE}
+# use the expert app and 8-bit 
+   ${VVC_ENC} -i ${TEMPFILEYUV} --qpa 1 -t 2 -r 1 -b ${TARGET_SIZE} -s ${resolution} --preset medium -c yuv420 -o  ${TEMPFILE}
     rm -f ${TEMPFILEYUV}
     #
     #    ffmpeg -i DRONE_DJI_0008.JPG -c:v rawvideo -pixel_format yuv420p -vf scale=-1:840  output_720x480p.yuv
