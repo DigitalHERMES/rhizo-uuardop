@@ -17,20 +17,25 @@ TARGET_SIZE=${TARGET_SIZE:=80000} # 10kB == 80000 bits
 # logic for qp-based bitrate control
 MAX_SIZE=$((${TARGET_SIZE} / 8)) # 50kB file size limit
 
-echo ${VVC_ENC}
+#echo ${VVC_ENC}
 
 # vvc and evc  are the state of the art, no integration to userlad
 # avif and heic are already implemented and integrated to userland
 # jpg is the legacy format
 # IMAGE_FORMAT=${IMAGE_FORMAT:=heic}
 
-if [ $# -lt 2 ]; then
-  echo "Usage: $0 image_filename.{png,gif,...} [output.{jpg,avif,heic,vvc}]"
-  exit 1
-fi
+#if [ $# -lt 2 ]; then
+#  echo "Usage: $0 image_filename.{png,gif,...} [output.{jpg,avif,heic,vvc}]"
+#  exit 1
+#fi
 
-input_file=${1}
-output_file=${2}
+input_file=${input_file:=${1}}
+output_file=${output_file:=${2}}
+
+#echo arg1 $1
+#echo arg2 $2
+
+echo $CWD
 
 IMAGE_FORMAT="${output_file##*.}"
 
@@ -49,10 +54,11 @@ if [ ${IMAGE_FORMAT} = "evc" ]; then
     echo NOT IMPLEMENTED
 elif [ ${IMAGE_FORMAT} = "vvc" ]; then
 
-    resolution=$(convert-im6 -debug all -resize "840x840>" ${input_file} -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV} 2>&1 | grep -i Heap|  sed -n 2p |  rev | cut -f2 -d " " | rev)
-    echo $resolution
+    resolution=$(convert-im6 -debug all -resize "840x840>" ${input_file} -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV} 2>&1 | grep -i "Heap " | cut -d " " -f 7 | sed -n 5p)
+    # echo res $resolution
     #    ${VVC_ENC} -i ${TEMPFILEYUV} --qpa 1 -t 2 -r 1 -b 80000 -s $resolution --preset slow -c yuv420 -o  ${TEMPFILE}
-# use the expert app and 8-bit 
+    # use the expert app and 8-bit
+    echo ${VVC_ENC} -i ${TEMPFILEYUV} --qpa 1 -t 2 -r 1 -b ${TARGET_SIZE} -s ${resolution} --preset medium -c yuv420 -o  ${TEMPFILE}
    ${VVC_ENC} -i ${TEMPFILEYUV} --qpa 1 -t 2 -r 1 -b ${TARGET_SIZE} -s ${resolution} --preset medium -c yuv420 -o  ${TEMPFILE}
     rm -f ${TEMPFILEYUV}
     #
