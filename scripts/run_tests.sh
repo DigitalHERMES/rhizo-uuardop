@@ -26,4 +26,16 @@ for i in *; do
 
 done
 
+cd ${ENCODED_DIR}
+
 # decompress data
+for i in *; do
+
+    no_extension=${i%.*}
+    
+#    input_file=\"${i}\"
+#    output_file=\"${ENCODED_DIR}/${no_extension}.${CODEC}\"
+#    echo compress ${COMPRESS_IMAGE} ${input_file} ${output_file}
+    eval ${DECOMPRESS_IMAGE} \"${i}\" \"${RECONSTRUCTED_DIR}/${no_extension}.jpg\"
+
+done
