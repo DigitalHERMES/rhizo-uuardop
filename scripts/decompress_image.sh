@@ -8,7 +8,7 @@ if [ $# -lt 2 ]; then
 fi
 
 VVC_DEC=${VVC_DEC:=/root/vvdec/install/bin/vvdecapp}
-CJPEG=/opt/mozjpeg/bin/cjpeg
+CJPEG_ENC=${CJPEG:=/opt/mozjpeg/bin/cjpeg}
 
 input_file=${1}
 output_file=${2}
@@ -27,7 +27,7 @@ if [ ${IMAGE_FORMAT} = "vvc" ]; then
 
 #    ${CJPEG} 
 #    convert-im6 -size ${resolution} -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV2} -quality 89 ${output_file}
-    convert-im6 -size ${resolution} -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV2} TGA:- |  ${CJPEG} -quality 95 -outfile ${output_file} -targa
+    convert-im6 -size ${resolution} -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV2} pnm:- | ${CJPEG_ENC} -quality 95 -outfile ${output_file}
 
 
     rm -f ${TEMPFILEYUV}
