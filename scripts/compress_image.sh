@@ -2,7 +2,6 @@
 # uso:
 # compress_image.sh image_filename.{png,gif,...} [output.{jpg,avif,heic,vvc}]
 
-
 ## env vars:
 # VVC_ENC: vvc enc binary
 # TARGET SIZE: target size
@@ -11,6 +10,7 @@
 QUALITY=75 # initial start quality to try for jpeg
 
 VVC_ENC=${VVC_ENC:=/root/vvenc/install/bin/vvencapp}
+EVC_ENC=${EVC_ENC:=/root/xeve/build/bin/xeve_app}
 # reduce...
 TARGET_SIZE=${TARGET_SIZE:=80000} # 10kB == 80000 bits
 
@@ -44,7 +44,13 @@ echo "Original file size = $(stat -c%s "${input_file}")"
 cp -f "${input_file}" ${TEMPFILE}
 
 if [ ${IMAGE_FORMAT} = "evc" ]; then
-    echo NOT IMPLEMENTED
+    resolution=$(convert-im6 -debug all -resize "840x840>" "${input_file}" -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV} 2>&1 | grep -i "Heap " | cut -d " " -f 7 | sed -n 5p)
+    width=$(echo -n ${resolution} | cut -f 1 -d x)
+    height=$(echo -n ${resolution} | cut -f 2 -d x)
+
+    ${EVC_ENC} -w ${width} -h ${height} -z 1 -m 2 --profile main --preset medium --bitrate $(( ${TARGET_SIZE} / 1000 ))  -i ${TEMPFILEYUV} -o  ${TEMPFILE}
+    rm -f ${TEMPFILEYUV}
+
 elif [ ${IMAGE_FORMAT} = "vvc" ]; then
 
     resolution=$(convert-im6 -debug all -resize "840x840>" "${input_file}" -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV} 2>&1 | grep -i "Heap " | cut -d " " -f 7 | sed -n 5p)
