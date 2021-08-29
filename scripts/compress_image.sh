@@ -48,11 +48,22 @@ if [ ${IMAGE_FORMAT} = "evc" ]; then
     width=$(echo -n ${resolution} | cut -f 1 -d x)
     height=$(echo -n ${resolution} | cut -f 2 -d x)
 
+    # ugly workaround for evc
+    width=$(( (${width} / 8) * 8 ))
+    height=$(( (${height} / 8) * 8 ))
+    resolution=${width}x${height}
+
+    rm -f ${TEMPFILEYUV}
+
+    convert-im6 -resize "${resolution}!" "${input_file}" -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV}
+
+
     ${EVC_ENC} -w ${width} -h ${height} -z 1 -m 2 --profile main --preset medium --bitrate $(( ${TARGET_SIZE} / 1000 ))  -i ${TEMPFILEYUV} -o  ${TEMPFILE}
     rm -f ${TEMPFILEYUV}
 
 elif [ ${IMAGE_FORMAT} = "vvc" ]; then
 
+    #    ffmpeg -i ${input_file} -c:v rawvideo -pixel_format yuv420p -vf scale=-1:840  output_720x480p.yuv
     resolution=$(convert-im6 -debug all -resize "840x840>" "${input_file}" -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV} 2>&1 | grep -i "Heap " | cut -d " " -f 7 | sed -n 5p)
     width=$(echo -n ${resolution} | cut -f 1 -d x)
     height=$(echo -n ${resolution} | cut -f 2 -d x)
@@ -72,8 +83,8 @@ elif [ ${IMAGE_FORMAT} = "vvc" ]; then
     echo ${VVC_ENC} -i ${TEMPFILEYUV} --qpa 1 -t 2 -r 1 -b ${TARGET_SIZE} -s ${resolution} --preset medium -c yuv420 -o  ${TEMPFILE}
    ${VVC_ENC} -i ${TEMPFILEYUV} --qpa 1 -t 2 -r 1 -b ${TARGET_SIZE} -s ${resolution} --preset medium -c yuv420 -o  ${TEMPFILE}
     rm -f ${TEMPFILEYUV}
-    #
-    #    ffmpeg -i DRONE_DJI_0008.JPG -c:v rawvideo -pixel_format yuv420p -vf scale=-1:840  output_720x480p.yuv
+
+
 
 elif [ ${IMAGE_FORMAT} = "avif" ]; then
 

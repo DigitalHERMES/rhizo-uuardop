@@ -8,6 +8,7 @@ if [ $# -lt 2 ]; then
 fi
 
 VVC_DEC=${VVC_DEC:=/root/vvdec/install/bin/vvdecapp}
+EVC_DEC=${EVC_DEC:=/root/xevd/build/bin/xevd_app}
 CJPEG_ENC=${CJPEG:=/opt/mozjpeg/bin/cjpeg}
 
 input_file=${1}
@@ -33,4 +34,7 @@ if [ ${IMAGE_FORMAT} = "vvc" ]; then
     rm -f ${TEMPFILEYUV}
     rm -f ${TEMPFILEYUV2}
 
+elif [ ${IMAGE_FORMAT} = "evc" ]; then
+
+  echo IMPLEMENT
 fi
