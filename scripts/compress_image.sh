@@ -58,7 +58,9 @@ if [ ${IMAGE_FORMAT} = "evc" ]; then
     convert-im6 -resize "${resolution}!" "${input_file}" -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV}
 
 
+    echo ${EVC_ENC} -w ${width} -h ${height} -z 1 -m 2 --profile main --preset medium --bitrate $(( ${TARGET_SIZE} / 1000 ))  -i ${TEMPFILEYUV} -o  ${TEMPFILE}
     ${EVC_ENC} -w ${width} -h ${height} -z 1 -m 2 --profile main --preset medium --bitrate $(( ${TARGET_SIZE} / 1000 ))  -i ${TEMPFILEYUV} -o  ${TEMPFILE}
+
     rm -f ${TEMPFILEYUV}
 
 elif [ ${IMAGE_FORMAT} = "vvc" ]; then
