@@ -21,13 +21,13 @@ TEMPFILEYUV2=/tmp/temp-$$-2.yuv
 if [ ${IMAGE_FORMAT} = "vvc" ]; then
 
 
-    resolution=$(${VVC_DEC} -t 2 -b ${input_file} -o ${TEMPFILEYUV} | grep SizeInfo | cut -d " " -f 4)
-    echo ${resolution}
+    resolution=$(${VVC_DEC} -t 2 -b "${input_file}" -o ${TEMPFILEYUV} | grep SizeInfo | cut -d " " -f 4)
+    #    echo ${resolution}
     ffmpeg -pix_fmt yuv420p10le -s ${resolution} -y -i ${TEMPFILEYUV} -pix_fmt yuv420p ${TEMPFILEYUV2}
 
 #    ${CJPEG} 
-#    convert-im6 -size ${resolution} -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV2} -quality 89 ${output_file}
-    convert-im6 -size ${resolution} -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV2} pnm:- | ${CJPEG_ENC} -quality 95 -outfile ${output_file}
+#    convert-im6 -size ${resolution} -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV2} -quality 89 $"{output_file}"
+    convert-im6 -size ${resolution} -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV2} pnm:- | ${CJPEG_ENC} -quality 95 -outfile "${output_file}"
 
 
     rm -f ${TEMPFILEYUV}
