@@ -54,7 +54,7 @@ if [ ${IMAGE_FORMAT} = "evc" ]; then
     echo NOT IMPLEMENTED
 elif [ ${IMAGE_FORMAT} = "vvc" ]; then
 
-    resolution=$(convert-im6 -debug all -resize "840x840>" ${input_file} -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV} 2>&1 | grep -i "Heap " | cut -d " " -f 7 | sed -n 5p)
+    resolution=$(convert-im6 -debug all -resize "840x840>" "${input_file}" -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV} 2>&1 | grep -i "Heap " | cut -d " " -f 7 | sed -n 5p)
     # echo res $resolution
     #    ${VVC_ENC} -i ${TEMPFILEYUV} --qpa 1 -t 2 -r 1 -b 80000 -s $resolution --preset slow -c yuv420 -o  ${TEMPFILE}
     # use the expert app and 8-bit
