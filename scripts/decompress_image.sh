@@ -36,5 +36,9 @@ if [ ${IMAGE_FORMAT} = "vvc" ]; then
 
 elif [ ${IMAGE_FORMAT} = "evc" ]; then
 
-  echo IMPLEMENT
+  resolution=$(${EVC_DEC} -i "${input_file}" -o ${TEMPFILEYUV} | grep Resolution| cut -f 2 -d = |  tr -d '[:space:]')
+
+  convert-im6 -size ${resolution} -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV} pnm:- | ${CJPEG_ENC} -quality 95 -outfile "${output_file}"
+
+  rm -f ${TEMPFILEYUV}
 fi
