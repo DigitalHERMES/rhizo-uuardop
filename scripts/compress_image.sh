@@ -24,22 +24,15 @@ MAX_SIZE=$((${TARGET_SIZE} / 8)) # 50kB file size limit
 # jpg is the legacy format
 # IMAGE_FORMAT=${IMAGE_FORMAT:=heic}
 
-#if [ $# -lt 2 ]; then
-#  echo "Usage: $0 image_filename.{png,gif,...} [output.{jpg,avif,heic,vvc}]"
-#  exit 1
-#fi
+if [ $# -lt 2 ]; then
+  echo "Usage: $0 image_filename.{png,gif,...} [output.{jpg,avif,heic,vvc}]"
+  exit 1
+fi
 
 input_file=${input_file:=${1}}
 output_file=${output_file:=${2}}
 
-#echo arg1 $1
-#echo arg2 $2
-
-echo $CWD
-
 IMAGE_FORMAT="${output_file##*.}"
-
-
 
 TEMPFILE=/tmp/temp-$$.${IMAGE_FORMAT}
 TEMPFILEYUV=/tmp/temp-$$.yuv
