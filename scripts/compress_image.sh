@@ -58,9 +58,14 @@ elif [ ${IMAGE_FORMAT} = "vvc" ]; then
     width=$(echo -n ${resolution} | cut -f 1 -d x)
     height=$(echo -n ${resolution} | cut -f 2 -d x)
 
+    # ugly workaround for vvc
     width=$(( (${width} / 4) * 4 ))
     height=$(( (${height} / 4) * 4 ))
     resolution=${width}x${height}
+
+    rm -f ${TEMPFILEYUV}
+
+    convert-im6 -resize "${resolution}" "${input_file}" -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV}
 
     # echo res $resolution
     #    ${VVC_ENC} -i ${TEMPFILEYUV} --qpa 1 -t 2 -r 1 -b 80000 -s $resolution --preset slow -c yuv420 -o  ${TEMPFILE}
