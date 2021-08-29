@@ -2,9 +2,9 @@
 
 CODEC=vvc
 
-SOURCE_DIR=/root/content/images
-ENCODED_DIR=/root/content/encoded-vvc
-RECONSTRUCTED_DIR=/root/content/reconstructed-vvc
+SOURCE_DIR=/home/hermes/content/images
+ENCODED_DIR=/home/hermes/content/encoded-vvc
+RECONSTRUCTED_DIR=/home/hermes/content/reconstructed-vvc
 
 COMPRESS_IMAGE=/home/hermes/rhizo-uuardop/scripts/compress_image.sh
 DECOMPRESS_IMAGE=/home/hermes/rhizo-uuardop/scripts/decompress_image.sh
