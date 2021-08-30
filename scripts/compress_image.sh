@@ -84,8 +84,8 @@ elif [ ${IMAGE_FORMAT} = "vvc" ]; then
     # echo res $resolution
     #    ${VVC_ENC} -i ${TEMPFILEYUV} --qpa 1 -t 2 -r 1 -b 80000 -s $resolution --preset slow -c yuv420 -o  ${TEMPFILE}
     # use the expert app and 8-bit
-    echo ${VVC_ENC} -i ${TEMPFILEYUV} --qpa 1 -t 2 -r 1 -b ${TARGET_SIZE} -s ${resolution} --preset medium -c yuv420 -o  ${TEMPFILE}
-   ${VVC_ENC} -i ${TEMPFILEYUV} --qpa 1 -t 2 -r 1 -b ${TARGET_SIZE} -s ${resolution} --preset medium -c yuv420 -o  ${TEMPFILE}
+    echo ${VVC_ENC} -i ${TEMPFILEYUV} --profile main_10_still_picture --qpa 1 -t 2 -r 1 -b ${TARGET_SIZE} -s ${resolution} --preset medium -c yuv420 -o  ${TEMPFILE}
+   ${VVC_ENC} -i ${TEMPFILEYUV} --profile main_10_still_picture --qpa 1 -t 2 -r 1 -b ${TARGET_SIZE} -s ${resolution} --preset medium -c yuv420 -o  ${TEMPFILE}
     rm -f ${TEMPFILEYUV}
 
 
