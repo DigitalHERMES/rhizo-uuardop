@@ -87,9 +87,10 @@ elif [ ${IMAGE_FORMAT} = "vvc" ]; then
 
     ${VVC_ENC} -i ${TEMPFILEYUV} --profile main_10_still_picture --qpa 1 -t 2 -r 1 --qp ${VVC_QP} -s ${resolution} --preset medium -c yuv420 -o  ${TEMPFILE}
 
-    while [ "$(stat -c%s "${TEMPFILE}")" -gt "$MAX_SIZE" ] && [ "$VVC_QP" -lt "64" ]; do
-      ${VVC_ENC} -i ${TEMPFILEYUV} --profile main_10_still_picture --qpa 1 -t 2 -r 1 --qp ${VVC_QP} -s ${resolution} --preset medium -c yuv420 -o  ${TEMPFILE}
+    while [ "$(stat -c%s "${TEMPFILE}")" -gt "$MAX_SIZE" ] && [ "$VVC_QP" -lt "61" ]; do
       VVC_QP=$((VVC_QP+3))
+      ${VVC_ENC} -i ${TEMPFILEYUV} --profile main_10_still_picture --qpa 1 -t 2 -r 1 --qp ${VVC_QP} -s ${resolution} --preset medium -c yuv420 -o  ${TEMPFILE}
+
     done;
 
     rm -f ${TEMPFILEYUV}
