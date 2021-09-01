@@ -6,6 +6,7 @@
 # VVC_ENC: vvc enc binary
 # TARGET SIZE: target size
 
+VVC_QP=39
 
 QUALITY=75 # initial start quality to try for jpeg
 
@@ -17,7 +18,7 @@ AV1_ENC=${AV1_ENC:=/root/aom/build2/aomenc}
 TARGET_SIZE=${TARGET_SIZE:=80000} # 10kB == 80000 bits
 
 # logic for qp-based bitrate control
-MAX_SIZE=$((${TARGET_SIZE} / 8)) # 50kB file size limit
+MAX_SIZE=$((${TARGET_SIZE} / 8)) # 10kB file size limit
 
 #echo ${VVC_ENC}
 
@@ -81,14 +82,17 @@ elif [ ${IMAGE_FORMAT} = "vvc" ]; then
 
     convert-im6 -resize "${resolution}!" "${input_file}" -sampling-factor 4:2:0 -depth 8 -colorspace Rec709YCbCr ${TEMPFILEYUV}
 
-    # echo res $resolution
-    #    ${VVC_ENC} -i ${TEMPFILEYUV} --qpa 1 -t 2 -r 1 -b 80000 -s $resolution --preset slow -c yuv420 -o  ${TEMPFILE}
-    # use the expert app and 8-bit
-    echo ${VVC_ENC} -i ${TEMPFILEYUV} --profile main_10_still_picture --qpa 1 -t 2 -r 1 -b ${TARGET_SIZE} -s ${resolution} --preset medium -c yuv420 -o  ${TEMPFILE}
-   ${VVC_ENC} -i ${TEMPFILEYUV} --profile main_10_still_picture --qpa 1 -t 2 -r 1 -b ${TARGET_SIZE} -s ${resolution} --preset medium -c yuv420 -o  ${TEMPFILE}
+    ## bitrate control using rc
+    #   ${VVC_ENC} -i ${TEMPFILEYUV} --profile main_10_still_picture --qpa 1 -t 2 -r 1 -b ${TARGET_SIZE} -s ${resolution} --preset medium -c yuv420 -o  ${TEMPFILE}
+
+    ${VVC_ENC} -i ${TEMPFILEYUV} --profile main_10_still_picture --qpa 1 -t 2 -r 1 --qp ${VVC_QP} -s ${resolution} --preset medium -c yuv420 -o  ${TEMPFILE}
+
+    while [ "$(stat -c%s "${TEMPFILE}")" -gt "$MAX_SIZE" ] && [ "$VVC_QP" -lt "64" ]; do
+      ${VVC_ENC} -i ${TEMPFILEYUV} --profile main_10_still_picture --qpa 1 -t 2 -r 1 --qp ${VVC_QP} -s ${resolution} --preset medium -c yuv420 -o  ${TEMPFILE}
+      VVC_QP=$((VVC_QP+3))
+    done;
+
     rm -f ${TEMPFILEYUV}
-
-
 
 elif [ ${IMAGE_FORMAT} = "avif" ]; then
 
@@ -97,7 +101,7 @@ elif [ ${IMAGE_FORMAT} = "avif" ]; then
 
 elif [ ${IMAGE_FORMAT} = "jpg" ]; then
 
-  while [ "$(stat -c%s "${TEMPFILE}")" -gt "$MAX_SIZE" ] && [ "$QUALITY" -gt "5" ]; do
+  while [ "$(stat -c%s "${TEMPFILE}")" -gt "$MAX_SIZE" ] && [ "${QUALITY}" -gt "5" ]; do
     convert -resize "840x840>" "${input_file}" pnm:- | /opt/mozjpeg/bin/cjpeg -quality ${QUALITY} > ${TEMPFILE}
     QUALITY=$((QUALITY-10))
   done;
