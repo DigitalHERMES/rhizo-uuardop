@@ -6,6 +6,7 @@
 # VVC_ENC: vvc enc binary
 # TARGET SIZE: target size
 
+# initial VVC QP... it will only get bigger...
 VVC_QP=39
 
 QUALITY=75 # initial start quality to try for jpeg
@@ -51,7 +52,7 @@ if [ ${IMAGE_FORMAT} = "evc" ]; then
     width=$(echo -n ${resolution} | cut -f 1 -d x)
     height=$(echo -n ${resolution} | cut -f 2 -d x)
 
-    # ugly workaround for evc
+    # my ugly workaround to round up the dimensions
     width=$(( (${width} / 8) * 8 ))
     height=$(( (${height} / 8) * 8 ))
     resolution=${width}x${height}
@@ -73,7 +74,7 @@ elif [ ${IMAGE_FORMAT} = "vvc" ]; then
     width=$(echo -n ${resolution} | cut -f 1 -d x)
     height=$(echo -n ${resolution} | cut -f 2 -d x)
 
-    # ugly workaround for vvc
+    # my ugly workaround to round up the dimensions
     width=$(( (${width} / 4) * 4 ))
     height=$(( (${height} / 4) * 4 ))
     resolution=${width}x${height}
@@ -97,7 +98,7 @@ elif [ ${IMAGE_FORMAT} = "vvc" ]; then
 
 elif [ ${IMAGE_FORMAT} = "avif" ]; then
 
-
+# TODO
   ${AV1_ENC} --target-bitrate=${TARGET_SIZE} --end-usage=cbr --bit-depth=8 ...
 
 elif [ ${IMAGE_FORMAT} = "jpg" ]; then
@@ -109,6 +110,7 @@ elif [ ${IMAGE_FORMAT} = "jpg" ]; then
 
 elif [ ${IMAGE_FORMAT} = "heic" ]; then
 
+# TODO
   while [ "$(stat -c%s "${TEMPFILE}")" -gt "$MAX_SIZE" ] && [ "$QUALITY" -gt "5" ]; do
     convert -resize "840x840>"  "${input_file}" -quality ${QUALITY} ${TEMPFILE}
     QUALITY=$((QUALITY-10))
