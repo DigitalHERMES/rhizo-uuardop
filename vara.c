@@ -1,5 +1,5 @@
 /* Rhizo-uuardop
- * Copyright (C) 2018-2020 Rhizomatica
+ * Copyright (C) 2018-2021 Rhizomatica
  * Author: Rafael Diniz <rafael@riseup.net>
  *
  * This is free software; you can redistribute it and/or modify
@@ -230,6 +230,12 @@ void *vara_control_worker_thread_tx(void *conn)
     // strcpy(buffer,"BW2750\r");
     ret &= tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
 
+    memset(buffer,0,sizeof(buffer));
+    sprintf(buffer,"COMPRESSION FILES\r");
+    // sprintf(buffer,"COMPRESSION TEXT\r");
+    // sprintf(buffer,"COMPRESSION OFF\r");
+    ret &= tcp_write(connector->control_socket, (uint8_t *) buffer, strlen(buffer));
+
     // check lost tcp connection
     if (ret == false)
     {
@@ -251,6 +257,7 @@ void *vara_control_worker_thread_tx(void *conn)
                 sleep(1);
                 memset(buffer,0,sizeof(buffer));
                 sprintf(buffer,"DISCONNECT\r");
+                // sprintf(buffer,"ABORT\r"); // shouldn't we use abort here?
                 ret &= tcp_write(connector->control_socket, (uint8_t *)buffer, strlen(buffer));
             }
             usleep(1200000); // sleep for threads finish their jobs (more than 1s here)
