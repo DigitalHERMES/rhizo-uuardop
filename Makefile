@@ -22,6 +22,10 @@
 prefix=/usr
 CC=gcc
 CFLAGS=-g -Wall -pedantic -std=gnu11 -pthread -fstack-protector
+
+# added for the version WITHOUT BY_PASS board
+CFLAGS += -DNO_BYPASS
+
 all: uuardopd uuport
 
 %.o : %.c %.h

@@ -210,6 +210,8 @@ void key_off(int serial_fd, int radio_type)
 void connected_led_on(int serial_fd, int radio_type)
 {
 
+#ifdef NO_BYPASS
+
     if (radio_type == RADIO_TYPE_SHM)
     {
         pthread_mutex_lock(&radio_conn->ptt_mutex);
@@ -221,11 +223,15 @@ void connected_led_on(int serial_fd, int radio_type)
         // read response... no
     }
 
+#endif
+
 }
 
 
 void connected_led_off(int serial_fd, int radio_type)
 {
+
+#ifdef NO_BYPASS
 
     if (radio_type == RADIO_TYPE_SHM)
     {
@@ -237,5 +243,7 @@ void connected_led_off(int serial_fd, int radio_type)
         pthread_mutex_unlock(&radio_conn->ptt_mutex);
         // read response... no
     }
+
+#endif
 
 }

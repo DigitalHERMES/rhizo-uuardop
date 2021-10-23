@@ -106,7 +106,7 @@ While UUCP package for Debian 11 (Bullseye) and onwards already have the patch i
     $ apt-get update
     $ apt-get install uucp
 
-## Web interface
+## Web interface (DEPRECATED)
 
    The current interface is a prototype, a new version is on its way. This
    one needs the following added to "/etc/sudoers":
@@ -114,3 +114,16 @@ While UUCP package for Debian 11 (Bullseye) and onwards already have the patch i
     debian  ALL=(ALL) NOPASSWD: ALL
     www-data ALL=(ALL) NOPASSWD: ALL
     uucp ALL=(ALL) NOPASSWD: ALL
+
+## C compiler defines
+
+   Set the Makefile for different radio versions. Set NO_BYPASS for
+   the version of the radio without the by-pass board.
+
+## Author
+
+Rafael Diniz <rafael@riseup.net>
+
+## License
+
+GPLv3
