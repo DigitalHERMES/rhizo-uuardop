@@ -34,6 +34,9 @@
 void key_on(int serial_fd, int radio_type);
 void key_off(int serial_fd, int radio_type);
 
+void connected_led_on(int serial_fd, int radio_type);
+void connected_led_off(int serial_fd, int radio_type);
+
 int open_serial_port(char *ttyport);
 void set_fixed_baudrate(char *baudname, int target_fd);
 

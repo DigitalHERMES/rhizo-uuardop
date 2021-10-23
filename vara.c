@@ -164,12 +164,14 @@ void *vara_control_worker_thread_rx(void *conn)
                 fprintf(stderr, "TNC: %s\n", buffer);
                 connector->clean_buffers = true;
                 connector->connected = false;
+                connected_led_off(connector->serial_fd, connector->radio_type);
                 connector->waiting_for_connection = false;
             } else
             // other commands here
             if (!memcmp(buffer, "CONNECTED", strlen("CONNECTED"))){
                 fprintf(stderr, "TNC: %s\n", buffer);
                 connector->connected = true;
+                connected_led_on(connector->serial_fd, connector->radio_type);
                 if (connector->waiting_for_connection == false)
                 { // we are receiving a connection... call uucico!
                     bool retval = call_uucico(connector);

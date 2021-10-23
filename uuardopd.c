@@ -79,6 +79,8 @@ void finish(int s){
 
     tmp_conn->shutdown = true;
 
+    connected_led_off(tmp_conn->serial_fd, tmp_conn->radio_type);
+
     // TODO: close the pipes here
     // join all the threads?
 
@@ -320,6 +322,8 @@ int main (int argc, char *argv[])
         shm_radio_connector = shm_attach(SYSV_SHM_CONTROLLER_KEY_STR, sizeof(controller_conn));
         radio_conn = shm_radio_connector;
     }
+
+    connected_led_off(connector->serial_fd, connector->radio_type);
 
     pthread_t tid;
     pthread_create(&tid, NULL, uucico_thread, (void *) connector);
