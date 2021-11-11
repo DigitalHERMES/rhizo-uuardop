@@ -46,6 +46,7 @@
 #include "ardop.h"
 #include "net.h"
 #include "call_uucico.h"
+#include "serial.h"
 
 void *ardop_data_worker_thread_tx(void *conn)
 {
@@ -442,6 +443,8 @@ bool initialize_modem_ardop(rhizo_conn *connector){
         connector->shutdown = true;
         return false;
     }
+
+    sys_led_on(connector->serial_fd, connector->radio_type);
 
     // we start our control rx thread
     pthread_t tid1;

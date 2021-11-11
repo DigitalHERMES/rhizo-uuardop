@@ -351,6 +351,8 @@ bool initialize_modem_vara(rhizo_conn *connector)
             set_fixed_baudrate("38400", connector->serial_fd);
     }
 
+    sys_led_on(connector->serial_fd, connector->radio_type);
+
     // we start our control thread
     pthread_t tid1;
     pthread_create(&tid1, NULL, vara_control_worker_thread_rx, (void *) connector);

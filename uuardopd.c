@@ -80,6 +80,7 @@ void finish(int s){
     tmp_conn->shutdown = true;
 
     connected_led_off(tmp_conn->serial_fd, tmp_conn->radio_type);
+    sys_led_off(tmp_conn->serial_fd, tmp_conn->radio_type);
 
     // TODO: close the pipes here
     // join all the threads?
