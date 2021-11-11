@@ -77,7 +77,7 @@ void *vara_data_worker_thread_tx(void *conn)
 
         circular_buf_get_range(connector->in_buffer, buffer, bytes_to_read);
 
-        fprintf(stderr, "vara_data_worker_thread_tx: Read %d for sending to VARA\n", bytes_to_read);
+        // fprintf(stderr, "vara_data_worker_thread_tx: Read %d for sending to VARA\n", bytes_to_read);
 
         while (connector->buffer_size + bytes_to_read >  MAX_VARA_BUFFER)
             sleep(1);
@@ -196,7 +196,9 @@ void *vara_control_worker_thread_rx(void *conn)
                         key_off(connector->serial_fd, connector->radio_type);
                     }
                 }
-                fprintf(stderr, "%s\n", buffer);
+                // lets not print IMALIVE watchdog
+                if (memcmp(buffer, "IAMALIVE", strlen("IAMALIVE")))
+                    fprintf(stderr, "%s\n", buffer);
             }
         }
     }
