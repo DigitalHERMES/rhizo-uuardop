@@ -43,24 +43,7 @@ install: uuardopd uuport
 	install -D uuardopd $(DESTDIR)$(prefix)/bin/uuardopd
 	install -D uuport $(DESTDIR)$(prefix)/bin/uuport
 	install -m 644 -D initscripts/uuardopd.service $(DESTDIR)/etc/systemd/system/uuardopd.service
-#	install scripts/compress_image.sh $(prefix)/bin
-#	install scripts/get_nodename.sh $(prefix)/bin
-#	install scripts/get_systems.sh $(prefix)/bin
-#	install scripts/kill_job.sh $(prefix)/bin
-#	install scripts/encrypt.sh $(prefix)/bin
-#	install scripts/decrypt.sh $(prefix)/bin
-#	install scripts/restart_system.sh $(prefix)/bin
-#	install scripts/disable_monitor.sh $(prefix)/bin
-#	install scripts/enable_monitor.sh $(prefix)/bin
-#	install scripts/enable_monitor.sh $(prefix)/bin
-#	install scripts/clean_files.sh $(prefix)/bin
-#	install scripts/alias.sh $(prefix)/bin
-#	install -m 777 -o www-data -g www-data -d /var/www/html/arquivos
-#	install -m 777 -o www-data -g www-data -d /var/www/html/uploads
-#	install -o www-data -g www-data gui/*.php /var/www/html
-#	install -o www-data -g www-data gui/*.css /var/www/html
-#	install -o www-data -g www-data -d /var/www/html/iconfont
-#	install -o www-data -g www-data gui/iconfont/* /var/www/html/iconfont
+	install scripts/vara_watchdog.sh $(prefix)/bin
 
 doc:
 	doxygen doxyfile

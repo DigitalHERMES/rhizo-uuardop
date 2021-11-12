@@ -9,8 +9,8 @@ ExecStart=/usr/bin/uuardopd -a 127.0.0.1 -p 8300 -r vara -o shm
 KillSignal=SIGTERM
 IgnoreSIGPIPE=no
 Restart=always
-TimeoutSec=3
-ExecStartPre=/bin/sleep 1
+# TimeoutSec=3
+ExecStartPre=/usr/bin/vara_watchdog.sh
 
 [Install]
 WantedBy=multi-user.target
