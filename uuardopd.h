@@ -97,13 +97,14 @@ typedef struct{
     cbuf_handle_t out_buffer_p;
 } rhizo_conn;
 
-// from ubitx controller - TODO: share the same header across projects!
+// from ubitx_controller.h - TODO: share the same header across projects!
 typedef struct{
 
     uint8_t service_command[5];
-    pthread_mutex_t ptt_mutex;
-    pthread_cond_t ptt_condition;
+    pthread_mutex_t cmd_mutex;
+    pthread_cond_t cmd_condition;
 
+    pthread_mutex_t response_mutex;
 
     uint8_t response_service[5];
     atomic_bool response_service_type;
@@ -112,14 +113,10 @@ typedef struct{
     // special response for ptt
     atomic_uchar ptt_last_response;
 
-    // special response for ptt
+    // Protection alert ON!
     atomic_bool protection_alert;
 
     int radio_fd;
-
-    // no guard
-    // atomic_bool connected_service;
-    // atomic_bool connected_ptt;
 
 } controller_conn;
 
