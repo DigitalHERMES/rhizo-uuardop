@@ -9,15 +9,16 @@ do
     hosts=($(curl -s http://localhost/api/caller/ | jq --raw-output '.[0] | .stations[] | @sh' ))
     timers_start=($(curl -s http://localhost/api/caller | jq --raw-output '.[] | .starttime ' ))
     timers_stop=($(curl -s http://localhost/api/caller | jq --raw-output '.[] | .stoptime ' ))
-    current_hour=$(date +%H)
-    current_minute=$(date +%M)
 
     for (( c=0; c<${#timers_start[@]}; c++ )); do
 
 	      start_time_hour=$(echo ${timers_start[c]} | cut -d ':' -f 1)
-  	    start_time_minute=$(echo ${timers_start[c]} | cut -d ':' -f 2)
+	      start_time_minute=$(echo ${timers_start[c]} | cut -d ':' -f 2)
 	      end_time_hour=$(echo ${timers_stop[c]} | cut -d ':' -f 1)
 	      end_time_minute=$(echo ${timers_stop[c]} | cut -d ':' -f 2)
+
+	      current_hour=$(date +%H)8
+	      current_minute=$(date +%M)
 
 	      echo "DBG: schedule " $c
 	      echo "current time ${current_hour}h ${current_minute}min"
@@ -39,8 +40,6 @@ do
 		            sleep ${DELAY}
 	          done
 
-	          current_hour=$(date +%H)
-	          current_minute=$(date +%M)
 	      else
 	          echo "will not run"
 	          echo
