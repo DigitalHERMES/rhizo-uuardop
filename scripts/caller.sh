@@ -17,7 +17,7 @@ do
 	      end_time_hour=$(echo ${timers_stop[c]} | cut -d ':' -f 1)
 	      end_time_minute=$(echo ${timers_stop[c]} | cut -d ':' -f 2)
 
-	      current_hour=$(date +%H)8
+	      current_hour=$(date +%H)
 	      current_minute=$(date +%M)
 
 	      echo "Schedule " $c
