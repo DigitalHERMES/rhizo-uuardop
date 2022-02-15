@@ -43,8 +43,8 @@ install: uuardopd uuport
 	install -D uuardopd $(DESTDIR)$(prefix)/bin/uuardopd
 	install -D uuport $(DESTDIR)$(prefix)/bin/uuport
 	install -m 644 -D initscripts/uuardopd.service $(DESTDIR)/etc/systemd/system/uuardopd.service
-	install scripts/vara_watchdog.sh $(prefix)/bin
-	install scripts/caller.sh $(prefix)/bin
+	install scripts/vara_watchdog.sh $(DESTDIR)$(prefix)/bin
+	install scripts/caller.sh $(DESTDIR)$(prefix)/bin
 
 doc:
 	doxygen doxyfile
