@@ -1,14 +1,16 @@
 #!/bin/bash
 
 
-# 30sec between each call
-DELAY=1
+# sec between each call
+DELAY=2
 
 while true
 do
     hosts=($(curl -s http://localhost/api/caller/ | jq --raw-output '.[0] | .stations[] | @sh' ))
     timers_start=($(curl -s http://localhost/api/caller | jq --raw-output '.[] | select( .enable | contains(1)) | .starttime ' ))
     timers_stop=($(curl -s http://localhost/api/caller | jq --raw-output '.[] | select( .enable | contains(1)) | .stoptime ' ))
+
+    run_at_least_once=0
 
     for (( c=0; c<${#timers_start[@]}; c++ )); do
 
@@ -34,6 +36,7 @@ do
 
 	      then
 
+                  run_at_least_once=1
 	          for t in ${hosts[*]}; do
 		            echo "Calling ${t}"
 		            # uucico -S ${t}
@@ -41,11 +44,15 @@ do
 	          done
 
 	      else
-	          echo "... will not run now."
+	          echo "Schedule ${c} will not run now."
 	          echo
 	      fi
+
     done
 
-    sleep ${DELAY}
+    if [[ ${run_at_least_once} -eq 0 ]]
+    then
+      sleep ${DELAY}
+    fi
 
 done
