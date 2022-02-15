@@ -6,9 +6,16 @@ DELAY=2
 
 while true
 do
-    hosts=($(curl -s http://localhost/api/caller/ | jq --raw-output '.[0] | .stations[] | @sh' ))
-    timers_start=($(curl -s http://localhost/api/caller | jq --raw-output '.[] | select( .enable | contains(1)) | .starttime ' ))
-    timers_stop=($(curl -s http://localhost/api/caller | jq --raw-output '.[] | select( .enable | contains(1)) | .stoptime ' ))
+    hosts=($(curl -s http://localhost/api/caller/ | jq --raw-output '.[0] | .stations[] | @sh'  2> /dev/null)) 
+    timers_start=($(curl -s http://localhost/api/caller | jq --raw-output '.[] | select( .enable | contains(1)) | .starttime ' 2> /dev/null))
+    timers_stop=($(curl -s http://localhost/api/caller | jq --raw-output '.[] | select( .enable | contains(1)) | .stoptime ' 2> /dev/null))
+
+    if [[ -z ${hosts} ]] || [[ -z ${timers_start} ]] || [[ -z ${timers_stop} ]]
+    then
+      echo "API call failed"
+      sleep ${DELAY}
+      continue
+    fi
 
     run_at_least_once=0
 
