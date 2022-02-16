@@ -46,7 +46,7 @@ do
                   run_at_least_once=1
 	          for t in ${hosts[*]}; do
 		            echo "Calling ${t}"
-		            # uucico -S ${t}
+		            uucico -S ${t}
 		            sleep ${DELAY}
 	          done
 
