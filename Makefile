@@ -44,6 +44,9 @@ install: uuardopd uuport
 	install -D uuport $(DESTDIR)$(prefix)/bin/uuport
 	install -m 644 -D initscripts/uuardopd.service $(DESTDIR)/etc/systemd/system/uuardopd.service
 	install scripts/vara_watchdog.sh $(DESTDIR)$(prefix)/bin
+
+install_gateway: install
+	install -m 644 -D initscripts/caller.service $(DESTDIR)/etc/systemd/system/caller.service
 	install scripts/caller.sh $(DESTDIR)$(prefix)/bin
 
 doc:
