@@ -1,8 +1,10 @@
 #!/bin/bash
 
-
-# sec between each call
+# delay between each call
 DELAY=2
+
+# delay for errors or in moments outside any scheduled operation
+DELAY_MAINLOOP=15
 
 # central station email server uucp address
 EMAIL_SERVER="gw"
@@ -18,7 +20,7 @@ do
     if [[ -z ${hosts} ]] || [[ -z ${timers_start} ]] || [[ -z ${timers_stop} ]]
     then
       echo "API call failed"
-      sleep ${DELAY}
+      sleep ${DELAY_MAINLOOP}
       continue
     fi
 
@@ -66,7 +68,7 @@ do
 
     if [[ ${run_at_least_once} -eq 0 ]]
     then
-      sleep ${DELAY}
+      sleep ${DELAY_MAINLOOP}
     fi
 
 done
