@@ -4,11 +4,16 @@
 # sec between each call
 DELAY=2
 
+# central station email server uucp address
+EMAIL_SERVER="gw"
+
 while true
 do
     hosts=($(curl -s http://localhost/api/caller/ | jq --raw-output '.[0] | .stations[]'  2> /dev/null)) 
     timers_start=($(curl -s http://localhost/api/caller | jq --raw-output '.[] | select( .enable | contains(1)) | .starttime ' 2> /dev/null))
     timers_stop=($(curl -s http://localhost/api/caller | jq --raw-output '.[] | select( .enable | contains(1)) | .stoptime ' 2> /dev/null))
+
+    uucico -S ${EMAIL_SERVER}
 
     if [[ -z ${hosts} ]] || [[ -z ${timers_start} ]] || [[ -z ${timers_stop} ]]
     then
@@ -45,13 +50,15 @@ do
 
                   run_at_least_once=1
 	          for t in ${hosts[*]}; do
-			        echo "Calling ${t}"
-                    uucico -S ${t}
-		            sleep ${DELAY}
+		    echo "Calling ${t}"
+		    uucico -S ${t}
+		    sleep ${DELAY}
+		    # here we sync with server again... as connection times can be veeery long
+		    uucico -S ${EMAIL_SERVER}
 	          done
 
 	      else
-	          echo "Schedule ${c} will not run now."
+	          # echo "Schedule ${c} will not run now."
 	          echo
 	      fi
 
