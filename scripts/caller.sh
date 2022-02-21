@@ -6,7 +6,7 @@ DELAY=2
 
 while true
 do
-    hosts=($(curl -s http://localhost/api/caller/ | jq --raw-output '.[0] | .stations[] | @sh'  2> /dev/null)) 
+    hosts=($(curl -s http://localhost/api/caller/ | jq --raw-output '.[0] | .stations[]'  2> /dev/null)) 
     timers_start=($(curl -s http://localhost/api/caller | jq --raw-output '.[] | select( .enable | contains(1)) | .starttime ' 2> /dev/null))
     timers_stop=($(curl -s http://localhost/api/caller | jq --raw-output '.[] | select( .enable | contains(1)) | .stoptime ' 2> /dev/null))
 
@@ -45,8 +45,8 @@ do
 
                   run_at_least_once=1
 	          for t in ${hosts[*]}; do
-		            echo "Calling ${t}"
-		            uucico -S ${t}
+			        echo "Calling ${t}"
+                    uucico -S ${t}
 		            sleep ${DELAY}
 	          done
 
