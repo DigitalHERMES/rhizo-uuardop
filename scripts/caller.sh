@@ -19,7 +19,7 @@ do
 
     if [[ -z ${hosts} ]] || [[ -z ${timers_start} ]] || [[ -z ${timers_stop} ]]
     then
-      echo "API call failed"
+      echo "No schedule enabled or API call failed"
       sleep ${DELAY_MAINLOOP}
       continue
     fi
