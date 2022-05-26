@@ -21,7 +21,7 @@ do
     TIME_NOW=$(date -u +%s)
     if [ "${TIME_NOW}" -gt "${TIME_TO_RUN}" ]
     then
-      uucico -S ${EMAIL_SERVER}
+      uucico -D -S ${EMAIL_SERVER}
       LATEST_SERVER_CALL_TIME=$(date -u +%s)
       TIME_TO_RUN=$(( ${LATEST_SERVER_CALL_TIME} + ${DELAY_MAINLOOP} ))
     fi
@@ -62,10 +62,10 @@ do
                   run_at_least_once=1
 	          for t in ${hosts[*]}; do
 		    echo "Calling ${t}"
-		    uucico -S ${t}
+		    uucico -D -S ${t}
 		    sleep ${DELAY}
 		    # here we sync with server again... as connection times can be veeery long
-		    uucico -S ${EMAIL_SERVER}
+		    uucico -D -S ${EMAIL_SERVER}
 	          done
 
 	      else
