@@ -210,20 +210,16 @@ void key_off(int serial_fd, int radio_type)
 void connected_led_on(int serial_fd, int radio_type)
 {
 
-#ifdef NO_BYPASS
-
     if (radio_type == RADIO_TYPE_SHM)
     {
         pthread_mutex_lock(&radio_conn->cmd_mutex);
         radio_conn->service_command[0] = 0x01; // led on
         radio_conn->service_command[1] = radio_conn->service_command[2] = radio_conn->service_command[3] = 0x00;
-        radio_conn->service_command[4] = 0xa0; // CMD_SET_BYPASS_STATUS
+        radio_conn->service_command[4] = 0xa0; // CMD_SET_CONNECTED_STATUS
         pthread_cond_signal(&radio_conn->cmd_condition);
         pthread_mutex_unlock(&radio_conn->cmd_mutex);
         // read response... no
     }
-
-#endif
 
 }
 
@@ -231,21 +227,16 @@ void connected_led_on(int serial_fd, int radio_type)
 void connected_led_off(int serial_fd, int radio_type)
 {
 
-#ifdef NO_BYPASS
-
     if (radio_type == RADIO_TYPE_SHM)
     {
         pthread_mutex_lock(&radio_conn->cmd_mutex);
         radio_conn->service_command[0] = 0x00; // led off
         radio_conn->service_command[1] = radio_conn->service_command[2] = radio_conn->service_command[3] = 0x00;
-        radio_conn->service_command[4] = 0xa0; // CMD_SET_BYPASS_STATUS
+        radio_conn->service_command[4] = 0xa0; // CMD_SET_CONNECTED_STATUS
         pthread_cond_signal(&radio_conn->cmd_condition);
         pthread_mutex_unlock(&radio_conn->cmd_mutex);
         // read response... no
     }
-
-#endif
-
 }
 
 void sys_led_on(int serial_fd, int radio_type)
