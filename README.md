@@ -117,8 +117,7 @@ While UUCP package for Debian 11 (Bullseye) and onwards already have the patch i
 
 ## C compiler defines
 
-   Set the Makefile for different radio versions. Set NO_BYPASS for
-   the version of the radio without the by-pass board (this is just for Rhizomatica's ubitx-based radio).
+No specific C compiler define needs to be used to compile the code.
 
 ## Author
 
